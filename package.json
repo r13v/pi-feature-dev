@@ -1,0 +1,48 @@
+{
+  "name": "pi-feature-dev",
+  "version": "0.0.0-development",
+  "description": "Pi-native guided feature development workflow using subagents, todos, clarification questions, implementation, and review loops.",
+  "license": "MIT",
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/r13v/pi-feature-dev.git"
+  },
+  "bugs": {
+    "url": "https://github.com/r13v/pi-feature-dev/issues"
+  },
+  "homepage": "https://github.com/r13v/pi-feature-dev#readme",
+  "publishConfig": {
+    "access": "public"
+  },
+  "keywords": [
+    "pi-package",
+    "pi",
+    "pi-coding-agent",
+    "feature-development",
+    "subagents",
+    "skills"
+  ],
+  "files": [
+    "skills/**/*",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "test": "npm pack --dry-run",
+    "release": "semantic-release"
+  },
+  "pi": {
+    "skills": [
+      "./skills"
+    ]
+  },
+  "devDependencies": {
+    "@semantic-release/commit-analyzer": "^13.0.1",
+    "@semantic-release/github": "^12.0.6",
+    "@semantic-release/npm": "^13.1.5",
+    "@semantic-release/release-notes-generator": "^14.1.0",
+    "conventional-changelog-conventionalcommits": "^9.3.1",
+    "semantic-release": "^25.0.3"
+  }
+}
