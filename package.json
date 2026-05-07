@@ -1,7 +1,7 @@
 {
   "name": "pi-feature-dev",
   "version": "0.0.0-development",
-  "description": "Pi-native guided feature development workflow using subagents, todos, clarification questions, implementation, and review loops.",
+  "description": "Portable guided feature development workflow for coding assistants, packaged as a Pi skill.",
   "license": "MIT",
   "type": "module",
   "repository": {
@@ -20,7 +20,8 @@
     "pi",
     "pi-coding-agent",
     "feature-development",
-    "subagents",
+    "coding-assistants",
+    "workflow",
     "skills"
   ],
   "files": [

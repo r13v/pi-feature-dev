@@ -1,13 +1,17 @@
 # pi-feature-dev
 
-Pi-native guided feature development workflow.
+Portable guided feature development workflow, packaged as a Pi skill.
 
-This package adapts a Claude Code-style feature development workflow to Pi using Pi packages and tools:
+The skill describes a tool-agnostic process for non-trivial feature work:
 
-- `pi-subagents` for scout/planner/worker/reviewer fanout
-- `@juicesharp/rpiv-todo` for phase tracking
-- `@juicesharp/rpiv-ask-user-question` for structured choices
-- optional `context-mode`, `pi-web-access`, and `pi-intercom` for large-output handling, web/code research, and session coordination
+- clarify requirements before coding
+- explore the existing codebase before design
+- compare implementation approaches and get approval
+- implement with one writer
+- review the diff from multiple perspectives
+- validate and summarize results
+
+It does not require specific task-tracking, question, delegation, or review tools. If the current environment provides equivalent capabilities, use them; otherwise follow the same workflow directly in chat and with normal code tools.
 
 ## Install
 
@@ -35,27 +39,13 @@ If installing for a project, run from that project and use Pi's local install fl
 pi install -l ~/Projects/pi-feature-dev
 ```
 
-## Required companion packages
+## Optional companion packages
 
-This workflow expects these Pi tools to be available:
-
-```bash
-pi install npm:pi-subagents
-pi install npm:@juicesharp/rpiv-todo
-pi install npm:@juicesharp/rpiv-ask-user-question
-```
-
-Recommended optional packages:
-
-```bash
-pi install npm:context-mode
-pi install npm:pi-web-access
-pi install npm:pi-intercom
-```
+No companion package is required. Optional Pi packages can improve specific parts of the workflow, such as progress tracking, structured choices, delegation, large-output handling, web/code research, or session coordination.
 
 ## Usage
 
-Skill command:
+Skill command in Pi:
 
 ```text
 /skill:feature-dev Add OAuth login with Google and GitHub
@@ -67,18 +57,20 @@ Natural language also works when Pi's skill matcher triggers:
 Use feature-dev to implement API rate limiting.
 ```
 
-This package is intentionally skill-only. It does not provide a `/feature-dev` prompt template shortcut; use `/skill:feature-dev` for explicit invocation.
+The `skills/feature-dev/SKILL.md` file is portable markdown and can be adapted for other coding assistant environments.
+
+This package is intentionally skill-only. It does not provide a `/feature-dev` prompt template shortcut; use `/skill:feature-dev` for explicit Pi invocation.
 
 ## What it does
 
-The skill guides Pi through a seven-phase process:
+The skill guides a coding assistant through a seven-phase process:
 
-1. Discovery — understand the feature and create todos
-2. Codebase exploration — inspect relevant code and patterns, optionally with parallel subagents
+1. Discovery — understand the feature and establish lightweight progress tracking
+2. Codebase exploration — inspect relevant code and patterns, optionally with read-only helper passes
 3. Clarifying questions — resolve ambiguity before design
 4. Architecture design — compare minimal, clean, and pragmatic approaches
 5. Implementation — only after approval, with a single writer
-6. Quality review — parallel fresh-context reviewers inspect the diff
+6. Quality review — inspect the diff from correctness, validation, and maintainability perspectives
 7. Validation and summary — run focused checks and summarize changes
 
 ## Package contents
@@ -90,8 +82,6 @@ pi-feature-dev/
     └── feature-dev/
         └── SKILL.md
 ```
-
-The package intentionally does **not** ship custom subagent definitions. It uses the built-in roles from `pi-subagents` (`scout`, `context-builder`, `planner`, `worker`, `reviewer`, `researcher`, `oracle`) so it stays small and tracks improvements in that package.
 
 ## Release
 

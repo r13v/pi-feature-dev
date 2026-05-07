@@ -1,47 +1,29 @@
 ---
 name: feature-dev
-description: Structured feature development workflow for Pi. Use for non-trivial feature work requiring codebase exploration, clarification, architecture trade-offs, implementation approval, subagent review, and final summary.
-compatibility: "Pi. Best with pi-subagents, @juicesharp/rpiv-todo, and @juicesharp/rpiv-ask-user-question installed; optional context-mode, pi-web-access, and pi-intercom improve the workflow."
+description: Structured feature development workflow for coding assistants. Use for non-trivial feature work requiring codebase exploration, clarification, architecture trade-offs, implementation approval, review, and final summary.
+compatibility: "Portable across coding assistant environments. Optional task tracking, structured-question, delegation, search, and browser tools can improve the workflow, but are not required."
 ---
 
-# Feature Dev for Pi
+# Feature Dev
 
-Run a guided, Pi-native feature development workflow. This skill replaces the Claude Code `feature-dev` command/agents with Pi tools:
+Run a guided, tool-agnostic feature development workflow. Adapt each step to the capabilities of the current environment:
 
-- `todo` for phase/progress tracking
-- `subagent` from `pi-subagents` for scout/planner/worker/reviewer fanout
-- `ask_user_question` for structured decisions and multiple-choice clarification
-- `web_search`, `code_search`, and `fetch_content` for external context when needed
-- `intercom` only when coordinating with separate live Pi sessions or subagent escalations
+- Track phase/progress state with any available planning mechanism, or keep a concise written checklist in chat.
+- Ask clarification and decision questions in normal chat; use structured-choice UI/tools only if available.
+- Use search, documentation, browser, or repository tools for external context when needed.
+- For broad work, optionally delegate read-only exploration, planning, or review to independent helpers if the environment supports it.
 
-This skill is for the parent/orchestrator session. Child subagents should receive concrete role-specific tasks; do not ask child agents to run this workflow or spawn their own subagents.
+This workflow is for the main orchestrating session. Keep responsibilities clear: one writer owns file edits, while any optional helpers stay read-only unless the user explicitly approves a different handoff.
 
 ## Operating Rules
 
 1. **Clarify before coding.** Do not implement until scope, acceptance criteria, constraints, and non-goals are clear enough.
 2. **Explore before designing.** Inspect relevant existing code and patterns before proposing architecture.
 3. **Ask before implementation.** Present the preferred architecture and wait for explicit user approval before editing.
-4. **Keep writes single-threaded.** Use the parent session or one `worker` subagent as the writer. Never run parallel writers in the same checkout.
-5. **Review after implementation.** Use fresh-context reviewers to inspect the diff, synthesize findings, then apply only approved/worthwhile fixes.
-6. **Use available tools only.** If a recommended tool is unavailable, continue with the closest Pi-native alternative and state the fallback briefly.
-7. **For large outputs.** If context-mode tools are available, use them for test/build/log/git output. Otherwise run focused commands and summarize concise output.
-
-Before executing any subagent, call `subagent({ action: "list" })` and only use executable/non-disabled agents from the result.
-
-## Recommended Agent Mapping
-
-Use built-in `pi-subagents` roles by default:
-
-| Need | Pi role |
-| --- | --- |
-| Codebase exploration | `scout` or `context-builder` |
-| Architecture planning | `planner` |
-| Implementation handoff | `worker` |
-| Quality review | `reviewer` |
-| External evidence | `researcher` |
-| Decision consistency/advisory review | `oracle` |
-
-Do not create custom agents unless the user explicitly wants persistent role overrides. This package intentionally works with built-in Pi subagents.
+4. **Keep writes single-threaded.** Use the main session or one dedicated writer. Never run parallel writers in the same checkout.
+5. **Review after implementation.** Inspect the diff from fresh perspectives, synthesize findings, then apply only approved/worthwhile fixes.
+6. **Use available tools only.** If a recommended capability is unavailable, continue with the closest alternative and state the fallback briefly.
+7. **For large outputs.** Use any available large-output/log-processing tools. Otherwise run focused commands and summarize concise output.
 
 ## Workflow
 
@@ -51,51 +33,30 @@ Goal: understand what needs to be built.
 
 Actions:
 
-1. Create phase todos with `todo` for Discovery, Exploration, Clarification, Architecture, Implementation, Review, and Summary/Validation. Keep exactly one todo `in_progress` at a time.
+1. Establish lightweight phase tracking for Discovery, Exploration, Clarification, Architecture, Implementation, Review, and Summary/Validation. Keep exactly one phase active at a time when your environment supports explicit progress state.
 2. If the feature request is unclear, ask concise questions before doing deep work:
    - What problem should this solve?
    - What should the user-visible behavior be?
    - What constraints, deadlines, compatibility requirements, or non-goals matter?
 3. Summarize your understanding and call out assumptions.
 
-Use `ask_user_question` only for questions with 2-4 clear choices. For open-ended requirements, ask normally in chat.
+Use structured-choice prompts only for questions with 2-4 clear choices. For open-ended requirements, ask normally in chat.
 
 ### Phase 2 — Codebase Exploration
 
 Goal: understand relevant code and project patterns at high and low levels.
 
-Default subagent fanout for non-trivial features:
+For non-trivial features, perform these read-only exploration passes. Use independent helpers only if available; otherwise do the passes yourself:
 
-```ts
-subagent({
-  action: "list"
-})
+1. Find features similar to the requested feature and trace their implementation. Return key entry points, data flow, conventions, risks, and 5-10 essential files to read.
+2. Map architecture, abstractions, module boundaries, and integration points relevant to the feature. Return file:line references and 5-10 essential files to read.
+3. Identify tests, validation patterns, UI/API patterns, configuration, and extension points relevant to the feature. Return concrete files and gaps.
 
-subagent({
-  tasks: [
-    {
-      agent: "scout",
-      task: "Find features similar to <feature> and trace their implementation. Return key entry points, data flow, conventions, risks, and 5-10 essential files to read. Do not edit files."
-    },
-    {
-      agent: "context-builder",
-      task: "Map the architecture, abstractions, module boundaries, and integration points relevant to <feature>. Return file:line references and 5-10 essential files to read. Do not edit files."
-    },
-    {
-      agent: "scout",
-      task: "Identify tests, validation patterns, UI/API patterns, configuration, and extension points relevant to <feature>. Return concrete files and gaps. Do not edit files."
-    }
-  ],
-  concurrency: 3,
-  context: "fresh"
-})
-```
+Use two passes for medium work; three for broad features. Skip delegation for trivial single-file changes, but still inspect relevant files yourself.
 
-Adapt the tasks to the project. Use two agents for medium work; three for broad features. Skip subagents for trivial single-file changes, but still inspect relevant files yourself.
+After exploration:
 
-After subagents return:
-
-1. Read the essential files they identified.
+1. Read the essential files identified.
 2. Follow imports/callers/tests/config as needed.
 3. Present a concise findings summary: similar patterns, relevant files, likely integration points, risks, and unknowns.
 
@@ -114,7 +75,7 @@ Review the feature request plus exploration findings. Identify gaps in:
 - tests and validation expectations
 - rollout/feature flags/documentation needs
 
-Ask all necessary questions in one organized batch. Use `ask_user_question` for structured decisions; otherwise ask a numbered free-form list. Wait for answers before architecture design.
+Ask all necessary questions in one organized batch. Use structured-choice prompts for discrete decisions when available; otherwise ask a numbered free-form list. Wait for answers before architecture design.
 
 If the user says “whatever you think is best,” state your recommendation and get explicit confirmation unless the decision is low-risk and reversible.
 
@@ -122,28 +83,18 @@ If the user says “whatever you think is best,” state your recommendation and
 
 Goal: compare viable implementation approaches and get approval.
 
-For complex work, run 2-3 planning passes with different trade-off lenses:
+For complex work, run 2-3 planning passes with different trade-off lenses. These can be separate self-review passes or delegated read-only planning if available:
 
-```ts
-subagent({
-  tasks: [
-    {
-      agent: "planner",
-      task: "Design a minimal-change implementation for <feature> using the exploration findings and clarified requirements below. Include files to change, build sequence, risks, validation. Do not edit files.\n\n<context>..."
-    },
-    {
-      agent: "planner",
-      task: "Design a clean-architecture implementation for <feature> prioritizing maintainability and testability. Include files to change, build sequence, risks, validation. Do not edit files.\n\n<context>..."
-    },
-    {
-      agent: "planner",
-      task: "Design a pragmatic balanced implementation for <feature>. Include files to change, build sequence, risks, validation. Do not edit files.\n\n<context>..."
-    }
-  ],
-  concurrency: 3,
-  context: "fresh"
-})
-```
+1. **Minimal-change implementation** — smallest safe diff using existing patterns.
+2. **Clean-architecture implementation** — prioritize maintainability, testability, and clear boundaries.
+3. **Pragmatic balanced implementation** — balance implementation cost, maintainability, and risk.
+
+Each pass should include:
+
+- files to change
+- build sequence
+- risks and trade-offs
+- validation plan
 
 Then synthesize:
 
@@ -153,7 +104,7 @@ Then synthesize:
 - your recommendation and reasoning
 - validation plan
 
-Ask the user which approach to use. `ask_user_question` is ideal here with options like Minimal, Pragmatic, Clean.
+Ask the user which approach to use. A structured choice is helpful when available, with options like Minimal, Pragmatic, Clean.
 
 ### Phase 5 — Implementation
 
@@ -163,16 +114,33 @@ Do not start without explicit approval.
 
 Implementation options:
 
-- **Parent writes directly** for small/medium scoped changes where you already have enough context.
-- **One `worker` subagent** for larger changes after approval. Provide a complete handoff: requirements, chosen approach, files/areas, non-goals, acceptance criteria, validation, and escalation rules.
+- **Main session writes directly** for small/medium scoped changes where enough context is already available.
+- **One dedicated writer** for larger changes after approval, if the environment supports handoff. Provide requirements, chosen approach, files/areas, non-goals, acceptance criteria, validation, and escalation rules.
 
-Worker handoff shape:
+Writer handoff shape:
 
-```ts
-subagent({
-  agent: "worker",
-  task: "Implement the approved <feature> plan.\n\nClarified requirements:\n- ...\n\nChosen approach:\n- ...\n\nLikely files/areas:\n- ...\n\nNon-goals:\n- ...\n\nAcceptance criteria:\n- ...\n\nValidation expected:\n- ...\n\nUse one writer thread only. Ask before unapproved product, API, or architecture changes. Summarize files changed and validation results."
-})
+```text
+Implement the approved <feature> plan.
+
+Clarified requirements:
+- ...
+
+Chosen approach:
+- ...
+
+Likely files/areas:
+- ...
+
+Non-goals:
+- ...
+
+Acceptance criteria:
+- ...
+
+Validation expected:
+- ...
+
+Use one writer thread only. Ask before unapproved product, API, or architecture changes. Summarize files changed and validation results.
 ```
 
 During implementation:
@@ -180,37 +148,22 @@ During implementation:
 1. Follow existing patterns discovered earlier.
 2. Keep changes focused on the approved scope.
 3. Add or update tests when appropriate.
-4. Update todos as each implementation subtask finishes.
+4. Update progress tracking as each implementation subtask finishes when such tracking is available.
 5. If a new major decision appears, stop and ask.
 
 ### Phase 6 — Quality Review
 
 Goal: catch correctness, test, and maintainability issues.
 
-After implementation, review the current diff. Default parallel review:
+After implementation, review the current diff. For non-trivial changes, inspect it from these independent perspectives yourself or with read-only review helpers if available:
 
-```ts
-subagent({
-  tasks: [
-    {
-      agent: "reviewer",
-      task: "Review the current diff for correctness, regressions, edge cases, and security issues. Inspect changed files directly. Do not edit files. Report only evidence-backed issues with file/line references."
-    },
-    {
-      agent: "reviewer",
-      task: "Review the current diff for tests and validation quality. Inspect changed files directly. Do not edit files. Report missing high-value tests or broken validation with file/line references."
-    },
-    {
-      agent: "reviewer",
-      task: "Review the current diff for simplicity, DRYness, maintainability, and project convention fit. Inspect changed files directly. Do not edit files. Report only important issues with file/line references."
-    }
-  ],
-  concurrency: 3,
-  context: "fresh"
-})
-```
+1. Correctness, regressions, edge cases, and security.
+2. Tests and validation quality.
+3. Simplicity, maintainability, duplication, and project convention fit.
 
-Synthesize reviewer output into:
+Each review perspective should inspect changed files directly and report only evidence-backed issues with file/line references.
+
+Synthesize review output into:
 
 - blockers / must-fix now
 - fixes worth doing now
@@ -226,8 +179,8 @@ Goal: prove the feature is complete and document outcomes.
 Actions:
 
 1. Run focused validation: tests, typecheck, lint, build, or manual checks appropriate to the project.
-2. If validation fails, keep the current todo `in_progress`, explain the blocker, and fix or ask for direction.
-3. When validation passes or the user accepts known limitations, mark todos complete.
+2. If validation fails, keep the current phase active, explain the blocker, and fix or ask for direction.
+3. When validation passes or the user accepts known limitations, mark the workflow complete in whatever progress tracking is available.
 4. Summarize:
    - what was built
    - key decisions made
