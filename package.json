@@ -1,7 +1,7 @@
 {
   "name": "pi-feature-dev",
   "version": "0.0.0-development",
-  "description": "Portable guided feature development workflow for coding assistants, packaged as a Pi skill.",
+  "description": "Portable coding-agent workflows packaged as skills.",
   "license": "MIT",
   "type": "module",
   "repository": {
@@ -17,6 +17,7 @@
   },
   "keywords": [
     "feature-development",
+    "plan-execution",
     "coding-assistants",
     "workflow",
     "skills"

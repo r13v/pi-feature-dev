@@ -1,8 +1,9 @@
 # pi-feature-dev
 
-Portable guided feature development workflow, packaged as a Pi skill.
+Portable coding-agent workflows, packaged as Pi skills.
 
-The skill describes a tool-agnostic process for non-trivial feature work:
+The `feature-dev` skill describes a tool-agnostic process for non-trivial
+feature work:
 
 - clarify requirements before coding
 - explore the existing codebase before design
@@ -12,6 +13,11 @@ The skill describes a tool-agnostic process for non-trivial feature work:
 - validate and summarize results
 
 It does not require specific task-tracking, question, delegation, or review tools. If the current environment provides equivalent capabilities, use them; otherwise follow the same workflow directly in chat and with normal code tools.
+
+The `plan-exec` skill executes implementation plan files task by task with
+isolated workers, Git task commits, internal reviews, finalize, and a portable
+run summary. It is portable across host agents that provide fresh-context
+isolated workers and Git access.
 
 ## Install
 
@@ -43,6 +49,14 @@ pi install -l ~/Projects/pi-feature-dev
 
 No companion package is required. Optional Pi packages can improve specific parts of the workflow, such as progress tracking, structured choices, delegation, large-output handling, web/code research, or session coordination.
 
+## Credits
+
+The original Claude Code skills and workflows that informed these portable
+versions came from:
+
+- [umputun/cc-thingz](https://github.com/umputun/cc-thingz)
+- [anthropics/claude-code feature-dev plugin](https://github.com/anthropics/claude-code/tree/main/plugins/feature-dev)
+
 ## Usage
 
 Skill command in Pi:
@@ -59,11 +73,17 @@ Use feature-dev to implement API rate limiting.
 
 The `skills/feature-dev/SKILL.md` file is portable markdown and can be adapted for other coding assistant environments.
 
-This package is intentionally skill-only. It does not provide a `/feature-dev` prompt template shortcut; use `/skill:feature-dev` for explicit Pi invocation.
+Run a plan with `plan-exec`:
 
-## What it does
+```text
+/skill:plan-exec docs/plans/20260518-example.md
+```
 
-The skill guides a coding assistant through a seven-phase process:
+This package is intentionally skill-only. It does not provide prompt template shortcuts; use `/skill:<name>` for explicit Pi invocation.
+
+## Feature-dev workflow
+
+The `feature-dev` skill guides a coding assistant through a seven-phase process:
 
 1. Discovery — understand the feature and establish lightweight progress tracking
 2. Codebase exploration — inspect relevant code and patterns, optionally with read-only helper passes
@@ -79,7 +99,15 @@ The skill guides a coding assistant through a seven-phase process:
 pi-feature-dev/
 ├── package.json
 └── skills/
-    └── feature-dev/
+    ├── feature-dev/
+    │   └── SKILL.md
+    ├── plan-exec/
+    │   ├── SKILL.md
+    │   ├── references/
+    │   └── scripts/
+    ├── plan-make/
+    │   └── SKILL.md
+    └── plan-review/
         └── SKILL.md
 ```
 
