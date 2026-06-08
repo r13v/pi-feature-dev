@@ -5,7 +5,7 @@ description: Create structured implementation plans in docs/plans/ for feature w
 
 # Implementation Plan Creation
 
-Create an implementation plan in `docs/plans/YYYYMMDD-title.md` after focused discovery and user-guided scope decisions.
+Create an implementation plan in `docs/plans/YYYYMMDD-title.md` after focused discovery and user-guided scope decisions. The plan file is the execution contract: a fresh agent must be able to execute it without reading the prior chat.
 
 ## Workflow
 
@@ -14,9 +14,10 @@ Create an implementation plan in `docs/plans/YYYYMMDD-title.md` after focused di
 3. Present a concise context summary, including likely affected areas and any uncertainty.
 4. Ask focused questions one at a time. Prefer multiple-choice questions with a recommended option when the answer can be bounded.
 5. If there are multiple viable implementation paths, present 2-3 approaches with trade-offs and recommend one. Ask the user to choose before writing the plan. Skip this only when the path is obvious or the user already specified the approach.
-6. Preserve enough context in the plan for an isolated reviewer to understand the request, decisions, assumptions, and non-goals without hidden conversation context.
+6. Preserve enough context in the plan for an isolated executor and reviewer to understand the request, decisions, assumptions, non-goals, implementation path, and verification commands without hidden conversation context.
 7. Create the plan file under `docs/plans/` using the current date and a short slug.
-8. After creating the plan, ask the user whether to review, start implementation, or stop after the plan.
+8. Before finishing, audit the plan against the Self-Contained Plan Contract below and revise until it passes.
+9. After creating the plan, ask the user whether to review, start implementation, or stop after the plan.
 
 ## Project Guidance Discovery
 
@@ -85,6 +86,31 @@ Which direction do you prefer?
 
 If repeated code is involved, explicitly compare duplication versus abstraction and ask when both are reasonable.
 
+## Self-Contained Plan Contract
+
+Every plan must be autonomous. Treat the plan as the only document available to a fresh implementation worker besides the repository itself.
+
+A self-contained plan includes:
+- The original request and the exact outcome expected.
+- Explicit assumptions, decisions, non-goals, and unresolved questions.
+- Relevant repository context discovered during planning, with concrete file paths, components, exports, APIs, commands, and patterns.
+- The selected approach and why alternatives were rejected when alternatives were considered.
+- Acceptance criteria that define when the work is complete.
+- Ordered tasks with exact files to create or modify, specific implementation actions, specific test actions, and exact validation commands.
+- Any external dependency, credential, manual step, or environment constraint required to complete or verify the work.
+
+Avoid hidden-context references:
+- Do not write "as discussed", "current behavior", "use the existing helper", "same as above", or "the relevant file" without naming the file, symbol, or behavior.
+- Do not leave placeholders such as `[command]`, `[TBD]`, `[exact/path]`, or `[if needed]` in the final plan.
+- Do not rely on future executor discovery for decisions already made during planning. If discovery is still needed, make it an explicit task with what to inspect and why.
+- Do not include speculative abstractions, future-proofing, or optional work as implementation tasks. Put external or manual follow-up in Post-Completion.
+
+Before writing the final file, verify:
+- Could a fresh agent start from this plan and the repository alone?
+- Does every task explain why it exists and how to verify it?
+- Are all referenced commands, files, and symbols concrete?
+- Are all assumptions and user decisions recorded in the plan?
+
 ## Plan Template
 
 Use this structure and adapt it to the project:
@@ -96,17 +122,21 @@ Use this structure and adapt it to the project:
 - Clear description of the feature/change.
 - Problem it solves and key benefits.
 - How it integrates with the existing system.
+- Acceptance criteria for completion.
 
 ## Context
 - Files/components involved: [list from discovery]
-- Related patterns found: [patterns discovered]
+- Related patterns found: [patterns discovered, with file paths and symbols]
 - Dependencies identified: [dependencies]
+- Relevant commands discovered: [test/lint/build commands]
+- Constraints from project guidance: [AGENTS.md/CLAUDE.md/README rules that affect this plan]
 
 ## Review Handoff
 - Original request: [user's requested outcome]
 - Key decisions made during planning: [brief bullets]
 - Explicit non-goals: [if any]
 - Open questions or assumptions: [if any]
+- Hidden context: none; this plan is self-contained for a fresh executor.
 
 ## Development Approach
 - Testing approach: [TDD / Regular]
@@ -115,11 +145,13 @@ Use this structure and adapt it to the project:
 - Every code-change task must include new or updated tests.
 - All tests for a task must pass before starting the next task.
 - Update this plan when scope changes during implementation.
+- Do not rely on chat history; decisions and constraints must be recorded here before execution.
 
 ## Testing Strategy
 - Unit tests required for every code-change task.
 - E2E tests required for UI flows when the project has an E2E setup.
 - Cover success, error, and edge cases.
+- Exact validation commands: [commands discovered during planning]
 
 ## Progress Tracking
 - Mark completed items with `[x]` immediately when done.
@@ -134,14 +166,16 @@ Use this structure and adapt it to the project:
 ## Implementation Steps
 
 ### Task 1: [specific name]
+**Why:** [reason this task is needed for the requested outcome]
+
 **Files:**
 - Create: `exact/path/to/new_file`
 - Modify: `exact/path/to/existing_file`
 
-- [ ] [specific code action with file reference]
+- [ ] [specific code action with file and symbol reference]
 - [ ] [specific test action for success cases]
 - [ ] [specific test action for error/edge cases]
-- [ ] Run relevant tests and confirm they pass before next task.
+- [ ] Run relevant tests and confirm they pass before next task
 
 ### Task N-1: Verify Acceptance Criteria
 - [ ] Verify all Overview requirements are implemented.
@@ -155,9 +189,11 @@ Use this structure and adapt it to the project:
 - [ ] Move this plan to `docs/plans/completed/`.
 
 ## Technical Details
+- Existing APIs, exports, components, or commands the implementation must use.
 - Data structures and changes.
 - Parameters and formats.
 - Processing flow.
+- Invariants and edge cases the executor must preserve.
 
 ## Post-Completion
 Items requiring manual intervention or external systems.
