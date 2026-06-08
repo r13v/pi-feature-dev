@@ -21,6 +21,10 @@ isolated workers and Git access.
 
 ## Install
 
+```
+npx skills add https://github.com/r13v/pi-feature-dev
+```
+
 From npm:
 
 ```bash
