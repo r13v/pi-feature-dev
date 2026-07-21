@@ -1,0 +1,4 @@
+interface:
+  display_name: "Feature Dev"
+  short_description: "Develop features with a guided workflow"
+  default_prompt: "Use $feature-dev to implement this feature through discovery, design approval, review, and validation."

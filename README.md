@@ -19,6 +19,10 @@ isolated workers, Git task commits, internal reviews, finalize, and a portable
 run summary. It is portable across host agents that provide fresh-context
 isolated workers and Git access.
 
+The `grill` skill runs a dependency-aware interview that researches facts,
+exhausts the current decision frontier round by round, sharpens domain language,
+and records agreed terminology and durable architectural decisions.
+
 ## Install
 
 ```
@@ -60,6 +64,7 @@ versions came from:
 
 - [umputun/cc-thingz](https://github.com/umputun/cc-thingz)
 - [anthropics/claude-code feature-dev plugin](https://github.com/anthropics/claude-code/tree/main/plugins/feature-dev)
+- [mattpocock/skills batch-grill-me and domain-modeling skills](https://github.com/mattpocock/skills)
 
 ## Usage
 
@@ -83,6 +88,12 @@ Run a plan with `plan-exec`:
 /skill:plan-exec docs/plans/20260518-example.md
 ```
 
+Stress-test an idea before planning or implementation:
+
+```text
+/skill:grill Challenge the design for usage-based billing.
+```
+
 This package is intentionally skill-only. It does not provide prompt template shortcuts; use `/skill:<name>` for explicit Pi invocation.
 
 ## Feature-dev workflow
@@ -104,14 +115,23 @@ pi-feature-dev/
 ├── package.json
 └── skills/
     ├── feature-dev/
+    │   ├── agents/openai.yaml
     │   └── SKILL.md
+    ├── grill/
+    │   ├── agents/openai.yaml
+    │   ├── SKILL.md
+    │   ├── CONTEXT-FORMAT.md
+    │   └── ADR-FORMAT.md
     ├── plan-exec/
+    │   ├── agents/openai.yaml
     │   ├── SKILL.md
     │   ├── references/
     │   └── scripts/
     ├── plan-make/
+    │   ├── agents/openai.yaml
     │   └── SKILL.md
     └── plan-review/
+        ├── agents/openai.yaml
         └── SKILL.md
 ```
 

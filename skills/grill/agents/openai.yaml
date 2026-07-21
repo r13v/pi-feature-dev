@@ -1,0 +1,4 @@
+interface:
+  display_name: "Grill"
+  short_description: "Challenge ideas and sharpen domain decisions"
+  default_prompt: "Use $grill to stress-test this idea until every decision is explicit."
