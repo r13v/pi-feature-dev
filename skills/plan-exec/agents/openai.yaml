@@ -1,0 +1,4 @@
+interface:
+  display_name: "Plan Exec"
+  short_description: "Execute implementation plans with isolated workers"
+  default_prompt: "Use $plan-exec to execute this implementation plan task by task with isolated workers and reviews."

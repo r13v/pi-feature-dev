@@ -1,0 +1,4 @@
+interface:
+  display_name: "Plan Make"
+  short_description: "Create self-contained implementation plans"
+  default_prompt: "Use $plan-make to create a self-contained implementation plan for this change."
