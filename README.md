@@ -1,6 +1,6 @@
 # pi-feature-dev
 
-Portable coding-agent workflows, packaged as Pi skills.
+Portable agent workflows and writing skills, packaged as Pi skills.
 
 The `feature-dev` skill describes a tool-agnostic process for non-trivial
 feature work:
@@ -22,6 +22,13 @@ isolated workers and Git access.
 The `grill` skill runs a dependency-aware interview that researches facts,
 exhausts the current decision frontier round by round, sharpens domain language,
 and records agreed terminology and durable architectural decisions.
+
+The `ste` skill drafts, rewrites, and reviews clear English with
+[ASD-STE100 Simplified Technical English](https://www.asd-ste100.org/)
+principles. It supports strict technical-documentation work and a general
+clarity mode for prompts, tool descriptions, error messages, status reports,
+translation-ready text, and agent instructions. The skill is Markdown-only and
+has no runtime dependency.
 
 ## Install
 
@@ -65,6 +72,7 @@ versions came from:
 - [umputun/cc-thingz](https://github.com/umputun/cc-thingz)
 - [anthropics/claude-code feature-dev plugin](https://github.com/anthropics/claude-code/tree/main/plugins/feature-dev)
 - [mattpocock/skills batch-grill-me and domain-modeling skills](https://github.com/mattpocock/skills)
+- [danyuchn/asd-ste100-skill](https://github.com/danyuchn/asd-ste100-skill)
 
 ## Usage
 
@@ -80,7 +88,8 @@ Natural language also works when Pi's skill matcher triggers:
 Use feature-dev to implement API rate limiting.
 ```
 
-The `skills/feature-dev/SKILL.md` file is portable markdown and can be adapted for other coding assistant environments.
+The files under `skills/*/SKILL.md` are portable Markdown and can be adapted for
+other agent environments.
 
 Run a plan with `plan-exec`:
 
@@ -92,6 +101,18 @@ Stress-test an idea before planning or implementation:
 
 ```text
 /skill:grill Challenge the design for usage-based billing.
+```
+
+Rewrite technical or operational English:
+
+```text
+/skill:ste Rewrite this maintenance instruction as an STE-aligned draft.
+```
+
+Use STE principles for general agent communication:
+
+```text
+/skill:ste Rewrite this error message so another agent can parse it reliably.
 ```
 
 This package is intentionally skill-only. It does not provide prompt template shortcuts; use `/skill:<name>` for explicit Pi invocation.
@@ -107,6 +128,20 @@ The `feature-dev` skill guides a coding assistant through a seven-phase process:
 5. Implementation — only after approval, with a single writer
 6. Quality review — inspect the diff from correctness, validation, and maintainability perspectives
 7. Validation and summary — run focused checks and summarize changes
+
+## STE modes
+
+The `ste` skill selects one of two modes:
+
+- **Strict STE** applies Issue 9 rules to regulated, operational, maintenance,
+  and safety-critical documentation. Exact verification requires the official
+  dictionary and the applicable project glossary.
+- **STE clarity** transfers the same clarity discipline to other technical
+  text without claiming formal ASD-STE100 compliance.
+
+The skill loads its detailed writing rules and before/after examples only when
+they are relevant to the request. Standard provenance and source links stay in
+`skills/ste/README.md`, outside the agent's writing context.
 
 ## Package contents
 
@@ -130,8 +165,15 @@ pi-feature-dev/
     ├── plan-make/
     │   ├── agents/openai.yaml
     │   └── SKILL.md
-    └── plan-review/
+    ├── plan-review/
+    │   ├── agents/openai.yaml
+    │   └── SKILL.md
+    └── ste/
         ├── agents/openai.yaml
+        ├── references/
+        │   ├── before-after.md
+        │   └── writing-rules.md
+        ├── README.md
         └── SKILL.md
 ```
 

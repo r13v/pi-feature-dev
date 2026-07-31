@@ -1,0 +1,4 @@
+interface:
+  display_name: "STE"
+  short_description: "Write clear, unambiguous English with STE"
+  default_prompt: "Use $ste to rewrite this text for clear, unambiguous technical communication."
