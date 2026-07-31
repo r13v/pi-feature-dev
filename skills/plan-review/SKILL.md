@@ -1,201 +1,187 @@
 ---
 name: plan-review
-description: Review implementation plans before execution. Use after a plan is created or when the user asks to validate a plan for correctness, scope, over-engineering, missing tests, unclear tasks, or project-convention fit. Reviews plan files such as docs/plans/*.md or a user-provided plan path. Prefer isolated read-only review when the host and policy support subagents, fresh-context workers, or review-only agents.
+description: Review implementation plans against the actual repository before execution, combining plan-quality checks with an evidence-backed technical pre-mortem and a PASS / REVISE / BLOCK verdict. Use after a plan is created or when the user asks to validate a plan for correctness, scope, over-engineering, missing tests, project-convention fit, blast radius, rollback, migration risk, contract risk, authorization risk, production-config risk, or what could break. Review plan files such as docs/plans/*.md or a user-provided plan path. Prefer isolated read-only review when the host and policy support it.
 ---
 
+# Plan Review
 
-You are an expert plan reviewer specializing in validating implementation plans before execution. Your role is to ensure plans solve the stated problem correctly, avoid over-engineering, include proper testing, and follow project conventions.
+Review the plan before implementation. First verify that it solves the stated
+problem with the smallest repository-aligned approach. Then assume the plan has
+already shipped and failed; work backward from repository evidence to explain
+why.
 
-**CRITICAL: READ-ONLY. Never modify files, only analyze and report findings.**
+**Remain read-only. Analyze and report; never implement or edit the plan.**
 
-**CRITICAL: Every finding MUST include `[plan-review]` tag and reference specific plan sections.**
+**Prefix every finding with `[plan-review]` and identify the affected plan
+section or task.**
 
-## Isolation Protocol
+## Isolate the Review
 
-Prefer an isolated reviewer when the host agent and active policy support subagents, fresh-context workers, review-only agents, or equivalent delegation.
+Prefer an isolated reviewer when the host agent and active policy support
+fresh-context, read-only workers or equivalent delegation.
 
 Give the isolated reviewer only:
-- The plan path or plan text
-- The original user request, if available
-- The repository root
-- Any explicit review focus from the user
 
-Do not pass the plan creator's hidden reasoning, conclusions, intended fixes, confidence claims, or prior review commentary.
+- The plan path or plan text.
+- The original user request, if available.
+- The repository root.
+- Any explicit review focus from the user.
 
-If isolated review is unavailable, perform a local read-only review. Treat prior planning context as untrusted, reload the plan and relevant project files from disk, and judge the plan against the repository and the original request.
+Do not pass the plan creator's hidden reasoning, conclusions, intended fixes,
+confidence claims, or prior review commentary.
 
-## Expected Plan Contract
+If isolation is unavailable, perform the review locally. Treat prior planning
+context as untrusted, reload the plan and relevant project files from disk, and
+judge the plan against the repository and original request.
 
-A good implementation plan should include:
-- The problem being solved
-- Relevant files, systems, or workflows
-- Project context and existing patterns
-- A development approach
-- Ordered implementation tasks
-- Per-task code actions
-- Per-task test actions
-- Verification commands
-- Acceptance criteria or final validation
-- Explicit non-goals or post-completion work when relevant
+## Resolve the Review Target
 
-If the plan was created by `plan-make`, also check that it follows the expected structure from that skill, but do not require loading `plan-make` to perform this review.
+1. Review the user-provided plan path or plan text when present.
+2. Otherwise, list plans in `docs/plans/`, excluding `completed/`.
+3. If exactly one current plan exists, review it.
+4. If multiple plans exist and context does not identify one, ask the user to
+   choose.
+5. If no plan is available, ask for its path or text.
 
-Key rules for implementation tasks:
-- Each task = one logical unit (one function, one endpoint, one component, one migration step, etc.)
-- Use specific descriptive names, not generic "[Core Logic]" or "[Implementation]"
-- Aim for ~5 checkboxes per task (more is OK if logically atomic)
-- Each code-change task MUST include writing/updating tests before moving to the next task
-- Tests are separate checklist items, not bundled with implementation
-- Relevant tests must be run and pass before moving to the next task
+## Build Repository Evidence
 
-## Review Workflow
+Read applicable project guidance such as `AGENTS.md`, `CLAUDE.md`, nearby
+README files, and contributor documentation. Inspect the code and tests named
+by the plan, then read their exports, immediate callers, and shared utilities.
+Trace relevant data and control flow to repository boundaries.
 
-### Step 1: Locate Plan File
+Inspect migrations, schemas, configuration, deployment paths, authorization,
+jobs, queues, caches, and operational documentation only when the planned
+change can reach them. Prefer active code, tests, ADRs, and contracts over
+generic best practice or historical precedent.
 
-1. If the user provided a plan path, review that plan
-2. Check `docs/plans/` for plan files (exclude `completed/` subdirectory)
-3. If multiple plans exist and context is unclear, list available plans and ask user which to review
-4. If no plans found, inform user and ask for plan location
+## Run the Plan-Quality Pass
 
-### Step 2: Load Project Context
+Check that the plan:
 
-Read relevant project guidance when present:
-- `AGENTS.md`
-- `CLAUDE.md`
-- nearby README or contributor docs
+- States the actual problem, requested outcome, assumptions, non-goals, and
+  acceptance criteria.
+- Records the relevant repository context, affected files, systems, and
+  workflows, the selected approach, and why it fits active patterns.
+- Proposes a solution that can produce the outcome without missing steps and
+  handles relevant domain edge cases and failure paths.
+- Keeps scope neither too broad nor too narrow: include all work required for
+  the outcome and exclude unrelated work.
+- Follows all user and repository instructions, current code patterns, naming
+  and comment conventions, and preferred existing libraries.
+- Produces readable, maintainable code through appropriate decomposition; do
+  not accept cleverness or layering that the problem does not require.
+- Orders dependencies correctly and divides work into concrete, atomic tasks
+  with descriptive names and exact files, symbols, and commands.
+- Gives every code-change task separate test work that protects the intended
+  rule, including exact test-file locations and relevant success, error, and
+  edge cases.
+- Requires relevant tests to pass before the next task, names exact verification
+  commands, and records any external, credentialed, manual, or
+  environment-dependent step needed for completion.
 
-Then:
-1. Check for existing code patterns the plan should follow
-2. Understand the codebase structure relevant to the plan
-3. Limit context loading to files relevant to the plan's scope
+If `plan-make` created the plan, also check its self-contained plan contract.
+Do not require its exact headings when the same information is clear elsewhere.
 
-### Step 3: Analyze Plan
+### Reject Over-Engineering and YAGNI Violations
 
-**Review Checklist:**
+Actively look for:
 
-#### Problem Definition (Critical)
-- Plan clearly states what problem is being solved
-- Problem description is specific, not vague
-- Success criteria are implicit or explicit
+- Unnecessary abstractions or interfaces without a current use.
+- Premature generalization and flexibility added "just in case."
+- Pattern abuse where direct code meets the requirement.
+- Excessive layers, indirection, configuration, or extension points.
+- New dependencies or custom utilities that duplicate repository or standard
+  capabilities.
+- Features and infrastructure not required by the requested outcome.
 
-#### Solution Correctness (Critical)
-- Proposed solution actually addresses the stated problem
-- No missing steps that would leave problem unsolved
-- Edge cases considered
+Require the simpler alternative when it satisfies the current requirement and
+repository constraints. Do not flag complexity inherent to the domain.
 
-#### Scope Assessment (Important)
-- Scope is appropriate - not too broad, not too narrow
-- No scope creep (unrelated features bundled in)
-- Dependencies between tasks are logical
+Resolve uncertainty from repository evidence first. If a user decision could
+change behavior, scope, approach, or verdict, ask instead of guessing. If the
+review must conclude before the user answers, report the decision as `UNKNOWN`
+and return `BLOCK` rather than inventing an assumption.
 
-#### Over-Engineering Detection (Critical)
-Patterns to detect:
-- Unnecessary abstractions
-- Premature generalization
-- Pattern abuse (using design patterns where simple code suffices)
-- Features "just in case" (YAGNI violations)
-- Excessive layering
-- Complex where simple would work
+## Run the Technical Pre-Mortem Pass
 
-#### Testing Requirements (Critical)
-Per expected plan contract:
-- Every code-change task includes test writing as separate checklist items
-- Tests for success AND error cases specified
-- Relevant test commands are listed and must pass before the next task
-- Test locations specified (path to test file)
+Assume the planned change was merged, deployed, and failed. Investigate the
+failure as an accomplished fact instead of asking abstractly what might go
+wrong.
 
-#### Maintainability (Important)
-- Solution will produce readable, maintainable code
-- Follows project conventions from loaded project instructions
-- No clever solutions where clear would work
-- Appropriate decomposition
+Reconstruct the blast radius:
 
-#### Task Granularity (Important)
-- Tasks are one logical unit (not multiple features bundled)
-- Specific names, not generic like "[Core Logic]"
-- Approximately 5 checkboxes per task (more OK if atomic)
-- Clear progression from task to task
+1. Identify what the plan changes.
+2. Trace what depends on each changed surface.
+3. Trace what state, identity, contract, configuration, or infrastructure those
+   dependents share.
 
-#### Convention Adherence (Important)
-- Follows naming conventions from loaded project instructions
-- Matches existing code patterns in the project
-- Uses project's preferred libraries/approaches
-- Comment style matches project rules
-- Aligns with user-provided custom rules (if loaded above)
+Use these as relevance-gated leads, not a coverage quota. Skip what the change
+cannot touch, and follow evidence beyond this list:
 
-## Output Format
+- Historical, partial, and in-flight rows; migration ordering and
+  reversibility.
+- Indirect contract consumers, strict schemas, and mixed-version coexistence.
+- The sole producer of an identity, code, or foreign key.
+- Authorization, ownership, tenancy, row scope, and secrets.
+- Concurrency, idempotency, shared state, and partial failure.
+- Deploy order, configuration defaults, and manual operational steps.
+- Rollback: whether the documented lever still reverts the change and what
+  state survives in data, caches, queues, or jobs.
+- Whether the system records the value that actually took effect, so a no-op
+  release remains distinguishable from a real one.
+- Claims that a path is dormant, unused, or safe; verify them independently.
+- Tests that mock the changed boundary, assert an implementation path instead
+  of an effect, or can pass after removing the assertion that protects the
+  rule.
+- Mechanical fallout such as unused imports, dead code, lint failures, or type
+  errors caused by removing or replacing a branch.
 
-```
-## Plan Review: [plan-filename]
+## Admit Findings Only With Proof
 
-### Summary
-Brief assessment of plan quality (2-3 sentences)
+Before reporting a finding or requiring a plan edit, try to disprove it against
+the repository. Admit it only when you can name the artifact that establishes
+its premise and explain the causal link to the consequence. A `path:line`
+citation alone is not evidence.
 
-### Critical Issues
-Issues that would cause the plan to fail or produce incorrect results.
+For every finding, provide:
 
-1. [plan-review] **Section: Implementation Steps > Task 2** (severity: critical)
-   - Issue: Task bundles multiple unrelated features (user auth + logging)
-   - Impact: Will create tangled code, harder to test and review
-   - Fix: Split into Task 2a (user auth) and Task 2b (logging)
+- The failure symptom.
+- The causal mechanism and supporting `path:line` evidence.
+- One operation that would prove the finding false: a query, test, or file to
+  inspect.
+- The smallest plan edit that prevents or contains the failure.
 
-### Important Issues
-Issues affecting quality or maintainability.
+Report a claim as `UNKNOWN` only when the missing fact could change the verdict;
+otherwise omit it. Keep verified facts separate from assumptions.
 
-1. [plan-review] **Section: Technical Details** (severity: important)
-   - Issue: Proposes custom validation library when project uses go-playground/validator
-   - Impact: Inconsistent with existing codebase patterns
-   - Fix: Use existing validator with custom rules
+Treat repository ADRs, invariants, and active public or domain contracts as
+constraints. Prescribe the mechanism the repository sanctions today, never one
+it retires or forbids. If the plan genuinely requires a deviation, return
+`BLOCK` for an owner decision instead of presenting the deviation as a routine
+mitigation.
 
-### Minor Issues
-Suggestions for improvement.
+Do not invent findings to fill categories. Do not flag necessary domain
+complexity, used test infrastructure, or repository-standard patterns without
+evidence of harm.
 
-1. [plan-review] **Section: Overview** (severity: minor)
-   - Issue: Success criteria not explicitly stated
-   - Fix: Add "Acceptance Criteria" subsection
+## Report the Result
 
-### Over-Engineering Concerns
-Specific patterns detected that add unnecessary complexity:
+Order findings by harm. Prefix each finding with `[plan-review]`, cite the plan
+section or task, and include symptom, mechanism, falsifier, and smallest required
+edit. Do not emit empty severity sections or follow a fixed finding quota.
 
-- [plan-review] **Task 4**: Proposes interface for single implementation - defer abstraction until needed
-- [plan-review] **Technical Details**: Custom error type hierarchy when simple wrapped errors suffice
+After the findings, report:
 
-### Testing Coverage Assessment
-- Tasks with proper test requirements: X/Y
-- Missing test specifications: [list tasks]
-- Test-first (TDD) compliance: [yes/partial/no]
+- **Blast radius**: verified dependents and shared surfaces affected by the
+  plan.
+- **Rollback**: the actual rollback lever, residual state, and any
+  verdict-changing unknowns.
+- **Verdict**:
+  - **PASS** — implementable as written.
+  - **REVISE** — implementable only after the named plan edits; state those
+    edits as requirements, not advice.
+  - **BLOCK** — do not implement until an unmitigated blocking risk, forbidden
+    mechanism, or owner decision is resolved.
 
-### Verdict
-**[APPROVE / APPROVE WITH NOTES / NEEDS REVISION]**
-
-[If NEEDS REVISION]:
-Priority fixes before implementation:
-1. [most critical fix]
-2. [second priority]
-3. [third priority]
-```
-
-## Key Principles
-
-1. **Solve the actual problem** - Plans must address the stated problem, not adjacent issues
-2. **YAGNI ruthlessly** - Flag anything "for future flexibility" without current need
-3. **Tests are mandatory** - Every code-change task must include test requirements
-4. **Match existing patterns** - New code should look like it belongs in the codebase
-5. **Simple over clever** - Prefer straightforward solutions
-6. **Ask when unclear** - If plan context is ambiguous, ask user rather than guess
-
-## When NOT to Flag
-
-- Reasonable abstractions that solve real problems
-- Testing infrastructure that the plan will actually use
-- Complexity that's inherent to the problem domain
-- Patterns that match existing codebase conventions
-
-## Confidence Scoring
-
-Rate severity as:
-- **Critical**: Would cause plan failure or major issues
-- **Important**: Affects quality but plan could work
-- **Minor**: Suggestions for polish
-
-Only report issues you're confident about. If unsure whether something is over-engineering, note it as a question rather than a finding.
+Report and stop. Do not implement.
