@@ -73,6 +73,7 @@ versions came from:
 - [anthropics/claude-code feature-dev plugin](https://github.com/anthropics/claude-code/tree/main/plugins/feature-dev)
 - [mattpocock/skills batch-grill-me and domain-modeling skills](https://github.com/mattpocock/skills)
 - [danyuchn/asd-ste100-skill](https://github.com/danyuchn/asd-ste100-skill)
+- [AminBlg/SimpleEnglish](https://github.com/AminBlg/SimpleEnglish/tree/main/skills/simple-english)
 
 ## Usage
 
@@ -139,8 +140,9 @@ The `ste` skill selects one of two modes:
 - **STE clarity** transfers the same clarity discipline to other technical
   text without claiming formal ASD-STE100 compliance.
 
-The skill loads its detailed writing rules and before/after examples only when
-they are relevant to the request. Standard provenance and source links stay in
+The skill loads its detailed writing rules, review checklist, text-type
+patterns, and before/after examples only when they are relevant to the request.
+Standard provenance, design references, and source links stay in
 `skills/ste/README.md`, outside the agent's writing context.
 
 ## Package contents
@@ -172,6 +174,8 @@ pi-feature-dev/
         ├── agents/openai.yaml
         ├── references/
         │   ├── before-after.md
+        │   ├── checklist.md
+        │   ├── use-cases.md
         │   └── writing-rules.md
         ├── README.md
         └── SKILL.md

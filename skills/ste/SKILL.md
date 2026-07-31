@@ -1,6 +1,6 @@
 ---
 name: ste
-description: Draft, rewrite, and review clear, unambiguous English with ASD-STE100 Simplified Technical English Issue 9 principles. Use for technical procedures, safety instructions, descriptions, prompts, agent-to-agent instructions, tool descriptions, error messages, status reports, translation-ready text, controlled English, terminology normalization, and STE compliance reviews. Support strict STE verification when the official dictionary and project glossary are available; otherwise produce an STE-aligned or STE-style result without claiming compliance.
+description: Draft, rewrite, and review clear, unambiguous English with ASD-STE100 Simplified Technical English Issue 9 principles. Use for READMEs, runbooks, procedures, safety instructions, API and tool documentation, prompts, agent instructions, UI and error messages, status and incident reports, release notes, support text, translation-ready content, terminology normalization, controlled English, and STE compliance reviews. Also use when asked to simplify or de-slop English, help non-native readers, or prepare text for translation. Support strict verification only with the official dictionary and project glossary; otherwise report an STE-aligned or STE-style result.
 ---
 
 # STE
@@ -29,6 +29,10 @@ status reports, translation-ready text, and other technical or operational Engli
 
 - Read [references/writing-rules.md](references/writing-rules.md) for strict STE work, compliance
   reviews, safety text, word-count decisions, or rule details.
+- Read [references/checklist.md](references/checklist.md) for strict reviews, audits, high-risk
+  text, or long documents. Use its quick check or full check as the task requires.
+- Read [references/use-cases.md](references/use-cases.md) when the text type needs a clear
+  information order or a reusable structure.
 - Read [references/before-after.md](references/before-after.md) when rewriting dense text,
   explaining changes, or producing a comparison.
 - Read all user-supplied glossaries, safety policies, style guides, and regulatory directives that
@@ -50,6 +54,18 @@ Before rewriting:
 Do not invent missing facts. Do not remove precision only to meet a length target.
 Keep a qualitative modifier such as `carefully` when it affects task intent. Flag it when the
 project requires a measurable criterion, but do not invent that criterion.
+
+## Protect Untouchable Text
+
+Unless the user explicitly asks to edit the exact literal, do not change:
+
+- Code blocks, inline code, identifiers, placeholders, and data values.
+- CLI commands, flags, file paths, URLs, and protocol elements.
+- Product, API, configuration, database, and schema names.
+- Quoted UI labels, error strings, log text, and externally defined messages.
+
+Rewrite the sentence around an untouchable literal when necessary. Never silently normalize the
+literal itself.
 
 ## Apply the Core Discipline
 
@@ -81,6 +97,18 @@ project requires a measurable criterion, but do not invent that criterion.
 
 If the input is already clear and meets the applicable rules, say so. Do not force a rewrite.
 
+## Self-check Before Delivery
+
+Always confirm that:
+
+1. The revision preserves every fact, condition, limit, unit, exception, sequence, and
+   responsibility.
+2. Untouchable text is unchanged unless the user requested that exact change.
+3. Each procedural sentence has one independent action unless actions occur at the same time.
+4. Actors, referents, conditions, results, and terminology are unambiguous and consistent.
+5. The result uses the correct mode, verification status, and unresolved checks.
+6. Each cited rule number was verified directly against the authoritative standard.
+
 ## Choose the Output
 
 For a direct drafting or rewriting request:
@@ -102,6 +130,10 @@ After the table, give the complete revised text. Group unresolved items as:
 - `Project decision`
 
 Use the user's requested format when it conflicts with these defaults.
+
+Name the applicable rule area in explanations. Cite an Issue 9 rule number only after you verify
+that number in the official standard or an authoritative copy supplied by the user. Do not infer
+rule numbers from memory, summaries, or another skill.
 
 ## State Verification Honestly
 
