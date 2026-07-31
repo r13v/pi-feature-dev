@@ -1,0 +1,4 @@
+interface:
+  display_name: "What Did We Miss?"
+  short_description: "What else should we check or fix?"
+  default_prompt: "$final-check: What else have we missed? Is there anything we need to check or fix?"

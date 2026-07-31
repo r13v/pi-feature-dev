@@ -19,6 +19,9 @@ isolated workers, Git task commits, internal reviews, finalize, and a portable
 run summary. It is portable across host agents that provide fresh-context
 isolated workers and Git access.
 
+The `final-check` skill asks: “What else have we missed? Is there anything we
+need to check or fix?”
+
 The `grill` skill runs a dependency-aware interview that researches facts,
 exhausts the current decision frontier round by round, sharpens domain language,
 and records agreed terminology and durable architectural decisions.
@@ -98,6 +101,12 @@ Run a plan with `plan-exec`:
 /skill:plan-exec docs/plans/20260518-example.md
 ```
 
+Run a final completeness check on the current work:
+
+```text
+/skill:final-check
+```
+
 Stress-test an idea before planning or implementation:
 
 ```text
@@ -152,6 +161,9 @@ pi-feature-dev/
 ├── package.json
 └── skills/
     ├── feature-dev/
+    │   ├── agents/openai.yaml
+    │   └── SKILL.md
+    ├── final-check/
     │   ├── agents/openai.yaml
     │   └── SKILL.md
     ├── grill/
