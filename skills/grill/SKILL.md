@@ -18,6 +18,10 @@ Do not implement the resulting plan or design during or immediately after the gr
 
 Never turn a discoverable fact into homework for the user. Never silently turn an unresolved decision into an assumption.
 
+## Resolve bundled resources
+
+Before invoking a read for any relative reference in this skill, resolve it against the directory containing the selected `grill/SKILL.md`. Use that resolved path for the read. Never use the global skills directory, the current working directory, or the repository root as the base.
+
 ## Workflow
 
 ### 1. Establish the subject
@@ -86,7 +90,7 @@ Continue until no unresolved branch can materially affect the result. Respect an
 
 ## Record decisions during the grill
 
-When a project term is explicitly resolved, update the applicable `CONTEXT.md` immediately. Read and follow [CONTEXT-FORMAT.md](./CONTEXT-FORMAT.md) before the first update. Keep `CONTEXT.md` a glossary only: no implementation details, requirements, scratch notes, or architectural decisions.
+When a project term is explicitly resolved, update the applicable `CONTEXT.md` immediately. Resolve [CONTEXT-FORMAT.md](./CONTEXT-FORMAT.md) from the selected `grill/SKILL.md` directory, then read and follow it before the first update. Keep `CONTEXT.md` a glossary only: no implementation details, requirements, scratch notes, or architectural decisions.
 
 Offer an ADR only when all three conditions hold:
 
@@ -94,7 +98,7 @@ Offer an ADR only when all three conditions hold:
 2. The choice would be surprising without its context.
 3. Genuine alternatives were considered and rejected for specific reasons.
 
-If any condition is missing, do not create an ADR. If all three hold, ask the user whether to record it, then read and follow [ADR-FORMAT.md](./ADR-FORMAT.md). Create directories and files lazily.
+If any condition is missing, do not create an ADR. If all three hold, ask the user whether to record it, then resolve [ADR-FORMAT.md](./ADR-FORMAT.md) from the selected `grill/SKILL.md` directory and read and follow it. Create directories and files lazily.
 
 ## Finish with a confirmed session result
 
