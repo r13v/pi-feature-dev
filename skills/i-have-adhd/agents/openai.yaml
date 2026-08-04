@@ -1,0 +1,4 @@
+interface:
+  display_name: "I Have ADHD"
+  short_description: "Shape output for a reader with ADHD"
+  default_prompt: "Use $i-have-adhd to make this response easier to act on with ADHD."

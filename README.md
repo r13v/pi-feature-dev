@@ -22,6 +22,10 @@ isolated workers and Git access.
 The `final-check` skill asks: “What else have we missed? Is there anything we
 need to check or fix?”
 
+The `i-have-adhd` skill shapes responses for a reader with ADHD: it leads with
+the next action, keeps multi-step work bounded, restates progress, suppresses
+tangents, and makes completed work visible.
+
 The `grill` skill runs a dependency-aware interview that researches facts,
 exhausts the current decision frontier round by round, sharpens domain language,
 and records agreed terminology and durable architectural decisions.
@@ -77,6 +81,7 @@ versions came from:
 - [mattpocock/skills batch-grill-me and domain-modeling skills](https://github.com/mattpocock/skills)
 - [danyuchn/asd-ste100-skill](https://github.com/danyuchn/asd-ste100-skill)
 - [AminBlg/SimpleEnglish](https://github.com/AminBlg/SimpleEnglish/tree/main/skills/simple-english)
+- [ayghri/i-have-adhd](https://github.com/ayghri/i-have-adhd)
 
 ## Usage
 
@@ -106,6 +111,14 @@ Run a final completeness check on the current work:
 ```text
 /skill:final-check
 ```
+
+Enable ADHD-oriented output for the rest of the session:
+
+```text
+/skill:i-have-adhd
+```
+
+Disable it with `stop adhd mode` or `normal mode`.
 
 Stress-test an idea before planning or implementation:
 
@@ -171,6 +184,9 @@ pi-feature-dev/
     │   ├── SKILL.md
     │   ├── CONTEXT-FORMAT.md
     │   └── ADR-FORMAT.md
+    ├── i-have-adhd/
+    │   ├── agents/openai.yaml
+    │   └── SKILL.md
     ├── plan-exec/
     │   ├── agents/openai.yaml
     │   ├── SKILL.md
