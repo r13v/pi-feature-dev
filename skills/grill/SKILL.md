@@ -74,6 +74,14 @@ Ask every frontier question in one numbered round. For each question:
 2. Give a recommended answer and a brief reason.
 3. Present meaningful alternatives or invite a free-form answer when the choice is not bounded.
 
+Format each question exactly like this:
+
+```md
+❓ **Q1** - **<decision title>**: <question body; may include multiple paragraphs or choices>
+
+➡️ <recommended answer and brief reason>
+```
+
 Then stop and wait for the user's answers. A question that depends on another question in the same round belongs to a later round.
 
 ### 5. Process answers and advance the tree
