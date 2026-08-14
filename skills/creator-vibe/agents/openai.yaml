@@ -1,0 +1,4 @@
+interface:
+  display_name: "Creator Vibe"
+  short_description: "Carry creative intent into polished work"
+  default_prompt: "Use $creator-vibe to turn this incomplete creative brief into work that preserves its intent, feeling, and human impact."

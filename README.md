@@ -37,6 +37,11 @@ clarity mode for prompts, tool descriptions, error messages, status reports,
 translation-ready text, and agent instructions. The skill is Markdown-only and
 has no runtime dependency.
 
+The `creator-vibe` skill turns incomplete creative briefs and implicit intent
+into concrete work without losing the creator's taste, feeling, or human focus.
+It applies to creative technical and everyday work, while staying out of
+factual, mechanical, exact, or fully specified tasks.
+
 ## Install
 
 ```
@@ -82,6 +87,7 @@ versions came from:
 - [danyuchn/asd-ste100-skill](https://github.com/danyuchn/asd-ste100-skill)
 - [AminBlg/SimpleEnglish](https://github.com/AminBlg/SimpleEnglish/tree/main/skills/simple-english)
 - [ayghri/i-have-adhd](https://github.com/ayghri/i-have-adhd)
+- [bish-x/creator-vibe](https://github.com/bish-x/creator-vibe)
 
 ## Usage
 
@@ -95,6 +101,12 @@ Natural language also works when Pi's skill matcher triggers:
 
 ```text
 Use feature-dev to implement API rate limiting.
+```
+
+Carry an incomplete creative brief into the work itself:
+
+```text
+/skill:creator-vibe Make this onboarding feel calm, capable, and unmistakably ours.
 ```
 
 The files under `skills/*/SKILL.md` are portable Markdown and can be adapted for
@@ -173,6 +185,9 @@ Standard provenance, design references, and source links stay in
 pi-feature-dev/
 ├── package.json
 └── skills/
+    ├── creator-vibe/
+    │   ├── agents/openai.yaml
+    │   └── SKILL.md
     ├── feature-dev/
     │   ├── agents/openai.yaml
     │   └── SKILL.md
