@@ -42,6 +42,11 @@ into concrete work without losing the creator's taste, feeling, or human focus.
 It applies to creative technical and everyday work, while staying out of
 factual, mechanical, exact, or fully specified tasks.
 
+The `visual-recap` skill turns a plan or completed non-trivial change into an
+evidence-backed visual review aid. It helps a reviewer see the outcome, affected
+system parts, risk, and the best place to inspect first. It adapts to the current
+host agent and always keeps a portable inline fallback.
+
 ## Install
 
 ```
@@ -78,8 +83,8 @@ No companion package is required. Optional Pi packages can improve specific part
 
 ## Credits
 
-The original Claude Code skills and workflows that informed these portable
-versions came from:
+The original skills and workflows that informed these portable versions came
+from:
 
 - [umputun/cc-thingz](https://github.com/umputun/cc-thingz)
 - [anthropics/claude-code feature-dev plugin](https://github.com/anthropics/claude-code/tree/main/plugins/feature-dev)
@@ -88,6 +93,7 @@ versions came from:
 - [AminBlg/SimpleEnglish](https://github.com/AminBlg/SimpleEnglish/tree/main/skills/simple-english)
 - [ayghri/i-have-adhd](https://github.com/ayghri/i-have-adhd)
 - [bish-x/creator-vibe](https://github.com/bish-x/creator-vibe)
+- [kentcdodds/kcd-skills visual-recap](https://github.com/kentcdodds/kcd-skills/tree/main/skills/visual-recap)
 
 ## Usage
 
@@ -107,6 +113,12 @@ Carry an incomplete creative brief into the work itself:
 
 ```text
 /skill:creator-vibe Make this onboarding feel calm, capable, and unmistakably ours.
+```
+
+Create a visual review aid for a plan or completed change:
+
+```text
+/skill:visual-recap Show the architecture impact of the current change.
 ```
 
 The files under `skills/*/SKILL.md` are portable Markdown and can be adapted for
@@ -213,14 +225,17 @@ pi-feature-dev/
     ├── plan-review/
     │   ├── agents/openai.yaml
     │   └── SKILL.md
-    └── ste/
+    ├── ste/
+    │   ├── agents/openai.yaml
+    │   ├── references/
+    │   │   ├── before-after.md
+    │   │   ├── checklist.md
+    │   │   ├── use-cases.md
+    │   │   └── writing-rules.md
+    │   ├── README.md
+    │   └── SKILL.md
+    └── visual-recap/
         ├── agents/openai.yaml
-        ├── references/
-        │   ├── before-after.md
-        │   ├── checklist.md
-        │   ├── use-cases.md
-        │   └── writing-rules.md
-        ├── README.md
         └── SKILL.md
 ```
 

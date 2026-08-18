@@ -1,0 +1,4 @@
+interface:
+  display_name: "Visual Recap"
+  short_description: "Create evidence-backed visual change recaps"
+  default_prompt: "Use $visual-recap to show this plan or completed change as an evidence-backed visual recap."
