@@ -73,19 +73,21 @@ State why the overall risk has that level. A new unit is not automatically high 
 
 Match the visual to the review question:
 
-- Use a map for relationships and blast radius.
-- Use a flow or timeline for behavior that crosses several steps.
+- Use a Mermaid flowchart for relationships and blast radius.
+- Use a Mermaid sequence or state diagram for behavior that crosses several steps or states.
 - Use a table for exact mappings or classifications.
 - Use a side-by-side view for before and after.
 - Use interaction only when it helps the reviewer trace a path, inspect evidence, or compare states.
 
 Skip the diagram when one obvious relationship or a short table explains the change better.
 
-Prefer a native interactive surface when the current **Host Agent** can present it reliably and interaction saves review effort. Otherwise, use a rendered visual or inline Markdown. If diagrams do not render, use a compact text map.
+Use Mermaid as the default portable diagram format. It is an output representation, not a required tool. Let the current **Host Agent** render it with its native interface. Use a richer interactive surface only when it saves review effort.
+
+If the current interface does not render Mermaid, use a compact ASCII-art diagram as the first fallback. Use a Markdown table and short relationship list only when ASCII would be harder to scan or cannot express the relationship clearly.
 
 Do not require or name a product-specific tool. Do not add a dependency, deployment, or standalone application only to render the recap.
 
-Always provide a concise inline fallback. The fallback must preserve the outcome, affected units, risk, review hotspots, and evidence links.
+Always provide a concise inline summary. It must preserve the outcome, affected units, risk, review hotspots, and evidence links.
 
 ## Compose the Result
 

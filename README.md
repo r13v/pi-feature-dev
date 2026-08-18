@@ -42,10 +42,15 @@ into concrete work without losing the creator's taste, feeling, or human focus.
 It applies to creative technical and everyday work, while staying out of
 factual, mechanical, exact, or fully specified tasks.
 
+The `prototype` skill builds disposable logic or UI experiments that answer one
+design question before production implementation. It follows the current
+project and adapts its handoff, preview, task, and source-control steps to the
+capabilities of the current agent environment.
+
 The `visual-recap` skill turns a plan or completed non-trivial change into an
 evidence-backed visual review aid. It helps a reviewer see the outcome, affected
 system parts, risk, and the best place to inspect first. It adapts to the current
-host agent and always keeps a portable inline fallback.
+host agent, uses Mermaid for portable diagrams, and keeps an inline fallback.
 
 ## Install
 
@@ -89,6 +94,7 @@ from:
 - [umputun/cc-thingz](https://github.com/umputun/cc-thingz)
 - [anthropics/claude-code feature-dev plugin](https://github.com/anthropics/claude-code/tree/main/plugins/feature-dev)
 - [mattpocock/skills batch-grill-me and domain-modeling skills](https://github.com/mattpocock/skills)
+- [mattpocock/skills prototype](https://github.com/mattpocock/skills/tree/main/skills/engineering/prototype)
 - [danyuchn/asd-ste100-skill](https://github.com/danyuchn/asd-ste100-skill)
 - [AminBlg/SimpleEnglish](https://github.com/AminBlg/SimpleEnglish/tree/main/skills/simple-english)
 - [ayghri/i-have-adhd](https://github.com/ayghri/i-have-adhd)
@@ -119,6 +125,12 @@ Create a visual review aid for a plan or completed change:
 
 ```text
 /skill:visual-recap Show the architecture impact of the current change.
+```
+
+Build a disposable prototype to answer one design question:
+
+```text
+/skill:prototype Compare three structurally different settings-page layouts.
 ```
 
 The files under `skills/*/SKILL.md` are portable Markdown and can be adapted for
@@ -224,6 +236,11 @@ pi-feature-dev/
     │   └── SKILL.md
     ├── plan-review/
     │   ├── agents/openai.yaml
+    │   └── SKILL.md
+    ├── prototype/
+    │   ├── agents/openai.yaml
+    │   ├── LOGIC.md
+    │   ├── UI.md
     │   └── SKILL.md
     ├── ste/
     │   ├── agents/openai.yaml
