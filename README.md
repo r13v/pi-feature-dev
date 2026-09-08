@@ -14,6 +14,11 @@ feature work:
 
 It does not require specific task-tracking, question, delegation, or review tools. If the current environment provides equivalent capabilities, use them; otherwise follow the same workflow directly in chat and with normal code tools.
 
+The `deslop` skill audits or applies evidence-backed subtractive cleanup for
+accumulated test bloat, circular verification, and defensive or fallback
+machinery. Audit mode is read-only. Only an explicit `apply` request authorizes
+edits.
+
 The `plan-exec` skill executes implementation plan files task by task with
 isolated workers, Git task commits, internal reviews, finalize, and a portable
 run summary. It is portable across host agents that provide fresh-context
@@ -95,6 +100,7 @@ from:
 - [anthropics/claude-code feature-dev plugin](https://github.com/anthropics/claude-code/tree/main/plugins/feature-dev)
 - [mattpocock/skills batch-grill-me and domain-modeling skills](https://github.com/mattpocock/skills)
 - [mattpocock/skills prototype](https://github.com/mattpocock/skills/tree/main/skills/engineering/prototype)
+- [MrZoyo/deslop-GPT](https://github.com/MrZoyo/deslop-GPT/tree/main/skills/deslop)
 - [danyuchn/asd-ste100-skill](https://github.com/danyuchn/asd-ste100-skill)
 - [AminBlg/SimpleEnglish](https://github.com/AminBlg/SimpleEnglish/tree/main/skills/simple-english)
 - [ayghri/i-have-adhd](https://github.com/ayghri/i-have-adhd)
@@ -113,6 +119,12 @@ Natural language also works when Pi's skill matcher triggers:
 
 ```text
 Use feature-dev to implement API rate limiting.
+```
+
+Audit accumulated complexity without editing files:
+
+```text
+/skill:deslop audit the current branch for test, verification, and fallback bloat.
 ```
 
 Carry an incomplete creative brief into the work itself:
@@ -211,6 +223,11 @@ pi-feature-dev/
 └── skills/
     ├── creator-vibe/
     │   ├── agents/openai.yaml
+    │   └── SKILL.md
+    ├── deslop/
+    │   ├── agents/openai.yaml
+    │   ├── references/
+    │   ├── LICENSE.txt
     │   └── SKILL.md
     ├── feature-dev/
     │   ├── agents/openai.yaml

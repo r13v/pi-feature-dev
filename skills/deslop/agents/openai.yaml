@@ -1,0 +1,7 @@
+interface:
+  display_name: "Deslop"
+  short_description: "Audit accumulated test, verification, and fallback bloat"
+  default_prompt: "Use $deslop to audit accumulated test bloat, verification theater, and defensive/fallback machinery before applying a subtractive cleanup."
+
+policy:
+  allow_implicit_invocation: false
