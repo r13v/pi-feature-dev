@@ -1,57 +1,40 @@
 # Finalizer worker prompt
 
-Use this prompt after all reviews pass. Replace `DEFAULT_BRANCH`,
-`PLAN_FILE_PATH`, `PROGRESS_FILE_PATH`, and `PLAN_EXEC_ROOT` before launch.
+Replace `DEFAULT_BRANCH`, `PLAN_FILE_PATH`, `PROGRESS_FILE_PATH`, and
+`PLAN_EXEC_ROOT`. Pass current authorization, including whether history cleanup
+was requested. Finalization does not itself grant permission to rewrite history.
 
 ```text
-Post-completion finalize step. Organize the branch for merge.
+Check final branch readiness for the requested outcome.
 
-Plan file: PLAN_FILE_PATH
+Plan: PLAN_FILE_PATH
+Progress: PROGRESS_FILE_PATH
 Default branch: DEFAULT_BRANCH
-Progress file: PROGRESS_FILE_PATH
 
-STEP 1 - REBASE:
-- Run `git fetch origin`.
-- If `origin/DEFAULT_BRANCH` exists, rebase onto it:
-  `git rebase origin/DEFAULT_BRANCH`
-- Otherwise, rebase onto the local default branch:
-  `git rebase DEFAULT_BRANCH`
-- If conflicts occur, resolve them and continue when safe.
-- If rebase cannot be completed safely, abort with `git rebase --abort`, report
-  the issue, and continue to the report step.
+Read the plan, progress log, Git status, and task commits. Check acceptance
+criteria, unresolved findings, and required manual/external verification as well
+as task checkboxes. Report uncommitted run work; do not reset or hide it.
 
-STEP 2 - CLEAN UP COMMITS:
-- Inspect commits with `git log --oneline DEFAULT_BRANCH..HEAD`.
-- If there are 5 or more commits, squash related fix commits into their parent
-  feature commits when this can be done safely.
-- Keep meaningful boundaries: feature task commits separate from review-fix
-  commits.
-- If safe non-interactive cleanup is not practical, leave commits as-is and
-  report why.
+Fetch, rebase, or squash only when the current user request or established
+workflow authorizes those operations. Otherwise report history cleanup as
+skipped and continue final checks. Do not squash merely because a commit count
+exceeds a threshold. Preserve meaningful task/fix boundaries and user work.
 
-STEP 3 - VERIFY:
-- Run validation commands from the plan file.
-- If the plan does not list exact commands, infer the narrowest relevant
-  validation commands from the repository.
-- If validation fails, fix and re-run when the fix is clearly within scope.
+For an authorized rebase, establish a clean index/worktree and the intended base;
+use origin/DEFAULT_BRANCH after a successful authorized fetch when it exists,
+otherwise the verified local default branch. If conflicts cannot be resolved
+within scope, abort this rebase and report the issue. Never leave a failed rebase
+half-applied or rewrite shared history outside the granted authority.
 
-STEP 4 - LOG PROGRESS:
-- Append:
-  `bash PLAN_EXEC_ROOT/scripts/append-progress.sh PROGRESS_FILE_PATH "finalize: completed"`
-- Then pipe details:
-  `printf '%s\n' "- rebase: <success/failed/skipped>" "- commits before: <N>, after: <M>" "- squashed: <list or none>" "- validation: <passed/failed>" | bash PLAN_EXEC_ROOT/scripts/append-progress.sh PROGRESS_FILE_PATH`
-- Use only `append-progress.sh` for writing to the progress file.
+Reuse validation evidence that covers the current code. Run missing required
+final checks, or affected checks after a rebase/fix changes code. Do not rerun
+unchanged passing suites just to produce another report. If validation fails,
+fix only clear in-scope causes, validate, and commit only run-owned changes using
+scripts/stage-and-commit.sh from PLAN_EXEC_ROOT after inspecting the full index.
+Report code changes so the orchestrator can obtain the required review recheck.
 
-STEP 5 - PLAN DEVIATION ANALYSIS:
-- Read PROGRESS_FILE_PATH in full.
-- Compare it against PLAN_FILE_PATH.
-- Report deviations from the original plan, obstacles or blockers, incomplete
-  delivery, cut corners, or review findings that went beyond the original plan.
-
-STEP 6 - REPORT:
-Report what was done: number of commits before and after, whether rebase
-succeeded, validation results, and plan deviation analysis.
-
-This step is best-effort. If rebase or commit cleanup fails, explain why and
-leave the branch in a coherent state.
+Append actual cleanup, validation, deviations, and unresolved blockers through
+PLAN_EXEC_ROOT/scripts/append-progress.sh with shell-safe quoting. Return those
+facts and any commit IDs. Optional cleanup failure can leave a coherent branch
+ready for handoff; failed required validation means delivery is incomplete.
 ```

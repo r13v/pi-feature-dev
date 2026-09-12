@@ -1,6 +1,18 @@
 ---
 name: final-check
-description: What else have we missed? Is there anything we need to check or fix? Use when the user invokes `$final-check`.
+description: Check the current task for missed requirements, defects, or verification gaps when the user invokes final-check.
 ---
 
-What else have we missed? Is there anything we need to check or fix?
+# Final Check
+
+What else have we missed? Compare the requested outcome with the current work
+and validation evidence. Inspect only the affected scope and dependencies needed
+to resolve a concrete concern; do not start an unrelated repository audit.
+
+Fix confirmed in-scope gaps when implementation is already authorized. If the
+request is review-only, report findings without editing. Reuse passing checks;
+rerun or broaden them only after changes, failures, or a newly identified risk.
+
+Finish when acceptance criteria are supported and no known in-scope blocker
+remains. Report material findings, fixes, checks actually run, and unverified
+requirements. If nothing further is needed, say so without inventing work.

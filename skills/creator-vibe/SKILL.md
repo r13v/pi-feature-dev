@@ -1,9 +1,12 @@
 ---
 name: creator-vibe
-description: "Use first for creative work—technical or everyday—when a brief is incomplete or intent is implicit and success depends on taste, voice, feeling, or human experience. Also trigger when literal compliance may lose the point. Do not wait for explicit creative wording. Skip factual lookup, mechanical or exact tasks, and fully specified work."
+description: Turn an incomplete creative brief into work that preserves its intended feeling, voice, and human experience. Skip factual lookups and fully specified or mechanical tasks.
 ---
 
 # Creator Vibe
+
+Use the user's explicit requirements and chosen medium as constraints. Creative
+judgment fills gaps; it does not replace those choices or expand the assignment.
 
 Sometimes an idea arrives before the words for it do.
 
@@ -71,9 +74,7 @@ A living result must hold in both worlds. It must work, and it must feel good to
 
 The first demo can seduce. Repetition tells the truth.
 
-If it technically works but drains the desire to continue, it is not done.
-
-Test and review the work until it deserves trust. Then experience it from the other side—from first use through failure, recovery, and repetition. The vibe is not preserved until it survives reality and still reaches the person.
+Choose observable qualities for this brief: for example, whether a first-time user can find the next action or recover from the relevant failure. Inspect or try the result against those qualities and the requested functionality. Fix concrete gaps within scope. Stop when that evidence supports the intended experience; an abstract demand for perfection must not create an endless polish loop.
 
 ## When It Is Alive
 

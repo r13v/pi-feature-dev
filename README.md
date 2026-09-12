@@ -7,7 +7,7 @@ feature work:
 
 - clarify requirements before coding
 - explore the existing codebase before design
-- compare implementation approaches and get approval
+- resolve material design decisions within the user's authorization
 - implement with one writer
 - review the diff from multiple perspectives
 - validate and summarize results
@@ -16,8 +16,8 @@ It does not require specific task-tracking, question, delegation, or review tool
 
 The `deslop` skill audits or applies evidence-backed subtractive cleanup for
 accumulated test bloat, circular verification, and defensive or fallback
-machinery. Audit mode is read-only. Only an explicit `apply` request authorizes
-edits.
+machinery. Audit mode is read-only. An explicit cleanup request authorizes edits
+within its scope; the literal `apply` command is optional.
 
 The `plan-exec` skill executes implementation plan files task by task with
 isolated workers, Git task commits, internal reviews, finalize, and a portable
@@ -190,15 +190,23 @@ This package is intentionally skill-only. It does not provide prompt template sh
 
 ## Feature-dev workflow
 
-The `feature-dev` skill guides a coding assistant through a seven-phase process:
+The `feature-dev` skill uses checkpoints that scale to the requested change:
 
 1. Discovery — understand the feature and establish lightweight progress tracking
 2. Codebase exploration — inspect relevant code and patterns, optionally with read-only helper passes
-3. Clarifying questions — resolve ambiguity before design
-4. Architecture design — compare minimal, clean, and pragmatic approaches
-5. Implementation — only after approval, with a single writer
+3. Clarifying questions — resolve material unknowns that discovery cannot answer
+4. Architecture design — compare alternatives when their trade-offs matter
+5. Implementation — complete the authorized scope with a single writer
 6. Quality review — inspect the diff from correctness, validation, and maintainability perspectives
 7. Validation and summary — run focused checks and summarize changes
+
+An implementation request includes the fixes and validation needed to finish
+that scope. A requested approval checkpoint still applies; design-only and
+review-only requests do not authorize implementation.
+
+`plan-exec` retains isolated workers and task commits. It selects review lenses
+for the change, loads phase prompts as needed, and keeps unavailable required
+checks incomplete. History cleanup runs only when authorized.
 
 ## STE modes
 
@@ -250,6 +258,7 @@ pi-feature-dev/
     │   └── scripts/
     ├── plan-make/
     │   ├── agents/openai.yaml
+    │   ├── references/plan-template.md
     │   └── SKILL.md
     ├── plan-review/
     │   ├── agents/openai.yaml

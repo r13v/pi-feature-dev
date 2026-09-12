@@ -4,14 +4,14 @@ Review code for bugs, security issues, and quality problems.
 
 1. Logic errors - off-by-one errors, incorrect conditionals, wrong operators
 2. Edge cases - empty inputs, nil/null values, boundary conditions, concurrent access
-3. Error handling - all errors checked, appropriate error wrapping, no silent failures
+3. Error handling - required failures remain visible; preserve recovery and cleanup contracts
 4. Resource management - proper cleanup, no leaks, correct resource release
 5. Concurrency issues - race conditions, deadlocks, thread/coroutine leaks
 6. Data integrity - validation, sanitization, consistent state management
 
 ## Security Analysis
 
-1. Input validation - all user inputs validated and sanitized
+1. Input validation - enforce the relevant contracts at trust boundaries
 2. Authentication/authorization - proper checks in place
 3. Injection vulnerabilities - SQL, command, path traversal
 4. Secret exposure - no hardcoded credentials or keys

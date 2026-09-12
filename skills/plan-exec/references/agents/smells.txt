@@ -3,7 +3,7 @@ Review code for style consistency, convention adherence, and code smells.
 ## Project Convention Check
 
 1. Read repository guidance files when present, such as AGENTS.md, CLAUDE.md, CONTRIBUTING.md, README.md, or local docs, to understand project rules
-2. Read any documentation files referenced by those guidance files (coding standards, style guides)
+2. Read referenced standards only when they govern the changed code
 3. Check if changed code follows the established conventions
 
 ## Style Consistency
@@ -41,3 +41,5 @@ For each finding:
 
 Report problems only - no positive observations.
 Focus on consistency with existing code, not personal preferences.
+
+Treat these patterns as investigation leads, not automatic defects or a coverage quota.

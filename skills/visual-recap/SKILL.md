@@ -1,6 +1,6 @@
 ---
 name: visual-recap
-description: Create evidence-backed visual recaps of planned or completed non-trivial changes. Use after planning or completing non-trivial work when a visual review aid would reduce review effort, or when the user asks for a visual recap, visual plan, change map, system overview, architecture impact, before/after view, or scannable review aid. Adapt the result to the current Host Agent without requiring a specific tool, service, version-control host, or output format.
+description: Create an evidence-backed visual explanation of a plan or completed change when relationships, impact, or before/after behavior need a review aid.
 ---
 
 # Visual Recap
@@ -21,7 +21,7 @@ The recap supplements the plan, source, change set, and normal review. It does n
 - **Plan**: Show intended work against the current system. Label assumptions, open decisions, and unverified paths.
 - **Recap**: Show what the current change set does. Rebuild the recap from current evidence.
 
-State the mode. If a plan and an implementation both exist, use Recap. Add a short plan-versus-actual view only when they differ.
+Use the requested mode. If unspecified and both plan and implementation exist, use Recap. Add a plan-versus-actual view only when the difference matters to the review.
 
 ## Ground the Recap
 

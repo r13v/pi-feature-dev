@@ -27,7 +27,7 @@ _Avoid_: Client, buyer, account
 - Keep definitions to one or two sentences. Define what the concept is, not everything it does.
 - Include only terms specific to this project's domain. Exclude general programming concepts, implementation details, requirements, and architectural decisions.
 - Group terms under subheadings only when natural clusters emerge. Keep a flat list for one cohesive area.
-- Add or change a term only after the user explicitly resolves it.
+- Add or change a term after the user resolves it or delegates that terminology choice. Record the selected meaning without requesting the same authority again.
 
 Before adding a term, ask whether it is unique to this domain or merely a general technical concept. Include only the former.
 

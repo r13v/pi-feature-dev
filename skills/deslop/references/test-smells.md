@@ -103,7 +103,7 @@ When production slop is deleted, delete tests whose only purpose was to protect 
 - Prefer one readable test per distinct behavior, not one per branch or helper.
 - Parameterize only genuine equivalence classes; do not hide an opaque generated matrix.
 - Keep scenario names and failure messages capable of localizing a real regression.
-- Run the remaining suite after deletion; zero remaining tests is not a passing cleanup.
+- Run the surviving behavioral checks after deletion. Zero tests where live behavior should remain protected is a failure; retiring a redundant test-only scope can leave that scope empty when independent coverage survives elsewhere.
 - Preserve low-level tests when low-level behavior itself is a stable contract, not merely because the code is private.
 - Count collected nodes before and after, then inspect skips and deselections; a smaller reported total can hide lost execution.
 - Fingerprint the worktree around suites that invoke compilers, materializers, exporters, or code generators.

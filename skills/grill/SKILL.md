@@ -1,13 +1,13 @@
 ---
 name: grill
-description: Relentlessly stress-test an idea, plan, requirement, architecture, or domain model through dependency-aware interview rounds. Use when the user asks to be grilled, challenged, interviewed, or pushed toward shared understanding; when assumptions and decision branches must be exhausted before action; or when domain terminology and durable architectural decisions should be sharpened and recorded in CONTEXT.md and ADRs.
+description: Stress-test an idea or domain model through evidence-backed interview rounds when the user asks to be challenged or grilled. Record agreed terminology and durable decisions.
 ---
 
 # Grill
 
 Interview the user until both sides share an explicit, evidence-backed understanding. Model the topic as a decision tree, research discoverable facts, challenge the domain language, and record settled terminology and durable decisions as they crystallize.
 
-Do not implement the resulting plan or design during or immediately after the grill. Capturing agreed terminology and accepted ADRs is part of the session. The skill ends after reporting the confirmed result; planning or implementation requires a separate user request.
+Keep the interview separate from implementation. Capturing agreed terminology and accepted ADRs is part of the session. An interview-only request ends with the confirmed result. If the user already requested planning or implementation afterward, continue that work after the interview resolves its prerequisites; do not require them to repeat the request.
 
 ## Core distinctions
 
@@ -16,7 +16,7 @@ Do not implement the resulting plan or design during or immediately after the gr
 - Treat a **prerequisite** as a fact or decision that must settle before a downstream question can be answered without guessing.
 - Treat the **frontier** as every unresolved decision whose prerequisites are settled now.
 
-Never turn a discoverable fact into homework for the user. Never silently turn an unresolved decision into an assumption.
+Never turn a discoverable fact into homework for the user. Never silently turn an unresolved decision into an assumption. When the user delegates a decision, state the chosen option and trade-off and treat that delegation as sufficient.
 
 ## Resolve bundled resources
 
@@ -54,7 +54,7 @@ Look for `CONTEXT-MAP.md` and the relevant `CONTEXT.md` before inventing termino
 
 - If `CONTEXT-MAP.md` exists, use it to locate the applicable bounded context and its ADR directory.
 - If only a root `CONTEXT.md` exists, treat the repository as a single context.
-- If neither exists, wait until the first domain term is explicitly resolved before creating a root `CONTEXT.md`.
+- If neither exists, create a root `CONTEXT.md` after the first domain term is resolved by the user or within an explicitly delegated terminology choice.
 
 Call out glossary conflicts immediately. Replace fuzzy or overloaded words with a proposed canonical term and ask the user to choose. Stress-test relationships and boundaries with concrete scenarios, especially edge cases that distinguish similar concepts.
 
@@ -68,13 +68,13 @@ Compute the full current frontier. Exclude:
 - questions whose prerequisites are unresolved
 - questions whose answers cannot change the outcome
 
-Ask every frontier question in one numbered round. For each question:
+Ask independent frontier questions together, using the host's question interface when available. Split a large frontier into manageable rounds and retain the remaining questions in the ledger. For each question:
 
 1. State the decision precisely.
 2. Give a recommended answer and a brief reason.
 3. Present meaningful alternatives or invite a free-form answer when the choice is not bounded.
 
-Format each question exactly like this:
+When asking in chat, this format can make decisions easy to scan:
 
 ```md
 ❓ **Q1** - **<decision title>**: <question body; may include multiple paragraphs or choices>
@@ -90,7 +90,7 @@ After each response:
 
 1. Convert answers into explicit decisions without adding unstated meaning.
 2. Resolve contradictions or ambiguity before depending on the answer.
-3. Confirm delegated choices: when the user says "you decide," state the chosen recommendation and its trade-off, then ask the user to accept or revise it.
+3. For delegated choices, record the chosen recommendation and its trade-off. Ask again only if new evidence exceeds the delegated scope.
 4. Update the terminology and decision ledger.
 5. Recompute the tree and ask the next complete frontier round.
 
@@ -98,7 +98,7 @@ Continue until no unresolved branch can materially affect the result. Respect an
 
 ## Record decisions during the grill
 
-When a project term is explicitly resolved, update the applicable `CONTEXT.md` immediately. Resolve [CONTEXT-FORMAT.md](./CONTEXT-FORMAT.md) from the selected `grill/SKILL.md` directory, then read and follow it before the first update. Keep `CONTEXT.md` a glossary only: no implementation details, requirements, scratch notes, or architectural decisions.
+When a project term is resolved by the user or within delegated authority, update the applicable `CONTEXT.md` if documentation is in scope. Resolve [CONTEXT-FORMAT.md](./CONTEXT-FORMAT.md) from the selected `grill/SKILL.md` directory, then read and follow it before the first update. Keep `CONTEXT.md` a glossary only: no implementation details, requirements, scratch notes, or architectural decisions.
 
 Offer an ADR only when all three conditions hold:
 
@@ -106,7 +106,7 @@ Offer an ADR only when all three conditions hold:
 2. The choice would be surprising without its context.
 3. Genuine alternatives were considered and rejected for specific reasons.
 
-If any condition is missing, do not create an ADR. If all three hold, ask the user whether to record it, then resolve [ADR-FORMAT.md](./ADR-FORMAT.md) from the selected `grill/SKILL.md` directory and read and follow it. Create directories and files lazily.
+If any condition is missing, do not create an ADR. If all three hold and ADR recording is not already authorized, ask whether to record it. Then resolve [ADR-FORMAT.md](./ADR-FORMAT.md) from the selected `grill/SKILL.md` directory and read and follow it. Create directories and files lazily.
 
 ## Finish with a confirmed session result
 
@@ -123,4 +123,4 @@ Present a candidate shared-understanding summary containing:
 
 Ask the user to confirm that this is the shared understanding. If they correct or reopen anything, add the affected branches and resume the rounds.
 
-After the user confirms, show a final `Grill Result` that records the accepted objective, decisions, canonical language, constraints, non-goals, unresolved items, and documentation changes. Then stop and return control to the user. Do not create a plan, write implementation code, launch an implementation handoff, or treat confirmation as permission to act.
+After the user confirms, show a final `Grill Result` that records the accepted objective, decisions, canonical language, constraints, non-goals, unresolved items, and documentation changes. End an interview-only request there. Confirmation settles the shared understanding; it does not grant additional execution authority. Continue a previously requested follow-on phase only within its established scope.

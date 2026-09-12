@@ -4,7 +4,7 @@ Review code changes and identify missing documentation updates.
 
 Check if changes require README updates:
 
-Must document:
+Report a gap when a reader needs guidance for:
 - New features or capabilities
 - New CLI flags or command-line options
 - New API endpoints or interfaces
@@ -24,7 +24,7 @@ Skip:
 Check if changes require updates to repository guidance files such as AGENTS.md,
 CLAUDE.md, CONTRIBUTING.md, developer docs, or local conventions docs:
 
-Must document:
+Report a gap when a reader needs guidance for:
 - New architectural patterns discovered/established
 - New conventions or coding standards
 - New build/test commands
@@ -41,9 +41,9 @@ Skip:
 ## Plan Files
 
 If changes relate to an existing plan:
-- Mark completed items as done
-- Update plan status if needed
-- Note which plan items this change addresses
+- Check that completed items have supporting evidence
+- Report stale status or unmet acceptance criteria
+- Identify plan items affected by the change; do not edit them during review
 
 ## What to Report
 
@@ -53,3 +53,5 @@ For each gap:
 - Suggested content: draft text or outline
 
 Report problems only - no positive observations.
+
+Do not require AGENTS.md additions for ordinary discoveries or facts already documented nearby.

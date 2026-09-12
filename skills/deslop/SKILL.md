@@ -1,6 +1,6 @@
 ---
 name: deslop
-description: Audit or apply evidence-backed, test-first subtractive cleanup for accumulated agent-created test bloat, verification theater, and defensive or fallback bloat while preserving independent external behavior. Invoke explicitly for semantic simplification, not generic refactoring.
+description: Audit or apply subtractive cleanup of accumulated test, verification, and fallback bloat. Use for an explicit semantic cleanup request, not routine refactoring.
 ---
 
 # Deslop
@@ -58,13 +58,13 @@ Trace edges as well as nodes. Separately tested producers, readers, and consumer
 Interpret invocation from natural language; do not depend on a runtime-specific arguments variable.
 
 - **Default or `audit`:** read-only. Report candidates, evidence, confidence, closed loops, and constructs to preserve. Do not intentionally modify repository-owned content; disable or redirect tool caches and generated outputs when practical.
-- **`apply`:** modify files only within the established scope.
-- **`tests`:** prioritize test signal and mutual-support slop. Without `apply`, remain read-only.
-- **`deep`:** inspect repository-wide. Without `apply`, remain read-only; with `apply`, cleanup is allowed but redesign is not.
-- **Explicit paths:** inspect and edit those paths plus the minimum callers, contracts, and tests needed to establish independence.
+- **`apply` or an explicit request to remove/fix the identified bloat:** modify files only within the established scope. The literal word `apply` is not required.
+- **`tests`:** prioritize test signal and mutual-support slop. Without edit authorization, remain read-only.
+- **`deep`:** inspect repository-wide. Without edit authorization, remain read-only; authorized cleanup does not include redesign.
+- **Explicit paths:** inspect those paths and the minimum callers, contracts, and tests needed to establish independence. Edit only within the authorized scope.
 - **Current branch or no scope inside Git:** use the actual merge base and include staged, unstaged, and untracked work; never assume `main`.
 
-Only `apply` authorizes edits. Do not fetch, reset, switch branches, stage, commit, push, or create backups unless explicitly requested.
+An audit alone does not authorize edits. Honor an existing explicit cleanup request without asking for a second approval or a special command word. Do not fetch, reset, switch branches, stage, commit, push, or create backups unless explicitly requested.
 
 ## Establish evidence before editing
 
@@ -119,7 +119,7 @@ In `deep apply`, exclude generated code, vendored dependencies, `third_party` tr
 
 ## Proportional verification
 
-Run the narrowest existing checks after each meaningful semantic group and the repository's documented final checks once when feasible. Compare test collection before and after; zero surviving tests is a failure, and unexpected skips or deselections require explanation. When tests can generate files, compare the worktree before and after the suite so a green run cannot hide writes to tracked outputs. In read-only modes, use no-write options or temporary locations for caches and generated output when available, and report any incidental tool artifacts left behind. Verification should be independent of the change where possible. Do not create proof files, audit ledgers, checksum reports, or a new verification framework merely to validate a deletion. If a check cannot run without changing repository-owned content, do not run it in audit mode; state that plainly.
+Run the narrowest existing checks after each meaningful semantic group and the repository's documented final checks once when feasible. Compare test collection before and after; zero tests where behavioral coverage should survive is a failure; an intentionally retired test-only scope can have none when independent evidence elsewhere still protects its live behavior. Explain unexpected skips or deselections. When tests can generate files, compare the worktree before and after the suite so a green run cannot hide writes to tracked outputs. In read-only modes, use no-write options or temporary locations for caches and generated output when available, and report any incidental tool artifacts left behind. Verification should be independent of the change where possible. Do not create proof files, audit ledgers, checksum reports, or a new verification framework merely to validate a deletion. If a check cannot run without changing repository-owned content, do not run it in audit mode; state that plainly.
 
 ## Final report
 

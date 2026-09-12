@@ -1,57 +1,42 @@
 # Task worker prompt
 
-Use this prompt when spawning each implementation worker. Replace
-`PLAN_FILE_PATH`, `PROGRESS_FILE_PATH`, and `PLAN_EXEC_ROOT` before launch.
+Replace `PLAN_FILE_PATH`, `PROGRESS_FILE_PATH`, and `PLAN_EXEC_ROOT` before launch.
+Pass the current user/host instructions and scoped authority with this prompt.
 
 ```text
-Read the plan file at PLAN_FILE_PATH. Find the FIRST Task section
-(`### Task N:` or `### Iteration N:`) that has uncompleted checkboxes (`[ ]`).
+Complete the first unfinished task in PLAN_FILE_PATH. A task is one
+`### Task N:` or `### Iteration N:` section and its checkboxes. Read the plan's
+request, decisions, constraints, acceptance criteria, and validation requirements.
+Handle one task section, then return control to the orchestrator.
 
-If a task section has `[ ]` checkboxes you cannot complete because they require
-manual testing, deployment verification, credentials, or external systems, mark
-them `[x]` with a note like `[x] manual test (skipped - not automatable)` and
-continue.
+Inspect relevant code and implement the task within the granted scope. Use
+existing tests when they already protect the outcome; add or update tests for
+changed behavior or a real regression gap. Do not add tests solely because a
+file changed.
 
-CRITICAL CONSTRAINT: Complete ONE task section per worker run.
-A task section is a `### Task N:` or `### Iteration N:` heading with all
-checkboxes underneath it. Complete all checkboxes in that section, then stop.
-Do not continue to the next section.
+Run the task's relevant validation and project-required checks. If exact commands
+are absent, discover them from the repository. Fix in-scope failures and rerun
+affected checks; do not repeat a passing suite without new changes or concerns.
+Report unrelated failures instead of silently expanding scope.
 
-STEP 1 - IMPLEMENT:
-- Read the plan's Overview, Context, Review Handoff, Development Approach,
-  Testing Strategy, and Technical Details sections when present.
-- Implement all items in the current task section.
-- Write or update tests for the implementation.
+Mark `[x]` only for outcomes actually completed and verified. A manual test,
+missing credential, deployment check, or unavailable external system does not
+become complete because it cannot run here. Leave it `[ ]`, add a `BLOCKED:`
+reason, and report what evidence or authority is needed. Complete independent
+items in this section when possible. Do not move a required check into optional
+follow-up or weaken acceptance criteria to make the task pass.
 
-STEP 2 - VALIDATE:
-- Run the test, lint, typecheck, build, or validation commands specified in the
-  plan.
-- If the plan does not list exact commands, infer the narrowest relevant
-  validation commands from the repository.
-- Fix any failures and repeat validation until it passes.
+After task completion and passing required checks, commit only task-owned files:
+  bash PLAN_EXEC_ROOT/scripts/stage-and-commit.sh "feat: <task description>" <files>
+List paths explicitly, including the plan. Inspect the index first: this helper
+commits the entire staged index. Do not use it while unrelated changes are staged,
+and do not unstage or overwrite user work to make it usable. Report the overlap.
+Do not create an empty commit or report task success without its task commit.
 
-STEP 3 - COMPLETE:
-- Edit PLAN_FILE_PATH and change `[ ]` to `[x]` for every checkbox you completed
-  in the current task section.
-- If all task sections are complete and higher-level success criteria checkboxes
-  are now satisfied, mark those `[x]` too.
-- Commit all changed files with:
-  `bash PLAN_EXEC_ROOT/scripts/stage-and-commit.sh "feat: <brief task description>" file1 file2 ...`
-- List every changed file explicitly, including source files, tests, and the plan
-  file.
+Append task status, changes, commit, validation commands/results, and unfinished
+items through PLAN_EXEC_ROOT/scripts/append-progress.sh. Use shell-safe quoting
+for paths and messages; pipe multiline text. Never log a skipped check as passed.
 
-STEP 4 - LOG PROGRESS:
-- Append a header:
-  `bash PLAN_EXEC_ROOT/scripts/append-progress.sh PROGRESS_FILE_PATH "task N: <title>"`
-- Then pipe details:
-  `printf '%s\n' "- modified: <files>" "- implemented: <what was done>" "- tests: <what tests were added or why skipped>" "- validation: <what commands passed>" | bash PLAN_EXEC_ROOT/scripts/append-progress.sh PROGRESS_FILE_PATH`
-- Use only `append-progress.sh` for writing to the progress file. Do not write to
-  the progress file directly.
-
-STOP after committing and logging progress.
-
-If any phase fails after reasonable fix attempts, log the failure to
-PROGRESS_FILE_PATH and report what failed.
-
-One task section per run. After commit and progress log, stop.
+Return the task outcome, commit, evidence, and blockers. If the task remains
+incomplete, keep that state in the plan and log. Stop after this task section.
 ```

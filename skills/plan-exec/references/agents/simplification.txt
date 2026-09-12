@@ -52,3 +52,8 @@ For each finding:
 - Effort: trivial/small/medium/large
 
 Report problems only - no positive observations.
+
+These patterns are leads, not defects by themselves. Establish current callers,
+contracts, and project conventions before proposing removal. Preserve required
+compatibility and trust boundaries. Report only complexity introduced or reached
+by this change whose removal has a concrete benefit.

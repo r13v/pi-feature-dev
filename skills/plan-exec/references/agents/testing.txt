@@ -1,51 +1,18 @@
-Review test coverage and quality.
+Review whether validation protects the changed requirements and regression risks.
 
-## Test Existence and Coverage
+Use the request, changed behavior, existing tests, and recorded check results.
+Missing a test for every new function or branch is not itself a defect. Report a
+gap only when a plausible regression could violate a requirement and the existing
+evidence would miss it. Consider integration checks when isolated tests mock the
+boundary that actually changed.
 
-1. Missing tests - new code paths without corresponding tests
-2. Untested error paths - error conditions not verified
-3. Coverage gaps - functions or branches without test coverage
-4. Integration test needs - system boundaries requiring integration tests
+Check that assertions depend on the intended observable result, use an independent
+oracle, and fail if the protected rule is broken. Look for tests that assert only
+mocks, constants, construction, or implementation details. Preserve meaningful
+success, rejection, security, persistence, protocol, and edge-case behavior.
 
-## Test Quality
+Inspect test isolation and skips when relevant. Do not prescribe a new framework,
+full-suite reruns, or a fixed edge-case matrix without a concrete gap.
 
-1. Tests verify behavior, not implementation details
-2. Each test is independent, can run in any order
-3. Descriptive test names that explain what is being tested
-4. Both success and error paths tested
-5. Edge cases and boundary conditions covered
-
-## Fake Test Detection
-
-Watch for tests that don't actually verify code:
-- Tests that always pass regardless of code changes
-- Tests checking hardcoded values instead of actual output
-- Tests verifying mock behavior instead of code using the mock
-- Ignored errors with _ or empty error checks
-- Conditional assertions that always pass
-- Commented out failing test cases
-
-## Test Independence
-
-1. No shared mutable state between tests
-2. Proper setup and teardown
-3. No order dependencies between tests
-4. Resources properly cleaned up
-
-## Edge Case Coverage
-
-1. Empty inputs and collections
-2. Null/nil values
-3. Boundary values (zero, max, min)
-4. Concurrent access scenarios
-5. Timeout and cancellation handling
-
-## What to Report
-
-For each finding:
-- Location: test file and function
-- Issue: what's wrong with the test
-- Impact: what bugs could slip through
-- Fix: how to improve the test
-
-Report problems only - no positive observations.
+For each finding, identify the file/line, requirement at risk, regression the
+current evidence would miss, and smallest meaningful check. Report problems only.

@@ -1,6 +1,6 @@
 ---
 name: ste
-description: Draft, rewrite, and review clear, unambiguous English with ASD-STE100 Simplified Technical English Issue 9 principles. Use for READMEs, runbooks, procedures, safety instructions, API and tool documentation, prompts, agent instructions, UI and error messages, status and incident reports, release notes, support text, translation-ready content, terminology normalization, controlled English, and STE compliance reviews. Also use when asked to simplify or de-slop English, help non-native readers, or prepare text for translation. Support strict verification only with the official dictionary and project glossary; otherwise report an STE-aligned or STE-style result.
+description: Draft or review unambiguous technical English using Simplified Technical English principles. Use for clarity rewrites or ASD-STE100 reviews; formal verification needs the official dictionary and project glossary.
 ---
 
 # STE
@@ -75,13 +75,16 @@ literal itself.
 | Terminology | Use one term for one concept. Keep necessary domain terms and define or flag unclear terms. |
 | Verbs | Prefer active voice, simple tenses, and direct action verbs. Avoid noun-heavy and complex auxiliary constructions. |
 | Instructions | Use the imperative form. Put one independent action in each sentence. Combine actions only when they occur at the same time. Put prerequisite conditions first. |
-| Length | Use no more than 20 words for procedures and 25 words for descriptions under Issue 9 counting rules. |
+| Length | In strict mode, apply the 20-word procedure and 25-word description limits under Issue 9 counting rules. In clarity mode, shorten only when meaning and readability improve. |
 | Noun phrases | Keep multi-word nouns to three words when possible. Preserve longer official names and define a clear short form if needed. |
 | Structure | Use complete sentences, one topic per paragraph, and vertical lists for complex sequences or alternatives. |
 | Safety | Start with the required command or condition, then state the risk or possible result. Never infer the risk level. |
 | Consistency | Reuse the same wording for the same action and context. Do not rotate synonyms for style. |
 
 ## Rewrite in Passes
+
+For a short clarity edit, rewrite and compare directly. Use the full pass sequence
+for a long document, strict review, or ambiguity that requires careful tracing.
 
 1. Classify each section as instruction, description, safety text, or mixed content.
 2. Read for meaning before changing words.

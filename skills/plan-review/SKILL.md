@@ -1,6 +1,6 @@
 ---
 name: plan-review
-description: Review implementation plans against the actual repository before execution, combining plan-quality checks with an evidence-backed technical pre-mortem and a PASS / REVISE / BLOCK verdict. Use after a plan is created or when the user asks to validate a plan for correctness, scope, over-engineering, missing tests, project-convention fit, blast radius, rollback, migration risk, contract risk, authorization risk, production-config risk, or what could break. Review plan files such as docs/plans/*.md or a user-provided plan path. Prefer isolated read-only review when the host and policy support it.
+description: Review an implementation plan against repository evidence and return PASS, REVISE, or BLOCK. Use when plan validation or a technical pre-mortem is requested.
 ---
 
 # Plan Review
@@ -10,7 +10,10 @@ problem with the smallest repository-aligned approach. Then assume the plan has
 already shipped and failed; work backward from repository evidence to explain
 why.
 
-**Remain read-only. Analyze and report; never implement or edit the plan.**
+This review pass is read-only. Report findings without editing the plan or code.
+If the user also requested revisions or implementation, finish the review first,
+then continue that authorized work as a separate phase. Loading this skill does
+not authorize implementation on its own.
 
 **Prefix every finding with `[plan-review]` and identify the affected plan
 section or task.**
@@ -73,12 +76,12 @@ Check that the plan:
   not accept cleverness or layering that the problem does not require.
 - Orders dependencies correctly and divides work into concrete, atomic tasks
   with descriptive names and exact files, symbols, and commands.
-- Gives every code-change task separate test work that protects the intended
-  rule, including exact test-file locations and relevant success, error, and
-  edge cases.
-- Requires relevant tests to pass before the next task, names exact verification
-  commands, and records any external, credentialed, manual, or
-  environment-dependent step needed for completion.
+- Gives changed behavior evidence that protects the intended rule, with concrete
+  checks and relevant regression cases. Adequate existing tests or a focused
+  mechanical check can suffice; do not demand new tests for every changed file.
+- Names relevant validation commands and task dependencies, and records any
+  external, credentialed, manual, or environment-dependent completion step.
+  Required unavailable checks must remain unverified rather than marked done.
 
 If `plan-make` created the plan, also check its self-contained plan contract.
 Do not require its exact headings when the same information is clear elsewhere.
@@ -99,9 +102,10 @@ Require the simpler alternative when it satisfies the current requirement and
 repository constraints. Do not flag complexity inherent to the domain.
 
 Resolve uncertainty from repository evidence first. If a user decision could
-change behavior, scope, approach, or verdict, ask instead of guessing. If the
-review must conclude before the user answers, report the decision as `UNKNOWN`
-and return `BLOCK` rather than inventing an assumption.
+materially change behavior, scope, or verdict, ask instead of guessing. If the
+review must conclude before the user answers, report a blocking decision as
+`UNKNOWN` and return `BLOCK`. Do not block for an optional improvement or a
+routine implementation choice within the user's delegated authority.
 
 ## Run the Technical Pre-Mortem Pass
 
@@ -175,8 +179,8 @@ After the findings, report:
 
 - **Blast radius**: verified dependents and shared surfaces affected by the
   plan.
-- **Rollback**: the actual rollback lever, residual state, and any
-  verdict-changing unknowns.
+- **Rollback**, when relevant: the actual rollback lever, residual state, and
+  any verdict-changing unknowns.
 - **Verdict**:
   - **PASS** — implementable as written.
   - **REVISE** — implementable only after the named plan edits; state those
@@ -184,4 +188,5 @@ After the findings, report:
   - **BLOCK** — do not implement until an unmitigated blocking risk, forbidden
     mechanism, or owner decision is resolved.
 
-Report and stop. Do not implement.
+Finish the read-only review with the verdict. Continue a subsequent phase only
+when it is already authorized and the verdict permits that work.
