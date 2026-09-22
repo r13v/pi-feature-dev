@@ -68,19 +68,27 @@ Compute the full current frontier. Exclude:
 - questions whose prerequisites are unresolved
 - questions whose answers cannot change the outcome
 
-Ask independent frontier questions together, using the host's question interface when available. Split a large frontier into manageable rounds and retain the remaining questions in the ledger. For each question:
+Ask independent frontier questions together, using the host's question interface when available. Split a large frontier into manageable rounds and retain the remaining questions in the ledger. Every question must include explicit answer options and a recommendation. This requirement also applies to clarification questions, ADR-recording questions, and the final shared-understanding confirmation. For each question:
 
 1. State the decision precisely.
-2. Give a recommended answer and a brief reason.
-3. Present meaningful alternatives or invite a free-form answer when the choice is not bounded.
+2. List at least two distinct, meaningful answer options. For a confirmation, spell out both confirming and correcting or declining; do not assume yes/no is implicit in the question.
+3. Recommend one of the listed options by label and give a brief reason. The recommendation never substitutes for the options.
+4. Allow a free-form answer. For an unbounded choice, offer concrete starting options plus a way to supply a different answer; do not replace all options with an invitation to respond freely.
 
-When asking in chat, this format can make decisions easy to scan:
+When using the host's question interface, populate its options field and identify the recommended option. When asking in chat, use this required format for every question, with consecutive question numbers and additional option lines as needed:
 
 ```md
-❓ **Q1** - **<decision title>**: <question body; may include multiple paragraphs or choices>
+❓ **Q1** - **<decision title>**: <question body>
 
-➡️ <recommended answer and brief reason>
+- **A — <option>**: <meaning or trade-off>
+- **B — <alternative>**: <meaning or trade-off>
+
+➡️ **Recommend A** — <brief reason>
+
+You can choose an option or give a different answer.
 ```
+
+Before sending a round, check that every question has its own visible options and a recommendation pointing to one of them. A question followed only by a recommendation is incomplete; add the missing options before sending.
 
 Then stop and wait for the user's answers. A question that depends on another question in the same round belongs to a later round.
 
@@ -106,7 +114,7 @@ Offer an ADR only when all three conditions hold:
 2. The choice would be surprising without its context.
 3. Genuine alternatives were considered and rejected for specific reasons.
 
-If any condition is missing, do not create an ADR. If all three hold and ADR recording is not already authorized, ask whether to record it. Then resolve [ADR-FORMAT.md](./ADR-FORMAT.md) from the selected `grill/SKILL.md` directory and read and follow it. Create directories and files lazily.
+If any condition is missing, do not create an ADR. If all three hold and ADR recording is not already authorized, ask whether to record it using the required question format (for example, A: record the ADR; B: keep the decision in the session ledger only). Then resolve [ADR-FORMAT.md](./ADR-FORMAT.md) from the selected `grill/SKILL.md` directory and read and follow it. Create directories and files lazily.
 
 ## Finish with a confirmed session result
 
@@ -121,6 +129,6 @@ Present a candidate shared-understanding summary containing:
 - unresolved facts, deferred decisions, and risks
 - documentation created or updated
 
-Ask the user to confirm that this is the shared understanding. If they correct or reopen anything, add the affected branches and resume the rounds.
+Ask the user to confirm that this is the shared understanding using the required question format (A: confirm the summary; B: correct or reopen part of it). If they correct or reopen anything, add the affected branches and resume the rounds.
 
 After the user confirms, show a final `Grill Result` that records the accepted objective, decisions, canonical language, constraints, non-goals, unresolved items, and documentation changes. End an interview-only request there. Confirmation settles the shared understanding; it does not grant additional execution authority. Continue a previously requested follow-on phase only within its established scope.
