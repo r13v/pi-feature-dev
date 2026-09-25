@@ -54,6 +54,8 @@ Before rewriting:
 Do not invent missing facts. Do not remove precision only to meet a length target.
 Keep a qualitative modifier such as `carefully` when it affects task intent. Flag it when the
 project requires a measurable criterion, but do not invent that criterion.
+Keep the strength of each modal verb and hedge. Do not change `may have failed` to `failed`, and
+do not add a cause, frequency, or certainty that the source does not state.
 
 ## Protect Untouchable Text
 
@@ -73,7 +75,7 @@ literal itself.
 |---|---|
 | Vocabulary | Use one familiar word for one meaning. In strict mode, confirm its approved meaning, part of speech, and form. |
 | Terminology | Use one term for one concept. Keep necessary domain terms and define or flag unclear terms. |
-| Verbs | Prefer active voice, simple tenses, and direct action verbs. Avoid noun-heavy and complex auxiliary constructions. |
+| Verbs | Prefer active voice, simple tenses, and direct action verbs. Avoid noun-heavy and complex auxiliary constructions. In clarity mode, keep a compound tense that carries current relevance or a hedge, and flag it. |
 | Instructions | Use the imperative form. Put one independent action in each sentence. Combine actions only when they occur at the same time. Put prerequisite conditions first. |
 | Length | In strict mode, apply the 20-word procedure and 25-word description limits under Issue 9 counting rules. In clarity mode, shorten only when meaning and readability improve. |
 | Noun phrases | Keep multi-word nouns to three words when possible. Preserve longer official names and define a clear short form if needed. |
@@ -104,7 +106,7 @@ If the input is already clear and meets the applicable rules, say so. Do not for
 
 Always confirm that:
 
-1. The revision preserves every fact, condition, limit, unit, exception, sequence, and
+1. The revision preserves every fact, condition, limit, unit, exception, sequence, hedge, and
    responsibility.
 2. Untouchable text is unchanged unless the user requested that exact change.
 3. Each procedural sentence has one independent action unless actions occur at the same time.
@@ -117,7 +119,9 @@ Always confirm that:
 For a direct drafting or rewriting request:
 
 1. Give the revised text first.
-2. Add `Unresolved checks` only when lexical, technical, regulatory, or safety facts remain
+2. Add one `Kept as-is:` line only when you kept longer wording on purpose. Name the phrase and
+   the precision that a shorter version would lose.
+3. Add `Unresolved checks` only when lexical, technical, regulatory, or safety facts remain
    unverified.
 
 For an audit or an explained rewrite, use:

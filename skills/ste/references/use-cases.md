@@ -13,6 +13,10 @@ Present information in this order:
 3. Expected result, when the reader must verify it.
 4. Recovery or escalation action, when the source supplies one.
 
+Name each fact that a command depends on, such as the host, the flag, or the prior step. For
+example, write `Restart the sync service on the host that runs the job`, not `Restart the
+service`. If the source does not supply the fact, report it as an unresolved check.
+
 Do not move a command into a note. Do not invent missing steps or sequence.
 
 ## Error Message

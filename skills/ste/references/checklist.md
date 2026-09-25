@@ -17,6 +17,7 @@ Use this check for a general clarity rewrite:
 - Keep one independent action in each procedural sentence unless actions occur at the same time.
 - Use one term for one concept and one wording for one repeated action.
 - Separate observed facts, possible causes, and recovery actions.
+- Keep the strength of each hedge and modal verb. Do not add a cause or certainty.
 - Report unresolved technical, lexical, safety, or regulatory questions.
 
 ## Full Check
@@ -85,7 +86,13 @@ Search for these features during a large review:
 - `-ing` forms.
 - Perfect or continuous auxiliary constructions.
 - Forms of `be` followed by a past participle.
-- Modal verbs such as `should`, `would`, `may`, `might`, and `could`.
+- Modal verbs such as `should`, `would`, `may`, `might`, and `could`. Change one only when the
+  replacement keeps the same strength.
+- Stacked hedges and filler, such as `it is important to note that this may potentially help`.
+- Nominalizations, such as `perform an analysis of` or `provide assistance to`.
+- Promotional adjectives, such as `seamless`, `robust`, `powerful`, and `cutting-edge`.
+- Phrasal verbs, such as `spin up`, `reach out`, `set up`, and `kick off`.
+- Em dashes or spaced hyphens that join two statements and hide the relation between them.
 - Vague referents such as `it`, `this`, `that`, `they`, and `which`.
 - `and` or `then` between commands.
 - Different nouns or verbs that might name the same concept or action.

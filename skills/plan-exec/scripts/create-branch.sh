@@ -1,12 +1,30 @@
 #!/bin/bash
 # create a feature branch from a plan file name if currently on the default branch
 # usage: create-branch.sh <plan-file-path>
+#        create-branch.sh --print-name <plan-file-path>
 # exits 0 if a branch was created or an existing feature branch is already active
 # outputs the branch name to stdout
 #
 # strips leading YYYYMMDD- or YYYY-MM-DD- date prefixes from branch names
+# --print-name prints the derived branch name without Git side effects
 
 set -e
+
+derive_branch_name() {
+    local name
+    name=$(basename "$1" .md)
+    name=$(echo "$name" | sed 's/^[0-9]\{4\}-\{0,1\}[0-9]\{2\}-\{0,1\}[0-9]\{2\}-//')
+    echo "$name"
+}
+
+if [ "${1:-}" = "--print-name" ]; then
+    if [ -z "${2:-}" ]; then
+        echo "error: plan file path required" >&2
+        exit 1
+    fi
+    derive_branch_name "$2"
+    exit 0
+fi
 
 if [ -z "${1:-}" ]; then
     echo "error: plan file path required" >&2
@@ -19,13 +37,6 @@ if ! git rev-parse --git-dir >/dev/null 2>&1; then
 fi
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-
-derive_branch_name() {
-    local name
-    name=$(basename "$1" .md)
-    name=$(echo "$name" | sed 's/^[0-9]\{4\}-\{0,1\}[0-9]\{2\}-\{0,1\}[0-9]\{2\}-//')
-    echo "$name"
-}
 
 current_branch=$(git branch --show-current)
 default_branch=$(bash "$SCRIPT_DIR/detect-branch.sh")

@@ -15,8 +15,8 @@ feature work:
 It does not require specific task-tracking, question, delegation, or review tools. If the current environment provides equivalent capabilities, use them; otherwise follow the same workflow directly in chat and with normal code tools.
 
 The `deslop` skill audits or applies evidence-backed subtractive cleanup for
-accumulated test bloat, circular verification, and defensive or fallback
-machinery. Audit mode is read-only. An explicit cleanup request authorizes edits
+accumulated test bloat, circular verification, defensive or fallback machinery,
+and comment noise. Audit mode is read-only. An explicit cleanup request authorizes edits
 within its scope; the literal `apply` command is optional.
 
 The `plan-exec` skill executes implementation plan files task by task with
@@ -26,10 +26,6 @@ isolated workers and Git access.
 
 The `final-check` skill asks: “What else have we missed? Is there anything we
 need to check or fix?”
-
-The `i-have-adhd` skill shapes responses for a reader with ADHD: it leads with
-the next action, keeps multi-step work bounded, restates progress, suppresses
-tangents, and makes completed work visible.
 
 The `grill` skill runs a dependency-aware interview that researches facts,
 exhausts the current decision frontier round by round, sharpens domain language,
@@ -46,11 +42,6 @@ The `creator-vibe` skill turns incomplete creative briefs and implicit intent
 into concrete work without losing the creator's taste, feeling, or human focus.
 It applies to creative technical and everyday work, while staying out of
 factual, mechanical, exact, or fully specified tasks.
-
-The `prototype` skill builds disposable logic or UI experiments that answer one
-design question before production implementation. It follows the current
-project and adapts its handoff, preview, task, and source-control steps to the
-capabilities of the current agent environment.
 
 The `visual-recap` skill turns a plan or completed non-trivial change into an
 evidence-backed visual review aid. It helps a reviewer see the outcome, affected
@@ -98,12 +89,10 @@ from:
 
 - [umputun/cc-thingz](https://github.com/umputun/cc-thingz)
 - [anthropics/claude-code feature-dev plugin](https://github.com/anthropics/claude-code/tree/main/plugins/feature-dev)
-- [mattpocock/skills batch-grill-me and domain-modeling skills](https://github.com/mattpocock/skills)
-- [mattpocock/skills prototype](https://github.com/mattpocock/skills/tree/main/skills/engineering/prototype)
+- [mattpocock/skills grilling and domain-modeling skills](https://github.com/mattpocock/skills)
 - [MrZoyo/deslop-GPT](https://github.com/MrZoyo/deslop-GPT/tree/main/skills/deslop)
 - [danyuchn/asd-ste100-skill](https://github.com/danyuchn/asd-ste100-skill)
 - [AminBlg/SimpleEnglish](https://github.com/AminBlg/SimpleEnglish/tree/main/skills/simple-english)
-- [ayghri/i-have-adhd](https://github.com/ayghri/i-have-adhd)
 - [bish-x/creator-vibe](https://github.com/bish-x/creator-vibe)
 - [kentcdodds/kcd-skills visual-recap](https://github.com/kentcdodds/kcd-skills/tree/main/skills/visual-recap)
 
@@ -139,12 +128,6 @@ Create a visual review aid for a plan or completed change:
 /skill:visual-recap Show the architecture impact of the current change.
 ```
 
-Build a disposable prototype to answer one design question:
-
-```text
-/skill:prototype Compare three structurally different settings-page layouts.
-```
-
 The files under `skills/*/SKILL.md` are portable Markdown and can be adapted for
 other agent environments.
 
@@ -159,14 +142,6 @@ Run a final completeness check on the current work:
 ```text
 /skill:final-check
 ```
-
-Enable ADHD-oriented output for the rest of the session:
-
-```text
-/skill:i-have-adhd
-```
-
-Disable it with `stop adhd mode` or `normal mode`.
 
 Stress-test an idea before planning or implementation:
 
@@ -248,9 +223,6 @@ pi-feature-dev/
     │   ├── SKILL.md
     │   ├── CONTEXT-FORMAT.md
     │   └── ADR-FORMAT.md
-    ├── i-have-adhd/
-    │   ├── agents/openai.yaml
-    │   └── SKILL.md
     ├── plan-exec/
     │   ├── agents/openai.yaml
     │   ├── SKILL.md
@@ -262,11 +234,6 @@ pi-feature-dev/
     │   └── SKILL.md
     ├── plan-review/
     │   ├── agents/openai.yaml
-    │   └── SKILL.md
-    ├── prototype/
-    │   ├── agents/openai.yaml
-    │   ├── LOGIC.md
-    │   ├── UI.md
     │   └── SKILL.md
     ├── ste/
     │   ├── agents/openai.yaml

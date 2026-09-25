@@ -116,7 +116,7 @@ Delete when no external protocol, persisted format, or independent consumer reli
 operation -> evidence.json / receipt -> local validator -> local test
 ```
 
-Delete ledgers and validators generated and consumed only by the same trusted workflow. Preserve records required by a separate authority, operational system, regulator, reproducibility workflow, transaction, idempotency boundary, or corruption detector.
+Common authorship and a constant assigned by the writer do not make a persisted reader check a closed loop. Check the stored record's contract before deleting the field or its validator. Preserve records required by a separate authority, operational system, regulator, reproducibility workflow, transaction, idempotency boundary, or corruption detector.
 
 ### Signature theater
 
@@ -129,6 +129,10 @@ Delete when no identity, key custody, distribution boundary, or independent trus
 ## Persistence and readback
 
 Reopening an encoded file, archive, media object, or persisted record can be genuinely independent when it detects truncation, partial publication, codec mismatch, schema loss, or corruption across a write/read boundary. Do not collapse that into circular in-memory recomputation. Conversely, reading a value back from the same memory representation without a distinct failure domain adds little.
+
+Check what the retained integrity mechanism actually covers. A digest of payload bytes does not validate separately stored metadata such as publication state, declared counts, or identity. Those fields can be invalid while the payload digest still matches. Treat each metadata check as a separate candidate; preserve its supported contract, and require evidence of equivalent coverage or retirement before deleting it.
+
+For example, a reader given correct payload bytes and digest but a wrong or missing required `size` still has an invalid manifest. Preserve that rejection separately from content-corruption detection. In contrast, a writer that hashes its in-memory input and immediately verifies the same input against that newly generated value has no independent readback evidence; that local chain can be removed once its lack of another consumer is established. Preserve the public write/read operations in both cases.
 
 ## Defensive and fallback checks
 

@@ -67,6 +67,10 @@ a fixer using [prompts/fixer.md](prompts/fixer.md). The fixer verifies the premi
 fixes confirmed in-scope issues, and explains false positives or deferred items.
 The orchestrator must not silently dismiss or reclassify findings.
 
+After each fixer returns, run `git status --porcelain`. List any reported paths
+and note that uncommitted changes are absent from the committed branch diff.
+This check is report-only; do not retry, abort, or commit leftovers because of it.
+
 After fixes, recheck affected code and requirements with an isolated reviewer.
 Use critical mode for correctness/requirement rechecks; include any other lens
 whose confirmed issue was changed. Broaden review only when the fix changed the
@@ -98,6 +102,9 @@ remaining checks, findings, and reasons. Include required manual/external checks
 outside task sections in that decision.
 
 Deliver a concise report with task progress, review and validation results,
-branch, plan, and progress-log paths. If the summary worker fails, use those
+branch, plan, and progress-log paths. Include a "Decisions and deviations"
+section listing each `[decision]`/`[deviation]` progress line collected as in
+[prompts/progress-file.md](prompts/progress-file.md), or state that none were
+logged. If the summary worker fails, use those
 known facts directly. Claim branch cleanup only if it occurred. Do not push,
 publish, or move the plan unless already authorized.

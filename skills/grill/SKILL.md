@@ -50,6 +50,8 @@ When code, documentation, and the user's statement disagree, surface the conflic
 
 ### 3. Load and challenge the domain language
 
+Merely reading `CONTEXT.md` to use its vocabulary is not this skill; any task can do that. This step is for challenging and changing the domain model.
+
 Look for `CONTEXT-MAP.md` and the relevant `CONTEXT.md` before inventing terminology:
 
 - If `CONTEXT-MAP.md` exists, use it to locate the applicable bounded context and its ADR directory.
@@ -80,13 +82,26 @@ When using the host's question interface, populate its options field and identif
 ```md
 ❓ **Q1** - **<decision title>**: <question body>
 
-- **A — <option>**: <meaning or trade-off>
-- **B — <alternative>**: <meaning or trade-off>
+- **A: <option>**: <meaning or trade-off>
+- **B: <alternative>**: <meaning or trade-off>
 
-➡️ **Recommend A** — <brief reason>
+➡️ **Recommend A**: <brief reason>
+
+You can choose an option or give a different answer.
+
+---
+
+❓ **Q2** - **<decision title>**: <question body>
+
+- **A: <option>**: <meaning or trade-off>
+- **B: <alternative>**: <meaning or trade-off>
+
+➡️ **Recommend B**: <brief reason>
 
 You can choose an option or give a different answer.
 ```
+
+Separate consecutive questions in a round with a horizontal rule (`---`).
 
 Before sending a round, check that every question has its own visible options and a recommendation pointing to one of them. A question followed only by a recommendation is incomplete; add the missing options before sending.
 
@@ -106,7 +121,7 @@ Continue until no unresolved branch can materially affect the result. Respect an
 
 ## Record decisions during the grill
 
-When a project term is resolved by the user or within delegated authority, update the applicable `CONTEXT.md` if documentation is in scope. Resolve [CONTEXT-FORMAT.md](./CONTEXT-FORMAT.md) from the selected `grill/SKILL.md` directory, then read and follow it before the first update. Keep `CONTEXT.md` a glossary only: no implementation details, requirements, scratch notes, or architectural decisions.
+When a project term is resolved by the user or within delegated authority, update the applicable `CONTEXT.md` if documentation is in scope. Update it inline as each term resolves; do not batch glossary changes until the end. Resolve [CONTEXT-FORMAT.md](./CONTEXT-FORMAT.md) from the selected `grill/SKILL.md` directory, then read and follow it before the first update. Keep `CONTEXT.md` a glossary only: no implementation details, requirements, scratch notes, or architectural decisions.
 
 Offer an ADR only when all three conditions hold:
 

@@ -1,6 +1,6 @@
 ---
 name: deslop
-description: Audit or apply subtractive cleanup of accumulated test, verification, and fallback bloat. Use for an explicit semantic cleanup request, not routine refactoring.
+description: Audit or apply subtractive cleanup of accumulated test, verification, fallback, and comment bloat. Use for an explicit semantic cleanup request, not routine refactoring.
 ---
 
 # Deslop
@@ -14,8 +14,9 @@ Work in this order. Do not let an easy dead-code deletion displace a higher-prio
 1. **Test-suite bloat.** Treat tests as production code that can accumulate after every agent correction. Remove duplicate, self-referential, implementation-detail, and obsolete tests while retaining a minimum sufficient set of independent behavioral evidence.
 2. **Verification theater.** Investigate checksums, receipts, manifests, validators, recomputation, and result envelopes whose producer and verifier share the same information and failure domain.
 3. **Defensive and fallback bloat.** Investigate broad catches, catch-and-fallback paths, speculative compatibility branches, repeated validation, and recovery machinery that masks errors without a current contract.
+4. **Comment noise.** Check every comment in scope. Keep only comments that explain something the code cannot show, state them about the current code rather than its history, and make each kept comment short but complete. Follow the comment check in [code-smells.md](references/code-smells.md#comment-check).
 
-Generic dead code, wrappers, abstractions, comments, and ordinary duplication are secondary. Touch them only when they belong to one of the three target clusters or have direct high-confidence evidence.
+Generic dead code, wrappers, abstractions, and ordinary duplication are secondary. Touch them only when they belong to one of the three target clusters or have direct high-confidence evidence.
 
 **Reduce test surface, not behavior surface.** Evidence that a test is redundant or accumulated test-suite bloat justifies deleting or consolidating that test; it is not independent evidence for changing the production behavior the test exercises. When test-suite bloat is the active target, keep distinct externally observable production semantics—including public success, rejection, error, edge-case, and supported compatibility behavior—outside the deletion target unless the production construct is separately justified for removal by another target cluster, or direct evidence from current requirements, real callers, specifications, or history establishes that the behavior is obsolete or incorrect. Do not reclassify tested behavior as defensive or validation bloat merely because deleting its test leaves nothing else requiring it; the test may be its clearest executable specification.
 
@@ -80,6 +81,8 @@ Inside trusted code, use a **fail-visible bias**: allow unexpected failures to s
 
 ## Confidence and apply behavior
 
+These rules govern every candidate in this file and the references. A listed smell or preferred action does not resolve missing evidence or authorize deletion by itself.
+
 - **HIGH:** redundant, tautological, unreachable, self-justifying, or disconnected from a real contract after the evidence chain is resolved.
 - **MEDIUM:** apparently unnecessary, but caller, history, compatibility, or boundary evidence is still missing.
 - **LOW / PRESERVE BY DEFAULT:** security, authorization, concurrency, persistence, transactions, external protocols, supported compatibility, resource limits, and scientific invariants whose purpose may be outside the local file.
@@ -96,31 +99,33 @@ Read only the relevant references:
 
 - [test-smells.md](references/test-smells.md) for accumulated test suites and test/production mutual-support clusters.
 - [verification-and-trust.md](references/verification-and-trust.md) for checksum, receipt, manifest, provenance, and trust-boundary clusters.
-- [code-smells.md](references/code-smells.md) for defensive, fallback, compatibility, wrapper, and abstraction candidates.
+- [code-smells.md](references/code-smells.md) for defensive, fallback, compatibility, wrapper, abstraction, and comment candidates.
 - [scientific-code.md](references/scientific-code.md) for numerical, simulation, ML, or engineering invariants.
 - [evidence-and-reachability.md](references/evidence-and-reachability.md) when cleanup touches cross-layer fixtures, generated artifacts, active configuration, schema readers, registries/CLIs, or test hermeticity.
 
 ## Subtractive workflow
 
 1. Complete the test-first evidence pass before production cleanup when tests are in scope.
-2. Trace verification machinery as a cluster, not a function. Remove serialization, digest fields, envelopes, manifests, validators, recomputation, and tests together when no independent root remains.
+2. Before classifying checksum, receipt, manifest, or persisted-validation code for deletion, read [verification-and-trust.md](references/verification-and-trust.md). Trace the whole cluster and remove its support machinery only when no independent root remains.
 3. Trace fallback branches to actual supported consumers and failure contracts. Prefer direct failure when the current contract says an operation should fail.
 4. Delete tests that exist only to keep deleted production slop green. Add a replacement test only when deleting the old test would leave a real external behavior unprotected and an independent oracle exists.
 5. Preserve real public, persistence, security, protocol, compatibility, resource, and scientific boundaries even when their code resembles a smell.
 6. Treat declared authoritative inputs as required unless the protocol explicitly marks them optional. Missing and invalid authoritative artifacts should share the same visible failure semantics.
-7. For a schema or identity change, enumerate every public reader, including CLIs, tools, visualizers, converters, and resume paths. Do not infer compatibility from a missing field or file.
+7. For a schema or identity change, enumerate every public reader, including CLIs, tools, visualizers, converters, and resume paths. Follow contract-defined version selection, including supported defaults; do not invent compatibility from a missing field or file.
 8. Keep permanent tests hermetic: use repository-managed or test-created inputs, write to temporary outputs, and skip only when the test actually crosses the optional dependency boundary.
 
 ## Negative-change budget
 
-Normally reduce structural surface area. New dependencies, abstractions, wrappers, compatibility layers, cryptographic/provenance machinery, and tests have a default budget of zero. New code is acceptable only when it preserves a real behavior while removing more accumulated slop. A small current-path integration root or a direct required-input check can be justified when cleanup exposes a real protection gap. If a cleanup adds substantial production or test lines, stop and reconsider.
+Normally reduce structural surface area. New dependencies, abstractions, wrappers, compatibility layers, cryptographic/provenance machinery, and tests have a default budget of zero. New code is acceptable only when it preserves a real behavior while removing more accumulated slop. A small current-path integration root or a direct required-input check can be justified when cleanup exposes a real protection gap. When a repair closes a real fail-open contract, adapt existing coverage to check the required rejection. Keep success and failure assertions readable; add a small test only when the surviving behavior would otherwise lack independent coverage. If a cleanup adds substantial production or test lines, stop and reconsider.
 
 In `deep apply`, exclude generated code, vendored dependencies, `third_party` trees, migration history, lockfiles, and externally generated snapshots or artifacts unless explicitly included or demonstrably repository-owned.
 
 ## Proportional verification
 
-Run the narrowest existing checks after each meaningful semantic group and the repository's documented final checks once when feasible. Compare test collection before and after; zero tests where behavioral coverage should survive is a failure; an intentionally retired test-only scope can have none when independent evidence elsewhere still protects its live behavior. Explain unexpected skips or deselections. When tests can generate files, compare the worktree before and after the suite so a green run cannot hide writes to tracked outputs. In read-only modes, use no-write options or temporary locations for caches and generated output when available, and report any incidental tool artifacts left behind. Verification should be independent of the change where possible. Do not create proof files, audit ledgers, checksum reports, or a new verification framework merely to validate a deletion. If a check cannot run without changing repository-owned content, do not run it in audit mode; state that plainly.
+Run the narrowest existing checks after each meaningful semantic group and the repository's documented final checks once when feasible. Compare test collection before and after, and explain unexpected skips or deselections. An unexplained drop to zero tests, or loss of required verification for surviving behavior, is a failure. A confirmed-retired target may be removed with all its dedicated tests, and an intentionally retired test-only scope can have none when independent evidence elsewhere still protects its live behavior. A scope that already had no tests should use its applicable existing checks. Explain each case and do not retain or add tests merely to obtain a nonzero count. If deleting a cluster would remove the last test exercising a surviving public contract, adapt an existing test to an independently specified observable result. When no independent oracle is available, report that gap instead of deriving expected values from the implementation.
+
+When tests can generate files, compare the worktree before and after the suite so a green run cannot hide writes to tracked outputs. In read-only modes, use no-write options or temporary locations for caches and generated output when available, and report any incidental tool artifacts left behind. Verification should be independent of the change where possible. Do not create proof files, audit ledgers, checksum reports, or a new verification framework merely to validate a deletion. If a check cannot run without changing repository-owned content, do not run it in audit mode; state that plainly.
 
 ## Final report
 
-Report the inspected scope; removed test, verification, and fallback clusters; independent evidence roots; preserved boundaries; tests removed or consolidated; before/after collection plus skips or deselections when available; checks actually run; approximate production/test size changes when useful; and uncertainty intentionally left untouched. Explicitly call out any closed justification loop that drove deletion.
+Report the inspected scope; removed test, verification, and fallback clusters; comments removed or condensed, plus comment/code conflicts left for review; independent evidence roots; preserved boundaries; tests removed or consolidated; before/after collection plus skips or deselections when available; checks actually run; approximate production/test size changes when useful; and uncertainty intentionally left untouched. Explicitly call out any closed justification loop that drove deletion.

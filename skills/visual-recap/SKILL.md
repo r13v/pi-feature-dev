@@ -30,8 +30,8 @@ Use the smallest sufficient set of project evidence:
 1. Follow the instructions and context that the **Host Agent** already supplied.
 2. Look for project-local `CONTEXT-MAP.md` and `CONTEXT.md` files. Use `CONTEXT-MAP.md` for bounded-context locations and relationships. Use the relevant `CONTEXT.md` files for canonical domain terms. Link to each file that informed the recap.
 3. Use existing architecture documents, diagrams, ownership maps, and decision records when they cover the affected area.
-4. In Plan mode, inspect the current implementation and the proposed plan or requirements.
-5. In Recap mode, inspect the actual change set, affected source, and validation results. Use a source-control comparison when available, but do not require one version-control system.
+4. In Plan mode, inspect the current implementation and the proposed plan or requirements. When the plan changes no boundary or contract, say so explicitly.
+5. In Recap mode, inspect the actual change set, affected source, and validation results. Read the full change for any part not authored in this session. Use a source-control comparison when available, but do not require one version-control system.
 
 A `CONTEXT.md` glossary supplies language, not architecture or path ownership. Do not create or update context files for this recap.
 
@@ -81,7 +81,7 @@ Match the visual to the review question:
 
 Skip the diagram when one obvious relationship or a short table explains the change better.
 
-Use Mermaid as the default portable diagram format. It is an output representation, not a required tool. Let the current **Host Agent** render it with its native interface. Use a richer interactive surface only when it saves review effort.
+Use Mermaid as the default portable diagram format. It is an output representation, not a required tool. Let the current **Host Agent** render it with its native interface. Use a richer interactive surface only when it saves review effort. Quote Mermaid node labels that contain spaces or special characters.
 
 If the current interface does not render Mermaid, use a compact ASCII-art diagram as the first fallback. Use a Markdown table and short relationship list only when ASCII would be harder to scan or cannot express the relationship clearly.
 
@@ -101,7 +101,7 @@ Include:
 
 Add a change flow, before-and-after view, plan-versus-actual view, or open decisions only when it reduces review effort.
 
-Keep the overview on one screen when possible. Put supporting detail behind expansion or below the overview. Use direct labels. Do not rely on color alone. Do not include empty sections or the whole system graph.
+Keep the overview on one screen when possible and the whole recap well under about 120 lines. Put supporting detail behind expansion or below the overview. In a Markdown `<details>` block, leave a blank line after `<summary>` and around every fenced block so the content renders. Use direct labels. Do not rely on color alone. Do not include empty sections or the whole system graph.
 
 ## Deliver and Update
 

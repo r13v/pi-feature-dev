@@ -15,4 +15,6 @@ rerun or broaden them only after changes, failures, or a newly identified risk.
 
 Finish when acceptance criteria are supported and no known in-scope blocker
 remains. Report material findings, fixes, checks actually run, and unverified
-requirements. If nothing further is needed, say so without inventing work.
+requirements. When the repository already keeps `docs/backlog/` items or the
+user asks, offer to record real deferred gaps there, one file per item. If
+nothing further is needed, say so without inventing work.

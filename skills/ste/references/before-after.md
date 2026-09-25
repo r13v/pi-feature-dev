@@ -30,11 +30,14 @@ They are not evidence that a word is approved in the official ASD-STE100 diction
 
 **After**
 
-> Disconnect electrical power.
+> Make sure that electrical power is disconnected.
 >
 > Remove the retaining bolts.
 >
 > Remove the filter housing.
+
+**Why the first step is a check:** The source tells the technician to confirm a state, not to
+disconnect the power. The revision keeps that task.
 
 **Unresolved check:** Confirm that these steps have the correct sequence and that the project
 glossary approves `retaining bolt` and `filter housing`.
@@ -62,10 +65,11 @@ passive construction.
 
 **After**
 
-> The request failed because the credentials expired.
+> The request failed because the credentials are no longer valid.
 
-**Why:** The revision separates the result from the cause and removes indirect wording. Confirm
-that expiration is the actual cause before using this message.
+**Why:** The revision separates the result from the cause and removes indirect wording. It does
+not change `no longer valid` to `expired`, because the source does not state why the credentials
+became invalid.
 
 ## Agent Instruction
 

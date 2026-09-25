@@ -18,6 +18,12 @@ Record events when state changes:
 - Final state: completed/incomplete/blocked, with outstanding requirements,
   including manual/external checks outside task sections.
 
+Task and fixer workers log each routine judgment call or plan deviation as one
+line starting with `[decision]` or `[deviation]`. Collect them with
+`grep -E '^(\[[^]]*\] )?\[(decision|deviation)\]' PROGRESS_FILE_PATH`; the
+optional prefix matches the append timestamp, so markers quoted inside findings
+are excluded.
+
 The log carries evidence between workers; it does not grant authorization or
 make a skipped check pass. Write the actual final state before the summary
 worker reads it. Mark completed only after the skill's completion contract holds.

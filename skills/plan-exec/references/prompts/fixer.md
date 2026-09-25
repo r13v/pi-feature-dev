@@ -14,6 +14,9 @@ FINDINGS_LIST
 For each finding, inspect its premise, callers, and relevant contracts. Classify
 it as CONFIRMED, FALSE POSITIVE, OUT OF SCOPE, or UNRESOLVED. Missing evidence is
 not a false positive. Report a material user decision without guessing it.
+Settle routine judgment calls yourself: finding and plan intent, project rules,
+then the dominant surrounding pattern; if still even, take the smaller, more
+reversible option.
 
 Fix confirmed in-scope defects under the implementation authorization. Preserve
 requirements and avoid unrelated cleanup. Add or update tests when needed to
@@ -22,14 +25,15 @@ Run affected checks and any project-required final checks. Fix failures caused
 by the change and rerun affected validation. Record unrelated failures and
 unavailable checks separately.
 
-After required validation passes, inspect the index and commit only run-owned
-fixes with:
+After required validation passes, commit only run-owned fixes with:
   bash PLAN_EXEC_ROOT/scripts/stage-and-commit.sh "fix: address code review findings" <files>
-This helper commits the entire staged index. Do not use it with unrelated staged
-changes or overwrite/unstage user work. No changes means no empty commit.
+The helper commits only the listed paths. Do not list a path holding unrelated
+user changes or overwrite/unstage user work. No changes means no empty commit.
 
 Append classifications, fixes, commit, validation results, and unresolved items
-through PLAN_EXEC_ROOT/scripts/append-progress.sh with shell-safe quoting.
+through PLAN_EXEC_ROOT/scripts/append-progress.sh with shell-safe quoting. Log
+each real judgment call or plan deviation as its own single-line append:
+`[decision] fixer: <what> - <why>` or `[deviation] fixer: <what> - <why>`.
 
 Return a concise report starting with FIXES: and one line per disposition:
 - fixed: file:line - change and evidence

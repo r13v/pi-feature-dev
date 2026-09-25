@@ -30,6 +30,10 @@ Create an ADR only when all three statements are true:
 2. A future reader would find the choice surprising without its context.
 3. The decision resolved a real trade-off among genuine alternatives.
 
-Qualifying decisions commonly include architectural shape, cross-context integration, lock-in-heavy technology choices, ownership boundaries, deliberate deviations from the obvious path, constraints invisible in code, and non-obvious rejected alternatives.
+Qualifying decisions commonly include architectural shape, cross-context integration, lock-in-heavy technology choices, ownership boundaries, deliberate deviations from the obvious path, constraints invisible in code, and non-obvious rejected alternatives. For example:
+
+- "Ordering and Billing communicate through domain events, not synchronous HTTP."
+- "We use hand-written SQL instead of an ORM because of X." A reasonable reader would assume the opposite, so the ADR stops someone from "fixing" it.
+- "We use REST, not GraphQL, because of Y." Without the record, someone will propose GraphQL again.
 
 Skip easy-to-reverse choices, obvious implementation details, and decisions with no real alternative.

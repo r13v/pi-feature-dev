@@ -22,8 +22,10 @@ a title, restate known requirements, or choose a testing style without a reason.
 Group independent questions when useful; defer questions whose prerequisites
 are unsettled.
 
-Compare alternatives when there is a real trade-off. Use the user's chosen
-approach or delegated judgment. Writing the requested plan does not require an
+Compare alternatives when there is a real trade-off and lead with a
+recommendation and its reason. When code would repeat, weigh duplication (less
+coupling) against a shared abstraction (less repetition, more indirection).
+Use the user's chosen approach or delegated judgment. Writing the requested plan does not require an
 extra approval turn. An unresolved material decision must stay visible rather
 than becoming an invented requirement.
 

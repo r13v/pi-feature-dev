@@ -30,10 +30,11 @@ Reuse validation evidence that covers the current code. Run missing required
 final checks, or affected checks after a rebase/fix changes code. Do not rerun
 unchanged passing suites just to produce another report. If validation fails,
 fix only clear in-scope causes, validate, and commit only run-owned changes using
-scripts/stage-and-commit.sh from PLAN_EXEC_ROOT after inspecting the full index.
+scripts/stage-and-commit.sh from PLAN_EXEC_ROOT, which commits only listed paths.
 Report code changes so the orchestrator can obtain the required review recheck.
 
-Append actual cleanup, validation, deviations, and unresolved blockers through
+Report every `[decision]` and `[deviation]` line from the progress log with its
+reason. Append actual cleanup, validation, deviations, and unresolved blockers through
 PLAN_EXEC_ROOT/scripts/append-progress.sh with shell-safe quoting. Return those
 facts and any commit IDs. Optional cleanup failure can leave a coherent branch
 ready for handoff; failed required validation means delivery is incomplete.

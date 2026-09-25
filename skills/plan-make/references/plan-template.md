@@ -47,7 +47,9 @@ authorization, and the evidence needed before the overall result is complete.]
 [Optional follow-up outside the acceptance criteria. No executable checkboxes.]
 ```
 
-Add as many task sections as the dependency structure needs. Include doc updates
+Add as many task sections as the dependency structure needs. Number tasks with
+concrete sequential integers and keep the acceptance-verification task last
+(for example, Task 6 after five implementation tasks). Include doc updates
 only when the change affects documentation. Plan archival is optional unless the
 user or repository workflow requires it.
 

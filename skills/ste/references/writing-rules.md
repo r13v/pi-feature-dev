@@ -88,25 +88,40 @@ dictionary entries, and official examples.
 - Avoid complex auxiliary constructions.
 - Use an `-ing` form only as a technical noun or as a modifier inside a technical noun.
 - Prefer active voice. In descriptive text, use passive voice only when the agent is unknown.
+  To repair a passive construction without a named agent, use `you` for the reader or `we` for
+  the organization when that actor is correct.
 - Express an action with an accurate verb, not a noun-heavy construction.
+- Replace a modal verb that is not approved only with a form of the same strength:
+  - A required `should` becomes `must`.
+  - A recommendation becomes a statement of fact with its reason.
+  - A conditional `should`, as in `should a failure occur`, becomes `if`.
+  - A possibility or permission `may`, `might`, or `could` becomes `can` when `can` keeps the
+    meaning.
+  - A hypothetical `would` becomes `can`, or a condition followed by its result.
+  - If no permitted form keeps a hedge such as `may have failed`, keep the source wording and
+    report it as an unresolved check.
 
 ### Sentences (section 4)
 
 - Write short, complete, explicit sentences.
 - Do not omit necessary words and do not use contractions.
-- Convert complex series or alternatives into vertical lists.
+- Convert complex series or alternatives into vertical lists. End the lead-in with a colon,
+  start each item with an uppercase letter, and put a period only after an item that is a full
+  sentence. Do not mix instructions and facts in one list, and do not nest lists.
 - Use clear connecting words between related statements.
 - Use an article or demonstrative adjective before a noun when English grammar requires one.
+  Omit the article when an identifier follows the noun, as in `Restart pod web-7f9b2`.
 
 ### Procedures (section 5)
 
-- Limit each sentence to 20 words.
+- Limit each sentence to 20 words. The limit also applies to warnings and cautions.
 - Put one instruction in each sentence, except for actions that occur at the same time.
 - Count independent actions, not only grammatical clauses. Do not join sequential actions with
   `and`.
 - Use the imperative form.
 - Put a prerequisite condition before the command and separate it with a comma.
-- Keep commands out of notes.
+- Keep commands and limits out of notes. Put a limit with the action that it controls. The
+  procedure must still work if the reader ignores every note.
 
 ### Descriptions (section 6)
 
@@ -118,7 +133,9 @@ dictionary entries, and official examples.
 
 ### Safety instructions (section 7)
 
-- Identify risk with the label required by the applicable safety system.
+- Identify risk with the label required by the applicable safety system. Where the project uses
+  the Issue 9 labels, `WARNING` identifies a risk of injury or death and `CAUTION` identifies a
+  risk of damage. Use `WARNING` when both risks apply.
 - Begin with a clear command or condition.
 - Explain the risk or possible result.
 - Preserve official safety wording when a governing directive prohibits changes.
@@ -165,6 +182,10 @@ For prompts, tool descriptions, error messages, agent instructions, and status r
 - Name the actor when responsibility matters.
 - State conditions before the action that depends on them.
 - Separate actual results from possible causes and suggested recovery actions.
+- Keep a compound tense when the simple tense loses information. `The job has completed` states
+  that the result applies now. `The request may have failed` is a hedge. Flag the departure.
+- Treat an em dash that joins two statements as a hidden relation. Name the relation, or write
+  two sentences.
 - Replace vague references such as `it`, `this`, and `they` when more than one referent is
   possible.
 - Keep API names, identifiers, quoted UI text, code, and protocol terms unchanged.

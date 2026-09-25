@@ -19,12 +19,37 @@ Use this checklist for production code after test bloat and verification cluster
 | Dead branch or stale flag | No call sites, impossible branch, fixed flag, overwritten value | Check reflection, registration, exports, config, and supported variants | Framework hooks, serialized names, CLI entry points | Delete the branch and its plumbing |
 | Test-created reachability | A test mutates a gate, injects a future config, or calls a post-gate helper directly | Find an active config, request, persisted value, or runtime selector that reaches it | Current platform variants or staged rollouts with an owned work package | Delete the unreachable branch and its dedicated test |
 | Compatibility residue | Alias, shim, or historical fallback has no supported consumer | Check support policy, releases, public API, and history | Third-party consumers, rolling upgrades, stored data | Delete only with affirmative end-of-support evidence |
-| Product-surface loop | Registry entry, CLI command, diagnostic module, config, and tests only reference one another | Exclude the same cluster and locate a real caller, operator workflow, or external protocol | A documented and currently used public command | Delete the full inactive entry path, not one wrapper |
-| Implicit schema default | Dataclass or parser defaults a missing identity/path/count to a historical value | Check current producers and stored-data support commitments | Truly optional presentation or enrichment fields | Make current identity explicit and fail on omission |
+| Product-surface loop | Registry entry, CLI command, diagnostic module, config, and tests only reference one another | Resolve retirement or unreachability after checking callers, operator workflows, and public contracts | Manual CLI use or external consumers without in-repository call sites | Delete the full entry path only when it is confirmed inactive; unresolved ownership is MEDIUM |
+| Implicit schema default | Dataclass or parser defaults a missing identity/path/count to a historical value | Check current producers, version-selection rules, and stored-data support commitments | Optional fields or contract-defined legacy defaults | Reject omissions forbidden by the current contract; preserve supported defaults |
 | Stale current documentation | PLAN, STATUS, architecture, or workflow text still promises a removed fallback or lists a completed fix as pending | Compare current callers/configs with authoritative documents | Clearly labeled history, migration guidance, or future proposals | Update the current claim while preserving labeled history |
-| Comment noise | Text narrates syntax, types, or generic intent | Ask whether it contributes information not present in clear code | External constraint, workaround, invariant, tradeoff | Delete restatement; preserve concise “why” |
+| Comment noise | Text narrates syntax, types, history, or generic intent | Apply the [comment check](#comment-check) | External constraint, workaround, invariant, tradeoff, tool directive | Delete restatement; condense the kept “why” |
 | Type workaround drift | Cast chains, ignores, and runtime probes conflict with surrounding conventions | Confirm current type contract and toolchain behavior | Broken third-party stubs, version-gated API | Express the real type directly and remove stale workarounds |
 | Inferred transformation | Date, filename, project ID, or incidental metadata silently selects a data transform | Find the authoritative caller choice and historical failure evidence | Versioned protocol fields with explicit semantics | Replace guessing with an explicit option and record it |
+
+## Comment check
+
+Inspect every comment and docstring in scope. A comment stays only when it states something a careful reader cannot get from the code, names, and types.
+
+**Keep** the reason behind a non-obvious choice, an external constraint or workaround (with its issue or spec link), an invariant, an ordering or concurrency requirement, a unit or format the type does not show, a security or safety warning, a public API contract, and a TODO with an owner or issue.
+
+**Delete:**
+
+- restatement of the code, the name, or the type;
+- history and process narration (see present state only below);
+- commented-out code;
+- section banners and dividers that carry no information;
+- docstrings that only repeat the signature;
+- TODOs for work that is done or has no owner or issue.
+
+**Present state only.** A comment describes the code as it is now, never how it was before or how it got here. Delete history such as "previously", "used to", "was X, now Y", "no longer", "replaced the old", "moved from", "after the refactor", "fixed the bug where", "added per review", and agent steps. Version control records history. When a kept comment mixes a reason with history, rewrite it as a present-tense fact: "Retries once because the API drops the first request after idle", not "Added a retry after we saw failures". State a rejected alternative as a current constraint: "Not cached: results depend on the caller's locale". Describe supported legacy data as the current contract: "Accepts v1 records without `owner`".
+
+**Condense** each kept comment. Use one line when possible. State the fact and its reason, with no hedging or filler. Keep every condition, limit, and link that makes it complete.
+
+**Preserve without judging content:** license and copyright headers, tool directives (`noqa`, `type: ignore`, `eslint-disable`, `@ts-expect-error`, `//go:build`, pragmas, shebangs, encoding lines), doctests and other executable examples, annotations that tools parse, and docs that project lint rules require. For a required docstring, shorten its content instead of removing it.
+
+A comment that contradicts the code is a finding. When current requirements show that the code is correct, fix or delete the comment. When they do not show which one is correct, report the conflict at MEDIUM and do not guess. Restatement, narration, and commented-out code are HIGH.
+
+Do not add comments to code that had none. After a comment-only group, confirm from the diff that no code changed, and run any documentation lint the project uses. No new tests are needed.
 
 ## Fail-visible bias
 
@@ -76,5 +101,7 @@ Before keeping an abstraction, ask what independent variation it contains today.
 Do not replace removed abstraction with a differently named abstraction. A few duplicated obvious lines can be clearer than a shared layer that forces navigation across files.
 
 A thin wrapper can still own a real boundary. Preserve one that bridges independently versioned formats, manages a temporary dataset or resource lifecycle, maintains a published import path, or translates a stable external contract. Thinness alone is not deletion evidence.
+
+For a pure forwarding alias, preserve the public name without necessarily preserving its function body: `format_user = render_user` can retain both entry points when their contract allows it. Keep a distinct wrapper when it owns format conversion, error translation, or lifecycle behavior. Likewise, removing a writer's private receipt/checksum chain does not retire the public writer; simplify its body while preserving its arguments, result, and side effects.
 
 For active-config reachability and cross-layer ownership, also read [evidence-and-reachability.md](evidence-and-reachability.md).
