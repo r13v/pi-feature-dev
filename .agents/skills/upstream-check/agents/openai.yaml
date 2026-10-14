@@ -1,0 +1,4 @@
+interface:
+  display_name: "Upstream Check"
+  short_description: "Compare skills with their upstream originals"
+  default_prompt: "Use $upstream-check to compare this repository's skills with their upstream originals."
