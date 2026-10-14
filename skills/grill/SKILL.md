@@ -1,6 +1,6 @@
 ---
 name: grill
-description: Stress-test an idea or domain model through evidence-backed interview rounds when the user asks to be challenged or grilled. Record agreed terminology and durable decisions.
+description: Stress-test an idea or domain model through evidence-backed interview rounds when the user asks to be challenged or grilled. Record agreed terminology and durable decisions. Also use to create or edit the domain glossary (`CONTEXT.md`) or an ADR.
 ---
 
 # Grill
@@ -104,6 +104,8 @@ You can choose an option or give a different answer.
 Separate consecutive questions in a round with a horizontal rule (`---`).
 
 Before sending a round, check that every question has its own visible options and a recommendation pointing to one of them. A question followed only by a recommendation is incomplete; add the missing options before sending.
+
+Word each question so a bare "yes" accepts the recommended option. Treat "yes", "ok", or "agreed" without an option label as accepting the recommendation. Treat a bare "no" as a request to reconsider the alternatives, not as a choice.
 
 Then stop and wait for the user's answers. A question that depends on another question in the same round belongs to a later round.
 

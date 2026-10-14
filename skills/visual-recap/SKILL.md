@@ -93,7 +93,7 @@ Always provide a concise inline summary. It must preserve the outcome, affected 
 
 Include:
 
-1. **Headline**: mode, scope, outcome, overall risk, and the reason for that risk.
+1. **Headline**: mode, scope, compared versions such as base and head revisions when available, outcome, overall risk, and the reason for that risk.
 2. **Impact view**: affected units, change shape, and the path between them.
 3. **Review first**: one to three ranked hotspots.
 4. **Evidence**: links or pointers to relevant context, source, documents, comparisons, and checks.
@@ -101,12 +101,12 @@ Include:
 
 Add a change flow, before-and-after view, plan-versus-actual view, or open decisions only when it reduces review effort.
 
-Keep the overview on one screen when possible and the whole recap well under about 120 lines. Put supporting detail behind expansion or below the overview. In a Markdown `<details>` block, leave a blank line after `<summary>` and around every fenced block so the content renders. Use direct labels. Do not rely on color alone. Do not include empty sections or the whole system graph.
+Keep the overview on one screen when possible and the whole recap well under about 120 lines. Put supporting detail behind expansion or below the overview. In a Markdown `<details>` block, leave a blank line after `<summary>` and around every fenced block so the content renders. Use direct labels. Do not rely on color alone. In Mermaid, you may style nodes by change shape, but keep the shape in the label text. Do not include empty sections or the whole system graph.
 
 ## Deliver and Update
 
 Present the recap in the current conversation by default. Save it to a plan, document, change request, or other artifact only when the user asks or the current workflow defines that destination.
 
-When a recap already exists, revise it instead of adding a conflicting copy. Preserve unrelated content.
+When a recap already exists, revise it instead of adding a conflicting copy. Preserve unrelated content. When saving to a persistent destination, wrap the recap in `<!-- visual-recap:start -->` and `<!-- visual-recap:end -->` markers and replace only the content between them.
 
 Before delivery, confirm that the recap tells the reviewer what to inspect first and why. If the visual does not reduce review effort, simplify it.
