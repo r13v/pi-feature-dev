@@ -1,0 +1,4 @@
+interface:
+  display_name: "Deepen"
+  short_description: "Go deeper, not bigger"
+  default_prompt: "Use $deepen to rewrite this task the way a top professional would do it."
