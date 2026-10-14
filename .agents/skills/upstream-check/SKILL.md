@@ -1,6 +1,8 @@
 ---
 name: upstream-check
 description: Compare this repository's skills with their current upstream originals and recommend changes worth adopting. Use when the user asks to check, compare, or sync skills with upstream.
+metadata:
+  internal: true
 ---
 
 # Upstream Check
