@@ -2,9 +2,9 @@
 
 This project skill applies ASD-STE100 Simplified Technical English principles to:
 
-- regulated and safety-critical technical documentation;
-- procedures and technical descriptions;
-- prompts, tool descriptions, error messages, and agent instructions;
+- regulated and safety-critical technical documentation.
+- procedures and technical descriptions.
+- prompts, tool descriptions, error messages, and agent instructions.
 - controlled or translation-ready English.
 
 The skill is Markdown-only and has no runtime or tool dependency.

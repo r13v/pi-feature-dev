@@ -19,13 +19,14 @@ accumulated test bloat, circular verification, defensive or fallback machinery,
 and comment noise. Audit mode is read-only. An explicit cleanup request authorizes edits
 within its scope; the literal `apply` command is optional.
 
-The `plan-exec` skill executes implementation plan files task by task with
-isolated workers, Git task commits, internal reviews, finalize, and a portable
-run summary. It is portable across host agents that provide fresh-context
-isolated workers and Git access.
-
 The `final-check` skill asks: “What else have we missed? Is there anything we
 need to check or fix?”
+
+The `deepen` skill asks for a deeper version of a task, not a bigger one. It
+names what a top professional would do that the request omits, the raw material
+they would start from, their methods and tools, and the external check that
+would prove the result right. Then it rewrites the request to ask for exactly
+that.
 
 The `grill` skill runs a dependency-aware interview that researches facts,
 exhausts the current decision frontier round by round, sharpens domain language,
@@ -94,6 +95,7 @@ from:
 - [danyuchn/asd-ste100-skill](https://github.com/danyuchn/asd-ste100-skill)
 - [AminBlg/SimpleEnglish](https://github.com/AminBlg/SimpleEnglish/tree/main/skills/simple-english)
 - [bish-x/creator-vibe](https://github.com/bish-x/creator-vibe)
+- [Felix Rieseberg, How to Be More Ambitious](https://felixrieseberg.com/how-to-be-more-ambitious-a-tutorial-for-humans-with-models/)
 - [kentcdodds/kcd-skills visual-recap](https://github.com/kentcdodds/kcd-skills/tree/main/skills/visual-recap)
 
 ## Usage
@@ -131,19 +133,19 @@ Create a visual review aid for a plan or completed change:
 The files under `skills/*/SKILL.md` are portable Markdown and can be adapted for
 other agent environments.
 
-Run a plan with `plan-exec`:
-
-```text
-/skill:plan-exec docs/plans/20260518-example.md
-```
-
 Run a final completeness check on the current work:
 
 ```text
 /skill:final-check
 ```
 
-Stress-test an idea before planning or implementation:
+Raise the depth of a task before starting it:
+
+```text
+/skill:deepen Analyze why churn grew last quarter.
+```
+
+Stress-test an idea before implementation:
 
 ```text
 /skill:grill Challenge the design for usage-based billing.
@@ -170,18 +172,16 @@ The `feature-dev` skill uses checkpoints that scale to the requested change:
 1. Discovery — understand the feature and establish lightweight progress tracking
 2. Codebase exploration — inspect relevant code and patterns, optionally with read-only helper passes
 3. Clarifying questions — resolve material unknowns that discovery cannot answer
-4. Architecture design — compare alternatives when their trade-offs matter
+4. Architecture design — present two or three approaches with a recommendation when the change touches a public contract, data model, several modules, or a new abstraction
 5. Implementation — complete the authorized scope with a single writer
 6. Quality review — inspect the diff from correctness, validation, and maintainability perspectives
-7. Validation and summary — run focused checks and summarize changes
+7. Validation and summary — run focused checks and summarize changes and key decisions
 
 An implementation request includes the fixes and validation needed to finish
-that scope. A requested approval checkpoint still applies; design-only and
-review-only requests do not authorize implementation.
-
-`plan-exec` retains isolated workers and task commits. It selects review lenses
-for the change, loads phase prompts as needed, and keeps unavailable required
-checks incomplete. History cleanup runs only when authorized.
+that scope. When the design step presents alternatives, the skill waits for the
+user's choice unless the user asked to proceed without design approval. A
+requested approval checkpoint still applies; design-only and review-only
+requests do not authorize implementation.
 
 ## STE modes
 
@@ -207,6 +207,9 @@ pi-feature-dev/
     ├── creator-vibe/
     │   ├── agents/openai.yaml
     │   └── SKILL.md
+    ├── deepen/
+    │   ├── agents/openai.yaml
+    │   └── SKILL.md
     ├── deslop/
     │   ├── agents/openai.yaml
     │   ├── references/
@@ -223,18 +226,6 @@ pi-feature-dev/
     │   ├── SKILL.md
     │   ├── CONTEXT-FORMAT.md
     │   └── ADR-FORMAT.md
-    ├── plan-exec/
-    │   ├── agents/openai.yaml
-    │   ├── SKILL.md
-    │   ├── references/
-    │   └── scripts/
-    ├── plan-make/
-    │   ├── agents/openai.yaml
-    │   ├── references/plan-template.md
-    │   └── SKILL.md
-    ├── plan-review/
-    │   ├── agents/openai.yaml
-    │   └── SKILL.md
     ├── ste/
     │   ├── agents/openai.yaml
     │   ├── references/
@@ -273,6 +264,13 @@ Validate the package shape:
 
 ```bash
 npm test
+```
+
+Compare the packaged skills with their upstream originals. This project-local
+skill lives in `.agents/skills/` and is not published:
+
+```text
+/skill:upstream-check
 ```
 
 Then test in Pi without installing globally:

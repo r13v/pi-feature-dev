@@ -1,6 +1,6 @@
 ---
 name: ste
-description: Draft or review unambiguous technical English using Simplified Technical English principles. Use for clarity rewrites or ASD-STE100 reviews; formal verification needs the official dictionary and project glossary.
+description: Draft or review unambiguous technical English using Simplified Technical English principles. Use for clarity rewrites or ASD-STE100 reviews. Formal verification needs the official dictionary and project glossary.
 ---
 
 # STE
@@ -101,6 +101,8 @@ for a long document, strict review, or ambiguity that requires careful tracing.
 8. Review sentence length, paragraph structure, punctuation, and term consistency manually.
 
 If the input is already clear and meets the applicable rules, say so. Do not force a rewrite.
+
+STE fixes form, not content. If the text states no useful fact, say so instead of polishing it. Stop shortening when the meaning is unambiguous.
 
 ## Self-check Before Delivery
 

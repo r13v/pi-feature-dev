@@ -19,8 +19,9 @@ complete that scope. A request for design or review alone does not.
 Ask when a missing decision materially changes product behavior, a public
 contract, scope, or an irreversible action. Research discoverable facts first.
 State routine implementation assumptions and proceed; honor delegated choices
-without asking the user to approve the same decision again. If the user requests
-an approval checkpoint, present a concrete proposal and wait there.
+without asking the user to approve the same decision again. The only default
+checkpoint is design approval when a design trigger applies. If the user
+requests another approval checkpoint, present a concrete proposal and wait there.
 
 ## Discovery and exploration
 
@@ -33,20 +34,44 @@ Use lightweight progress tracking for work spanning several steps. Optional
 read-only workers can investigate independent questions when delegation is
 available and permitted; ask them for file:line entry points, the execution flow,
 risks, and the essential files, then read those files yourself before designing.
-Otherwise work locally. Keep one writer in a checkout.
+For a large feature, run two or three such passes in parallel, each with a
+different focus: similar existing features, the architecture and abstractions of
+the affected area, or user-facing and testing patterns. Otherwise work locally.
+Keep one writer in a checkout.
 
-## Clarification and design
+## Clarification
 
 Resolve material unknowns using repository evidence and focused questions. Keep
 independent work moving while a question is pending. Do not add a question phase
 when the request and code already establish the answer.
 
+Before design, check the request and findings for gaps in scope boundaries, edge
+cases, error handling, integration points, backward compatibility, and
+performance or security needs. Ask about the gaps that change the design, in one
+organized batch; assume and state the rest.
+
+## Design
+
 Describe the intended implementation and validation briefly before editing; for
 multi-file changes, name the files to change and the build order.
-Compare alternatives only when they have meaningful differences in behavior,
-cost, compatibility, or maintenance. Recommend the smallest approach that meets
-the requirements and follows current conventions; do not manufacture three
-architectures for an obvious change.
+
+Present alternatives when the change does any of these:
+
+- changes a public contract: API, CLI, configuration, file format, or event;
+- changes a data model, schema, or persisted state;
+- spans several modules or layers;
+- introduces a new abstraction, dependency, or extension point.
+
+Then give two or three approaches that differ in structure, not in naming. Use
+these lenses as prompts, not a quota: minimal change with maximum reuse, clean
+boundaries for maintainability, and a pragmatic balance. For each approach, give
+the files and components it touches, its trade-offs and risks, and how it would
+be validated. Recommend the approach that best fits this task's scale, urgency,
+complexity, and conventions, and explain why. Then wait for the user's choice,
+unless the user asked you to proceed without design approval or already chose
+an approach.
+
+When none of these triggers applies, state the single approach and proceed.
 
 ## Implementation
 
@@ -87,6 +112,7 @@ confirmed in-scope blocker remains. A first implementation or a clean-looking
 diff is not completion. If blocked by missing access, a user decision, or an
 unrelated baseline failure, state the evidence and what remains unverified.
 
-Summarize what changed, files touched, why the approach fits, validation actually
-performed, material limitations, and follow-ups. Do not claim a check passed if
+Summarize what changed, files touched, key decisions with the chosen approach
+and its rationale, assumptions made, validation actually performed, material
+limitations, and follow-ups. Do not claim a check passed if
 it was skipped.

@@ -189,7 +189,7 @@ For prompts, tool descriptions, error messages, agent instructions, and status r
 - Replace vague references such as `it`, `this`, and `they` when more than one referent is
   possible.
 - Keep API names, identifiers, quoted UI text, code, and protocol terms unchanged.
-- Define a necessary domain term once and use it consistently.
+- Define a necessary domain term once, at first use, and use it consistently. Do not define product names, standard names, or the subject of the document.
 
 For translation-ready text:
 

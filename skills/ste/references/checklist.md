@@ -1,7 +1,7 @@
 # STE Review Checklist
 
 Use this checklist as an operational review aid. It is not a replacement for the official
-ASD-STE100 standard or dictionary. A search result identifies text to inspect; it does not prove
+ASD-STE100 standard or dictionary. A search result identifies text to inspect. It does not prove
 that the text violates a rule.
 
 ## Quick Check

@@ -69,7 +69,7 @@ Separate:
 5. Next action, owner, or checkpoint when provided.
 
 Use time references that are unambiguous in the target context. Do not present a hypothesis as a
-fact.
+fact. Write `unknown` for a time, cause, or scope that the source does not state.
 
 ## Release Note, Commit, or Pull Request
 
