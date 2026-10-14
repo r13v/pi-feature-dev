@@ -1,4 +1,0 @@
-interface:
-  display_name: "Plan Review"
-  short_description: "Evidence-backed plan review and pre-mortem"
-  default_prompt: "Use $plan-review to review this implementation plan against the repository, run a technical pre-mortem, and return a PASS / REVISE / BLOCK verdict."
