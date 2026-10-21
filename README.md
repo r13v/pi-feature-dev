@@ -25,8 +25,15 @@ need to check or fix?”
 The `deepen` skill asks for a deeper version of a task, not a bigger one. It
 names what a top professional would do that the request omits, the raw material
 they would start from, their methods and tools, and the external check that
-would prove the result right. Then it rewrites the request to ask for exactly
-that.
+would prove the result right. It tests the beliefs in the request against raw
+data and borrows methods from adjacent fields, but keeps the goal and the
+deliverable. Then it rewrites the request to ask for exactly that.
+
+The `elevate` skill aims a task at the outcome it serves instead of the
+artifact it names. It asks what should happen next, picks the strongest lever
+for that outcome, from a better decision up to a durable process tested against
+history, and names the workflow changes the model needs. The rewritten request
+proposes the new scope and waits for approval before doing more work.
 
 The `grill` skill runs a dependency-aware interview that researches facts,
 exhausts the current decision frontier round by round, sharpens domain language,
@@ -145,6 +152,12 @@ Raise the depth of a task before starting it:
 /skill:deepen Analyze why churn grew last quarter.
 ```
 
+Aim a task at the outcome it should produce:
+
+```text
+/skill:elevate Prepare the quarterly business review.
+```
+
 Stress-test an idea before implementation:
 
 ```text
@@ -164,6 +177,38 @@ Use STE principles for general agent communication:
 ```
 
 This package is intentionally skill-only. It does not provide prompt template shortcuts; use `/skill:<name>` for explicit Pi invocation.
+
+## Recommended flow
+
+The skills chain from choosing the target to cleaning up the result. Steps in
+brackets are optional:
+
+```text
+[elevate] → grill → [deepen] → feature-dev → deslop → [final-check]
+```
+
+- `elevate` comes first because it decides what to do. `grill` then settles
+  that target; changing the goal after `grill` reopens its decisions.
+- `deepen` comes after `grill` because it keeps the goal and deliverable fixed
+  and only changes how the work is done. It needs a settled deliverable.
+- `deepen` comes before `feature-dev` so that its external check, such as a
+  test, a reproduction, or a reconciliation against source data, becomes the
+  validation criterion for the implementation.
+
+Use `elevate` when:
+
+- the task names an artifact or a one-off action, such as "fix this crash",
+  "prepare the report", or "write an export script";
+- the task repeats, which makes it a candidate for a process;
+- the work feeds a meeting or a decision, such as a review, planning, or an
+  incident analysis;
+- `deepen` suggests changing the deliverable.
+
+Skip `elevate` when the feature is already specified and agreed, when a fixed
+deadline or scope must not grow, or when the change is mechanical.
+
+Use `deepen` when the goal is clear but the work is easy to do shallowly:
+analysis, debugging, or anything that depends on data.
 
 ## Feature-dev workflow
 
@@ -214,6 +259,9 @@ pi-feature-dev/
     │   ├── agents/openai.yaml
     │   ├── references/
     │   ├── LICENSE.txt
+    │   └── SKILL.md
+    ├── elevate/
+    │   ├── agents/openai.yaml
     │   └── SKILL.md
     ├── feature-dev/
     │   ├── agents/openai.yaml
