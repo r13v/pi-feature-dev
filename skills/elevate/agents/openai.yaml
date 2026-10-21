@@ -1,0 +1,4 @@
+interface:
+  display_name: "Elevate"
+  short_description: "Aim at the outcome, not the artifact"
+  default_prompt: "Use $elevate to rewrite this task around the outcome it should produce."
