@@ -38,10 +38,13 @@ proposes the new scope and waits for approval before doing more work.
 The `ship` skill runs the whole recommended flow in one skill, from choosing
 the target to the final check. It picks the optional stages, passes each
 stage's result to the next, and keeps every stage's own approval points. It
-records the starting state so that `deslop` cleans up only this task's
-changes. It writes documentation changes with `ste` and applies `creator-vibe`
-as a lens when the work has a human experience to carry. It is for non-trivial
-implementation and does not commit, push, or deploy.
+keeps its state in a progress file under `.git/`, so it does not skip stages
+and can continue after the context is compacted or in a new session. It records
+the start commit, and treats all changes after it as the task's changes. It
+runs the diff review and `final-check` in a subagent with a fresh context when
+the host can. It writes documentation changes with `ste` and applies
+`creator-vibe` as a lens when the work has a human experience to carry. It is
+for non-trivial implementation and does not commit, push, or deploy.
 
 The `grill` skill runs a dependency-aware interview that researches facts,
 exhausts the current decision frontier round by round, sharpens domain language,
@@ -211,18 +214,30 @@ brackets are optional:
 
 Use `elevate` when:
 
-- the task names an artifact or a one-off action, such as "fix this crash",
-  "prepare the report", or "write an export script";
-- the task repeats, which makes it a candidate for a process;
+- the task names an artifact or a one-off action and does not say what it is
+  for, such as "fix this crash", "prepare the report", or "write an export
+  script";
+- the repository history, the tickets, or the conversation show the same kind
+  of task before, which makes it a candidate for a process;
 - the work feeds a meeting or a decision, such as a review, planning, or an
   incident analysis;
 - `deepen` suggests changing the deliverable.
 
-Skip `elevate` when the feature is already specified and agreed, when a fixed
-deadline or scope must not grow, or when the change is mechanical.
+Skip `elevate` when the request already states the outcome and the
+acceptance criteria, when a fixed deadline or scope must not grow, or when the
+change is mechanical.
 
-Use `deepen` when the goal is clear but the work is easy to do shallowly:
-analysis, debugging, or anything that depends on data.
+Use `deepen` when:
+
+- the result depends on a claim that raw data can confirm or refute, such as
+  the cause of a bug, a performance bottleneck, a metric, or the behavior of
+  data in a migration;
+- for some acceptance criterion, no concrete check that can decide it is
+  named yet, such as a test to write, a reproduction, or a command;
+- an acceptance criterion depends on data outside the repository.
+
+Skip `deepen` when each acceptance criterion has a named concrete check and the
+change follows an existing pattern in the repository.
 
 To run the whole flow in one step, use `ship`. It applies these rules to choose
 the optional stages and states each skipped stage with a reason.

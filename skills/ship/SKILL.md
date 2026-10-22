@@ -23,27 +23,107 @@ edit, a small fix, or work with no implementation, such as a report or an
 analysis, do not run the pipeline. Name the shorter path that fits, such as a
 direct edit or one skill, and stop.
 
+## Keep a progress file
+
+Keep the state of the pipeline in a progress file, not only in the
+conversation. The file prevents skipped stages and lets the work continue
+after the context is compacted or in a new session in the same checkout.
+
+Put the file in the directory that `git rev-parse --path-format=absolute
+--git-path ship` prints, as `<run-id>.md`. Make the run ID from the start date
+and time and a short task slug, such as `20261022-1530-add-export`. Create the
+directory if it does not exist. Git does not track this directory, so the file
+does not change the working tree or the diff of the task. If the host does not
+let you write there, tell the user and ask where to keep the file. Do not
+continue without a progress file.
+
+Before the first stage, look for a progress file with `status: active` on the
+current branch. If it matches this task, read it and continue from the first
+stage that has no result. If you cannot tell whether it matches, ask the user.
+Do not resume a file with `status: finished`.
+
+Otherwise, start a new run. If a file `<run-id>.md` already exists, choose
+another run ID. Start the file with YAML frontmatter:
+
+```yaml
+---
+status: active
+run_id: 20261022-1530-add-export
+branch: f/export
+start_commit: 14da9c8
+started: 2026-10-22T15:30
+---
+```
+
+Use `git branch --show-current` for `branch`, or `detached` if it prints
+nothing. Use `git rev-parse --short HEAD` for `start_commit`, or `none` on a
+branch with no commits. In the body, write:
+
+- the original request;
+- one entry for each stage: `selected`, `skipped: <reason>`, or, for deepen,
+  `selection pending after grill`.
+
+Before a stage starts, read the file. Do not start a stage until each earlier
+stage has an entry with `done` or `skipped: <reason>`. A deepen entry with
+`selection pending after grill` does not count. When a stage ends, write its
+status and its result: the approved elevated request, the Grill Result, the
+acceptance criteria, the selected design, and the checks that ran. Write each
+user decision when the user makes it.
+
+When ship ends, set `status: finished`, and give the path of the file in the
+output.
+
+## Changes of the task
+
+All changes in the working tree after the start commit are changes of this
+task. This includes uncommitted changes that existed before ship started and
+changes that the user makes during the run. If the working tree has
+uncommitted changes at the start, say in one line that they become part of
+the task.
+
+When a stage needs the changes of the task, run `git diff <start_commit>` and
+`git ls-files --others --exclude-standard`. On a branch with no commits, all
+files are changes of the task. Do not copy diffs or file content into the
+progress file. Read the current changes from git when a stage needs them.
+
 ## Choose the stages
 
-Always run `grill`, `feature-dev`, and `deslop`. Select the optional stages
-before the first stage starts. If the user includes or skips a stage, do what
-the user says.
+Always run `grill`, `feature-dev`, and `deslop`. Select `elevate` and
+`final-check` before the first stage starts. Select `deepen` after grill,
+when the acceptance criteria are known. If the user includes or skips a stage,
+do what the user says.
 
-- **`elevate`:** Run it when the task names an artifact or a one-off action,
-  when the task repeats, or when the task feeds a meeting or a decision. Skip
-  it when the feature is already specified and agreed, when a fixed deadline
-  or scope must not grow, or when the change is mechanical.
-- **`deepen`:** Run it when the goal is clear but the work is easy to do
-  shallowly, such as debugging or work that depends on data or analysis.
+- **`elevate`:** Run it when one of these is true:
+  - the request names an artifact or a one-off action and does not say what
+    it is for, such as "fix this crash" or "write an export script";
+  - the repository history, the tickets, or the conversation show the same
+    kind of request before;
+  - the result feeds a meeting or a decision that the request names.
+
+  Skip it when the request already states the outcome and the acceptance
+  criteria, when the user set a fixed deadline or scope, or when the change
+  is mechanical.
+- **`deepen`:** Run it when one of these is true:
+  - the result depends on a claim that raw data can confirm or refute, such
+    as the cause of a bug, a performance bottleneck, a metric, or the
+    behavior of data in a migration;
+  - for some acceptance criterion, the Grill Result does not name a concrete
+    check that can decide it, such as a test to write, a reproduction, or a
+    command;
+  - an acceptance criterion depends on data outside the repository.
+
+  Skip it when the Grill Result names a concrete check for each acceptance
+  criterion and the change follows an existing pattern in the repository.
 - **`final-check`:** Run it after implementation by default.
 - **`creator-vibe`:** This is a lens, not a separate stage. Apply it when the
   request carries an intended feeling, voice, or human experience, such as a
   UI, onboarding, copy, error messages, or developer experience. Skip it for
   backend, migration, and mechanical work.
 
+If a run condition and a skip condition both hold, skip elevate, because it
+grows the scope, and run deepen, because it keeps the goal.
+
 State the selected stages in one line. Give a reason for each skipped stage.
-Keep a short stage ledger in the conversation. Update it when each stage
-ends.
 
 ## Run the stages
 
@@ -52,24 +132,21 @@ points of each stage stay in effect. A ship request does not approve them.
 
 1. **Elevate.** The rewritten request changes the scope. Wait for the user to
    approve it. If the user declines, continue with the original request.
-2. **Record the baseline.** Do this before grill, because grill is the first
-   stage that can write files. Record the current branch, its merge base,
-   `git status`, and the files that already have changes. The baseline
-   separates earlier work from the changes of this task. Glossary and ADR
-   updates from grill are changes of this task. For each file that already
-   has changes, keep its staged and unstaged diff in the conversation. Also
-   keep the content of each untracked file. Do not commit, stash, reset, or
-   write a snapshot file to make the baseline.
-3. **Grill.** Run the interview rounds and the final confirmation as the grill
+2. **Grill.** Run the interview rounds and the final confirmation as the grill
    skill describes. Use the confirmed `Grill Result` as the input for all
-   later stages. If grill changes the goal, tell the user and ask whether to
-   continue with the new goal. Do not run elevate again without telling the
-   user.
-4. **Deepen.** A ship request counts as a request to proceed. Continue with
+   later stages. Glossary and ADR updates from grill are changes of this
+   task. If grill changes the goal, tell the user and ask whether to continue
+   with the new goal. Do not run elevate again without telling the user.
+3. **Deepen.** A ship request counts as a request to proceed. Continue with
    the rewritten request without a separate stop. Stop if deepen lists
-   blockers. Stop if deepen proposes a different deliverable. Add the external
-   validation from deepen to the acceptance criteria of feature-dev.
-5. **Feature-dev.** Implement the confirmed scope. When a design trigger of
+   blockers. If deepen proposes a different deliverable, stop and offer to run
+   elevate with it. If the user accepts, write the new deliverable to the
+   progress file. Set the elevate, grill, and deepen entries to `reopened:
+   <reason>`, which does not count as a result. Keep the start commit. Then
+   run elevate, and run grill again for the decisions that the new
+   deliverable changes. Add the external validation from deepen to the
+   acceptance criteria of feature-dev.
+4. **Feature-dev.** Implement the confirmed scope. When a design trigger of
    feature-dev applies, present the architecture approaches with a
    recommendation, as feature-dev describes. If the Grill Result already
    selected an approach, recommend that approach. Wait for the user's choice.
@@ -77,14 +154,28 @@ points of each stage stay in effect. A ship request does not approve them.
    the wait only if the user explicitly asked to skip design approval.
    Validate against the success criteria in the Grill Result and against the
    deepen validation, if there is one.
-6. **Deslop.** A ship request approves cleanup of the changes of this task
-   only. Give deslop that scope explicitly: the files and hunks that changed
-   after the baseline. Do not change work that existed before the baseline,
-   also in the same files. If you cannot separate a hunk from earlier work,
-   do not clean it up, and report it. After cleanup, run the affected checks
-   again.
-7. **Final-check.** Compare the result with the original request, the Grill
+5. **Deslop.** A ship request approves cleanup of the changes of this task
+   only. Give deslop that scope explicitly: the hunks in `git diff
+   <start_commit>` and the untracked files that are not ignored. After
+   cleanup, run the affected checks again.
+6. **Final-check.** Compare the result with the original request, the Grill
    Result, and the acceptance criteria. Fix the confirmed gaps in scope.
+
+## Run checks in a fresh context
+
+The agent that wrote the code is the weakest judge of its gaps. When the host
+can run subagents, run these checks in a subagent with a fresh context:
+
+- the review of the diff in feature-dev;
+- final-check.
+
+Give the subagent the path of the progress file, the acceptance criteria, and
+the commands that show the changes of this task. Do not give it the
+conversation. Tell it to report findings and not to edit files.
+
+Before you fix a finding, open the code that it cites and confirm it. Make
+all fixes yourself, so that one agent writes the code. If the host cannot run
+subagents, run the checks yourself.
 
 ## Creator-vibe lens
 
@@ -113,8 +204,9 @@ clarity mode.
 
 ## Output
 
-- The stage ledger: each stage that ran or was skipped, with the reason.
+- Each stage that ran or was skipped, with the reason.
 - The accepted objective from the Grill Result.
 - The changes, the files touched, and the key decisions.
 - The validation that ran, and the items that remain unverified.
+- The path of the progress file.
 - Blockers and follow-ups, if any.
