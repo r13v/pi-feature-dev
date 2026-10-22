@@ -1,0 +1,4 @@
+interface:
+  display_name: "Ship"
+  short_description: "Run the whole feature pipeline in one skill"
+  default_prompt: "Use $ship to take this feature from target to final check through the full pipeline."

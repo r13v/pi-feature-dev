@@ -35,6 +35,14 @@ for that outcome, from a better decision up to a durable process tested against
 history, and names the workflow changes the model needs. The rewritten request
 proposes the new scope and waits for approval before doing more work.
 
+The `ship` skill runs the whole recommended flow in one skill, from choosing
+the target to the final check. It picks the optional stages, passes each
+stage's result to the next, and keeps every stage's own approval points. It
+records the starting state so that `deslop` cleans up only this task's
+changes. It writes documentation changes with `ste` and applies `creator-vibe`
+as a lens when the work has a human experience to carry. It is for non-trivial
+implementation and does not commit, push, or deploy.
+
 The `grill` skill runs a dependency-aware interview that researches facts,
 exhausts the current decision frontier round by round, sharpens domain language,
 and records agreed terminology and durable architectural decisions.
@@ -152,6 +160,12 @@ Raise the depth of a task before starting it:
 /skill:deepen Analyze why churn grew last quarter.
 ```
 
+Run the whole pipeline for one feature:
+
+```text
+/skill:ship Add usage-based billing to the invoices service.
+```
+
 Aim a task at the outcome it should produce:
 
 ```text
@@ -209,6 +223,9 @@ deadline or scope must not grow, or when the change is mechanical.
 
 Use `deepen` when the goal is clear but the work is easy to do shallowly:
 analysis, debugging, or anything that depends on data.
+
+To run the whole flow in one step, use `ship`. It applies these rules to choose
+the optional stages and states each skipped stage with a reason.
 
 ## Feature-dev workflow
 
@@ -274,6 +291,9 @@ pi-feature-dev/
     │   ├── SKILL.md
     │   ├── CONTEXT-FORMAT.md
     │   └── ADR-FORMAT.md
+    ├── ship/
+    │   ├── agents/openai.yaml
+    │   └── SKILL.md
     ├── ste/
     │   ├── agents/openai.yaml
     │   ├── references/
