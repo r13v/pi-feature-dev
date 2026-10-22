@@ -70,15 +70,38 @@ Record the baseline when you create the progress file, before any stage can
 write files. The baseline separates earlier work from the changes of this
 task. It includes staged, unstaged, and untracked files that are not ignored.
 
+### Check untracked files first
+
+A snapshot writes a copy of each untracked file that is not ignored into
+`.git`. Each later snapshot writes a new copy of each such file that changed.
+The pin keeps the baseline copies until ship ends. Before the first snapshot,
+list these files with their sizes in KB:
+
+```sh
+git ls-files -z --others --exclude-standard | xargs -0 -r du -k | sort -rn
+```
+
+If a file is larger than 20 MB, if the total is larger than 100 MB, or if a
+file can contain secrets, such as `.env*`, `*.pem`, `*.key`, or a credentials
+file, show those files to the user. Ask for each one whether to add it to
+`.gitignore`, to exclude it from the snapshots, or to keep it. Do not edit
+`.gitignore` without the user's answer. Write the excluded paths to the
+progress file. Ship cannot see changes to an excluded file, so report the
+excluded paths in the output.
+
+### Take a snapshot
+
 Take a snapshot of the working tree through a temporary index. This does not
 change the index or the working tree, and it also works on a branch with no
-commits:
+commits. Run the block with `sh -s --`, and pass `':(top,exclude)<path>'` as
+an argument for each excluded path in the progress file:
 
 ```sh
 tmp=$(mktemp) && rm -f "$tmp" || exit 1
 idx=$(git rev-parse --path-format=absolute --git-path index) || exit 1
 if [ -f "$idx" ]; then cp "$idx" "$tmp" || exit 1; fi
-tree=$(GIT_INDEX_FILE="$tmp" git add -A && GIT_INDEX_FILE="$tmp" git write-tree)
+tree=$(GIT_INDEX_FILE="$tmp" git add -A -- ':/' "$@" &&
+  GIT_INDEX_FILE="$tmp" git write-tree)
 rc=$?
 rm -f "$tmp"
 [ "$rc" -eq 0 ] && [ "$(git cat-file -t "$tree" 2>/dev/null)" = tree ] || exit 1
@@ -94,8 +117,8 @@ the user.
 3. When ship ends, delete the pin with `git update-ref -d
    refs/ship/<run-id>`.
 
-When a stage needs the changes of this task, take a new snapshot the same way
-and run `git diff <baseline> <snapshot>`. This shows new, changed, deleted, and
+When a stage needs the changes of this task, take a new snapshot the same way,
+with the same excluded paths, and run `git diff <baseline> <snapshot>`. This shows new, changed, deleted, and
 renamed files, also files that were untracked at the baseline. Do not commit,
 stash, or reset to make a snapshot. Do not copy the baseline diffs or file
 content into the conversation or the progress file. Read the current diff from
@@ -226,6 +249,7 @@ clarity mode.
 - The changes, the files touched, and the key decisions.
 - The validation that ran, and the items that remain unverified.
 - The path of the progress file.
+- The paths excluded from the snapshots, if any.
 - Refs under `refs/ship/` that other runs left, if `git for-each-ref
   refs/ship/` lists any.
 - Blockers and follow-ups, if any.
