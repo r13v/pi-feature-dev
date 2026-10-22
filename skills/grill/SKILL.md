@@ -70,14 +70,14 @@ Compute the full current frontier. Exclude:
 - questions whose prerequisites are unresolved
 - questions whose answers cannot change the outcome
 
-Ask independent frontier questions together, using the host's question interface when available. Split a large frontier into manageable rounds and retain the remaining questions in the ledger. Every question must include explicit answer options and a recommendation. This requirement also applies to clarification questions, ADR-recording questions, and the final shared-understanding confirmation. For each question:
+Ask independent frontier questions together, in chat. Do not use a host question interface or tool, even when one is available: it limits the number of questions, shortens the options, and hides the reason for the recommendation. Split a large frontier into manageable rounds and retain the remaining questions in the ledger. Every question must include explicit answer options and a recommendation. This requirement also applies to clarification questions, ADR-recording questions, and the final shared-understanding confirmation. For each question:
 
 1. State the decision precisely.
 2. List at least two distinct, meaningful answer options. For a confirmation, spell out both confirming and correcting or declining; do not assume yes/no is implicit in the question.
 3. Recommend one of the listed options by label and give a brief reason. The recommendation never substitutes for the options.
 4. Allow a free-form answer. For an unbounded choice, offer concrete starting options plus a way to supply a different answer; do not replace all options with an invitation to respond freely.
 
-When using the host's question interface, populate its options field and identify the recommended option. When asking in chat, use this required format for every question, with consecutive question numbers and additional option lines as needed:
+Use this required format for every question, with consecutive question numbers and additional option lines as needed:
 
 ```md
 ❓ **Q1** - **<decision title>**: <question body>
