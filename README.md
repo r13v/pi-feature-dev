@@ -39,14 +39,12 @@ The `ship` skill runs the whole recommended flow in one skill, from choosing
 the target to the final check. It picks the optional stages, passes each
 stage's result to the next, and keeps every stage's own approval points. It
 keeps its state in a progress file under `.git/`, so it does not skip stages
-and can continue after the context is compacted or in a new session. It
-records the starting state as a git tree snapshot, without changing the index
-or the working tree, so that `deslop` cleans up only this task's changes.
-Before the first snapshot, it asks about large untracked files and files that
-can contain secrets, because a snapshot copies them into `.git`. It runs the diff review and `final-check` in a subagent with a fresh
-context when the host can. It writes documentation changes with `ste` and applies `creator-vibe`
-as a lens when the work has a human experience to carry. It is for non-trivial
-implementation and does not commit, push, or deploy.
+and can continue after the context is compacted or in a new session. It records
+the start commit, and treats all changes after it as the task's changes. It
+runs the diff review and `final-check` in a subagent with a fresh context when
+the host can. It writes documentation changes with `ste` and applies
+`creator-vibe` as a lens when the work has a human experience to carry. It is
+for non-trivial implementation and does not commit, push, or deploy.
 
 The `grill` skill runs a dependency-aware interview that researches facts,
 exhausts the current decision frontier round by round, sharpens domain language,

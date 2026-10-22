@@ -29,100 +29,62 @@ Keep the state of the pipeline in a progress file, not only in the
 conversation. The file prevents skipped stages and lets the work continue
 after the context is compacted or in a new session in the same checkout.
 
-Put the file in the directory that
-`git rev-parse --path-format=absolute --git-path ship` prints, as
-`<run-id>.md`. Make the run ID from the start date and time and a short task
-slug, such as `20261022-1530-add-export`. Create the directory if it does not exist. Git does not
-track this directory, so the file does not change the working tree or the
-diff of the task. If the host does not let you write there, tell the user and
-ask where to keep the file. Do not continue without a progress file.
+Put the file in the directory that `git rev-parse --path-format=absolute
+--git-path ship` prints, as `<run-id>.md`. Make the run ID from the start date
+and time and a short task slug, such as `20261022-1530-add-export`. Create the
+directory if it does not exist. Git does not track this directory, so the file
+does not change the working tree or the diff of the task. If the host does not
+let you write there, tell the user and ask where to keep the file. Do not
+continue without a progress file.
 
 Before the first stage, look for a progress file with `status: active` on the
 current branch. If it matches this task, read it and continue from the first
 stage that has no result. If you cannot tell whether it matches, ask the user.
 Do not resume a file with `status: finished`.
 
-Otherwise, start a new run. Before you create the file, make sure that no file
-`<run-id>.md` and no ref `refs/ship/<run-id>` exist. Check the ref with
-`git show-ref --verify --quiet refs/ship/<run-id>`. If one exists, choose
-another run ID. Then create the file with:
+Otherwise, start a new run. If a file `<run-id>.md` already exists, choose
+another run ID. Start the file with YAML frontmatter:
 
-- `status: active`, the current branch (or `detached`), the `HEAD` commit if
-  there is one, and the start time;
+```yaml
+---
+status: active
+run_id: 20261022-1530-add-export
+branch: f/export
+start_commit: 14da9c8
+started: 2026-10-22T15:30
+---
+```
+
+Use `git branch --show-current` for `branch`, or `detached` if it prints
+nothing. Use `git rev-parse --short HEAD` for `start_commit`, or `none` on a
+branch with no commits. In the body, write:
+
 - the original request;
-- the baseline;
 - one entry for each stage: `selected`, `skipped: <reason>`, or, for deepen,
   `selection pending after grill`.
 
 Before a stage starts, read the file. Do not start a stage until each earlier
 stage has an entry with `done` or `skipped: <reason>`. A deepen entry with
-`selection pending after grill` does not count. When a stage ends, write its status
-and its result: the approved elevated request, the Grill Result, the
+`selection pending after grill` does not count. When a stage ends, write its
+status and its result: the approved elevated request, the Grill Result, the
 acceptance criteria, the selected design, and the checks that ran. Write each
 user decision when the user makes it.
 
 When ship ends, set `status: finished`, and give the path of the file in the
 output.
 
-## Record the baseline
+## Changes of the task
 
-Record the baseline when you create the progress file, before any stage can
-write files. The baseline separates earlier work from the changes of this
-task. It includes staged, unstaged, and untracked files that are not ignored.
+All changes in the working tree after the start commit are changes of this
+task. This includes uncommitted changes that existed before ship started and
+changes that the user makes during the run. If the working tree has
+uncommitted changes at the start, say in one line that they become part of
+the task.
 
-### Check untracked files first
-
-A snapshot writes a copy of each untracked file that is not ignored into
-`.git`. Each later snapshot writes a new copy of each such file that changed.
-The pin keeps the baseline copies until ship ends. Before the first snapshot,
-list these files with their sizes in KB:
-
-```sh
-git ls-files -z --others --exclude-standard | xargs -0 -r du -k | sort -rn
-```
-
-If a file is larger than 20 MB, if the total is larger than 100 MB, or if a
-file can contain secrets, such as `.env*`, `*.pem`, `*.key`, or a credentials
-file, show those files to the user. Ask for each one whether to add it to
-`.gitignore`, to exclude it from the snapshots, or to keep it. Do not edit
-`.gitignore` without the user's answer. Write the excluded paths to the
-progress file. Ship cannot see changes to an excluded file, so report the
-excluded paths in the output.
-
-### Take a snapshot
-
-Take a snapshot of the working tree through a temporary index. This does not
-change the index or the working tree, and it also works on a branch with no
-commits. Run the block with `sh -s --`, and pass `':(top,exclude)<path>'` as
-an argument for each excluded path in the progress file:
-
-```sh
-tmp=$(mktemp) && rm -f "$tmp" || exit 1
-idx=$(git rev-parse --path-format=absolute --git-path index) || exit 1
-if [ -f "$idx" ]; then cp "$idx" "$tmp" || exit 1; fi
-tree=$(GIT_INDEX_FILE="$tmp" git add -A -- ':/' "$@" &&
-  GIT_INDEX_FILE="$tmp" git write-tree)
-rc=$?
-rm -f "$tmp"
-[ "$rc" -eq 0 ] && [ "$(git cat-file -t "$tree" 2>/dev/null)" = tree ] || exit 1
-echo "$tree"
-```
-
-The block prints a tree ID. If it exits with a nonzero status, stop and tell
-the user.
-
-1. Write the tree ID to the progress file as the baseline.
-2. Pin it, so that garbage collection does not remove it:
-   `git update-ref refs/ship/<run-id> <tree>`.
-3. When ship ends, delete the pin with `git update-ref -d
-   refs/ship/<run-id>`.
-
-When a stage needs the changes of this task, take a new snapshot the same way,
-with the same excluded paths, and run `git diff <baseline> <snapshot>`. This shows new, changed, deleted, and
-renamed files, also files that were untracked at the baseline. Do not commit,
-stash, or reset to make a snapshot. Do not copy the baseline diffs or file
-content into the conversation or the progress file. Read the current diff from
-git when a stage needs it.
+When a stage needs the changes of the task, run `git diff <start_commit>` and
+`git ls-files --others --exclude-standard`. On a branch with no commits, all
+files are changes of the task. Do not copy diffs or file content into the
+progress file. Read the current changes from git when a stage needs them.
 
 ## Choose the stages
 
@@ -180,10 +142,9 @@ points of each stage stay in effect. A ship request does not approve them.
    blockers. If deepen proposes a different deliverable, stop and offer to run
    elevate with it. If the user accepts, write the new deliverable to the
    progress file. Set the elevate, grill, and deepen entries to `reopened:
-   <reason>`, which does not count as a result. Keep the baseline, so that the
-   earlier grill changes stay changes of this task. Then run elevate, and run
-   grill again for the decisions that the new deliverable changes. Add the external
-   validation from deepen to the acceptance criteria of feature-dev.
+   <reason>`, which does not count as a result. Keep the start commit. Then
+   run elevate, and run grill again for the decisions that the new
+   deliverable changes. Add the external validation from deepen to the acceptance criteria of feature-dev.
 4. **Feature-dev.** Implement the confirmed scope. When a design trigger of
    feature-dev applies, present the architecture approaches with a
    recommendation, as feature-dev describes. If the Grill Result already
@@ -193,10 +154,9 @@ points of each stage stay in effect. A ship request does not approve them.
    Validate against the success criteria in the Grill Result and against the
    deepen validation, if there is one.
 5. **Deslop.** A ship request approves cleanup of the changes of this task
-   only. Give deslop that scope explicitly: the hunks in `git diff <baseline>
-   <snapshot>`. Do not change work that existed before the baseline. If you
-   cannot separate a hunk from earlier work, do not clean it up, and report
-   it. After cleanup, run the affected checks again.
+   only. Give deslop that scope explicitly: the hunks in `git diff
+   <start_commit>` and the untracked files that are not ignored. After
+   cleanup, run the affected checks again.
 6. **Final-check.** Compare the result with the original request, the Grill
    Result, and the acceptance criteria. Fix the confirmed gaps in scope.
 
@@ -209,8 +169,7 @@ can run subagents, run these checks in a subagent with a fresh context:
 - final-check.
 
 Give the subagent the path of the progress file, the acceptance criteria, and
-the commands that show the changes of this task: the snapshot commands and
-`git diff <baseline> <snapshot>`. Do not give it the
+the commands that show the changes of this task. Do not give it the
 conversation. Tell it to report findings and not to edit files.
 
 Before you fix a finding, open the code that it cites and confirm it. Make
@@ -249,7 +208,4 @@ clarity mode.
 - The changes, the files touched, and the key decisions.
 - The validation that ran, and the items that remain unverified.
 - The path of the progress file.
-- The paths excluded from the snapshots, if any.
-- Refs under `refs/ship/` that other runs left, if `git for-each-ref
-  refs/ship/` lists any.
 - Blockers and follow-ups, if any.
