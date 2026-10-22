@@ -144,7 +144,8 @@ points of each stage stay in effect. A ship request does not approve them.
    progress file. Set the elevate, grill, and deepen entries to `reopened:
    <reason>`, which does not count as a result. Keep the start commit. Then
    run elevate, and run grill again for the decisions that the new
-   deliverable changes. Add the external validation from deepen to the acceptance criteria of feature-dev.
+   deliverable changes. Add the external validation from deepen to the
+   acceptance criteria of feature-dev.
 4. **Feature-dev.** Implement the confirmed scope. When a design trigger of
    feature-dev applies, present the architecture approaches with a
    recommendation, as feature-dev describes. If the Grill Result already
