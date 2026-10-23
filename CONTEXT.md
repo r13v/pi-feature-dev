@@ -28,6 +28,10 @@ _Avoid_: optional feature, fallback path
 The ambient rules supplied by the current host agent, user, and repository.
 _Avoid_: custom rules file
 
+**Backlog Item**:
+A deferred idea with its reason and evidence, kept as a file under `docs/backlog/`. It is an option to return to, not a commitment to do the work.
+_Avoid_: ticket, task, TODO
+
 ## Relationships
 
 - A **Host Agent** executes one or more **Skills**.

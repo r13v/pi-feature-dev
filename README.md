@@ -43,8 +43,20 @@ and can continue after the context is compacted or in a new session. It records
 the start commit, and treats all changes after it as the task's changes. It
 runs the diff review and `final-check` in a subagent with a fresh context when
 the host can. It writes documentation changes with `ste` and applies
-`creator-vibe` as a lens when the work has a human experience to carry. It is
+`creator-vibe` as a lens when the work has a human experience to carry. It
+collects the ideas outside the scope during the run, and at the end offers
+them to `backlog` in one batch. It can also start from a backlog item. It is
 for non-trivial implementation and does not commit, push, or deploy.
+
+The `backlog` skill keeps deferred ideas as one Markdown file per item under
+`docs/backlog/`. Each item records why it matters, its evidence, the task that
+found it, and why that task deferred it. An item is an option to return to,
+not a commitment. A file that exists is an open item, and the change that does
+or drops the idea deletes the file, so git history keeps the record. The skill
+files only ideas that are worth a separate change and have concrete evidence,
+adds new evidence to an existing item instead of creating a repeat, and asks
+the user about each idea. It lists, briefs, and walks the items, and marks
+undecided items that are older than 90 days. It does not commit or push.
 
 The `grill` skill runs a dependency-aware interview that researches facts,
 exhausts the current decision frontier round by round, sharpens domain language,
@@ -169,6 +181,19 @@ Run the whole pipeline for one feature:
 /skill:ship Add usage-based billing to the invoices service.
 ```
 
+Start the pipeline from a deferred idea:
+
+```text
+/skill:ship docs/backlog/export-ignores-time-zone.md
+```
+
+Review the deferred ideas, or defer a new one:
+
+```text
+/skill:backlog
+/skill:backlog Add: the CSV export ignores the account time zone.
+```
+
 Aim a task at the outcome it should produce:
 
 ```text
@@ -240,7 +265,9 @@ Skip `deepen` when each acceptance criterion has a named concrete check and the
 change follows an existing pattern in the repository.
 
 To run the whole flow in one step, use `ship`. It applies these rules to choose
-the optional stages and states each skipped stage with a reason.
+the optional stages and states each skipped stage with a reason. Ideas that
+fall outside the scope go to `backlog` instead of growing the task, and a
+later `ship` run can start from one of them.
 
 ## Feature-dev workflow
 
@@ -281,6 +308,9 @@ Standard provenance, design references, and source links stay in
 pi-feature-dev/
 ├── package.json
 └── skills/
+    ├── backlog/
+    │   ├── agents/openai.yaml
+    │   └── SKILL.md
     ├── creator-vibe/
     │   ├── agents/openai.yaml
     │   └── SKILL.md

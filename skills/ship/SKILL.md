@@ -1,6 +1,6 @@
 ---
 name: ship
-description: Take a non-trivial feature from a raw request to validated, cleaned-up changes in one run. Settle the right target and the decisions with the user, implement with design approval, remove the bloat the work added, and check for missed requirements. Use when the user asks to ship a feature end to end or to run the whole pipeline; skip mechanical edits, small fixes, and work with no implementation.
+description: Take a non-trivial feature from a raw request to validated, cleaned-up changes in one run. Settle the right target and the decisions with the user, implement with design approval, remove the bloat the work added, check for missed requirements, and defer the ideas outside the scope to the backlog. Use when the user asks to ship a feature end to end, to run the whole pipeline, or to start from a backlog item; skip mechanical edits, small fixes, and work with no implementation.
 ---
 
 # Ship
@@ -22,6 +22,15 @@ Use ship only for non-trivial implementation. If the request is a mechanical
 edit, a small fix, or work with no implementation, such as a report or an
 analysis, do not run the pipeline. Name the shorter path that fits, such as a
 direct edit or one skill, and stop.
+
+If the request is the path of a backlog item under `docs/backlog/`, read the
+item as the `backlog` skill describes. Check its `where` and its evidence
+against the current code. If the item is stale or the idea is already done,
+offer to drop it as the `backlog` skill describes, and then stop. If its `worth` is `no`, give the
+reason from the item and ask whether to continue. Otherwise, use the item as
+the original request. It is an idea to grill, not a settled specification.
+Write the path of the item in the progress file. Delete the item file during
+feature-dev, as a change of this task.
 
 ## Keep a progress file
 
@@ -61,7 +70,9 @@ branch with no commits. In the body, write:
 
 - the original request;
 - one entry for each stage: `selected`, `skipped: <reason>`, or, for deepen,
-  `selection pending after grill`.
+  `selection pending after grill`;
+- an entry `deferred ideas: pending`;
+- an empty `Deferred ideas` section.
 
 Before a stage starts, read the file. Do not start a stage until each earlier
 stage has an entry with `done` or `skipped: <reason>`. A deepen entry with
@@ -71,7 +82,8 @@ acceptance criteria, the selected design, and the checks that ran. Write each
 user decision when the user makes it.
 
 When ship ends, set `status: finished`, and give the path of the file in the
-output.
+output. Do not set `status: finished` while the `deferred ideas` entry is
+`pending`.
 
 ## Changes of the task
 
@@ -160,6 +172,35 @@ points of each stage stay in effect. A ship request does not approve them.
    cleanup, run the affected checks again.
 6. **Final-check.** Compare the result with the original request, the Grill
    Result, and the acceptance criteria. Fix the confirmed gaps in scope.
+7. **Deferred ideas.** Offer the collected ideas as the next section
+   describes.
+
+## Defer ideas
+
+When a stage finds an idea outside the confirmed scope, do not do it. Add one
+line to the `Deferred ideas` section of the progress file: the idea, its
+evidence, and the stage that found it. Do not ask the user about each idea
+when it appears. Ideas come from:
+
+- grill: non-goals and deferred decisions that are real ideas, not only
+  limits of this task;
+- feature-dev: findings of the diff review that are outside the scope;
+- final-check: gaps that are real but outside the scope.
+
+After final-check, or after deslop if the user skipped final-check, give the
+ideas of the section to the `add` mode of the `backlog` skill. It asks the
+user about the ideas in one batch. Ask it to add the option "do now" only for
+an idea that does not change the accepted objective and is not a confirmed
+non-goal. Write each decision next to its idea in the progress file.
+
+Implement each "do now" idea in this run. Then run deslop on the new hunks,
+and run final-check again for them, or the feature-dev validation if the user
+skipped final-check. Mark each step next to the idea when it ends. Give the
+ideas that this second pass finds to the `add` mode without the "do now"
+option.
+
+Set the `deferred ideas` entry to `done` when the section is empty, or when
+each idea has a decision and each "do now" idea has passed its checks.
 
 ## Run checks in a fresh context
 
@@ -171,7 +212,8 @@ can run subagents, run these checks in a subagent with a fresh context:
 
 Give the subagent the path of the progress file, the acceptance criteria, and
 the commands that show the changes of this task. Do not give it the
-conversation. Tell it to report findings and not to edit files.
+conversation. Tell it to report findings and not to edit files, and to list
+the findings outside the scope separately.
 
 Before you fix a finding, open the code that it cites and confirm it. Make
 all fixes yourself, so that one agent writes the code. If the host cannot run
@@ -209,4 +251,5 @@ clarity mode.
 - The changes, the files touched, and the key decisions.
 - The validation that ran, and the items that remain unverified.
 - The path of the progress file.
+- The backlog items that this run created, changed, or deleted.
 - Blockers and follow-ups, if any.

@@ -16,6 +16,6 @@ rerun or broaden them only after changes, failures, or a newly identified risk.
 Finish when acceptance criteria are supported and no known in-scope blocker
 remains. Report material findings, fixes, checks actually run, and unverified
 requirements. When the repository already keeps `docs/backlog/` items or the
-user asks, offer to record real deferred gaps there, one file per item. Skip items already
-recorded, and ask before writing on a branch other than the default branch. If
-nothing further is needed, say so without inventing work.
+user asks, give real gaps outside the scope to the `add` mode of the `backlog`
+skill. When `ship` runs this check, list those gaps separately for `ship`
+instead. If nothing further is needed, say so without inventing work.
