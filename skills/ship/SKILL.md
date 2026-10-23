@@ -26,7 +26,8 @@ direct edit or one skill, and stop.
 If the request is the path of a backlog item under `docs/backlog/`, read the
 item as the `backlog` skill describes. Check its `where` and its evidence
 against the current code. If the item is stale or the idea is already done,
-offer to drop it as the `backlog` skill describes, and then stop. If its `worth` is `no`, give the
+offer to drop it as the `backlog` skill describes, and then stop. If its `worth`
+is `no`, give the
 reason from the item and ask whether to continue. Otherwise, use the item as
 the original request. It is an idea to grill, not a settled specification.
 Write the path of the item in the progress file. Delete the item file during

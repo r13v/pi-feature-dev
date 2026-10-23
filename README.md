@@ -398,7 +398,9 @@ feat!: redesign workflow phases
 
 ## Development
 
-Validate the package shape:
+Validate the package shape, and check that no line in the skill files is
+longer than 80 characters. The check skips the frontmatter, code blocks,
+tables, and headings. CI runs the same command on each pull request:
 
 ```bash
 npm test

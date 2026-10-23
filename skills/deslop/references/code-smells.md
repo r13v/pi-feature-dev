@@ -1,6 +1,9 @@
 # Code Smells
 
-Use this checklist for production code after test bloat and verification clusters have been inspected. A smell identifies where to investigate; caller, correction, and contract evidence decide whether to delete. Generic dead code and ordinary duplication are secondary unless they belong to a focused cluster.
+Use this checklist for production code after test bloat and verification
+clusters have been inspected. A smell identifies where to investigate; caller,
+correction, and contract evidence decide whether to delete. Generic dead code
+and ordinary duplication are secondary unless they belong to a focused cluster.
 
 | Smell | Signal | Evidence needed | Common false positives | Preferred simplification |
 | --- | --- | --- | --- | --- |
@@ -28,9 +31,13 @@ Use this checklist for production code after test bloat and verification cluster
 
 ## Comment check
 
-Inspect every comment and docstring in scope. A comment stays only when it states something a careful reader cannot get from the code, names, and types.
+Inspect every comment and docstring in scope. A comment stays only when it
+states something a careful reader cannot get from the code, names, and types.
 
-**Keep** the reason behind a non-obvious choice, an external constraint or workaround (with its issue or spec link), an invariant, an ordering or concurrency requirement, a unit or format the type does not show, a security or safety warning, a public API contract, and a TODO with an owner or issue.
+**Keep** the reason behind a non-obvious choice, an external constraint or
+workaround (with its issue or spec link), an invariant, an ordering or
+concurrency requirement, a unit or format the type does not show, a security or
+safety warning, a public API contract, and a TODO with an owner or issue.
 
 **Delete:**
 
@@ -41,42 +48,77 @@ Inspect every comment and docstring in scope. A comment stays only when it state
 - docstrings that only repeat the signature;
 - TODOs for work that is done or has no owner or issue.
 
-**Present state only.** A comment describes the code as it is now, never how it was before or how it got here. Delete history such as "previously", "used to", "was X, now Y", "no longer", "replaced the old", "moved from", "after the refactor", "fixed the bug where", "added per review", and agent steps. Version control records history. When a kept comment mixes a reason with history, rewrite it as a present-tense fact: "Retries once because the API drops the first request after idle", not "Added a retry after we saw failures". State a rejected alternative as a current constraint: "Not cached: results depend on the caller's locale". Describe supported legacy data as the current contract: "Accepts v1 records without `owner`".
+**Present state only.** A comment describes the code as it is now, never how it
+was before or how it got here. Delete history such as "previously", "used to",
+"was X, now Y", "no longer", "replaced the old", "moved from", "after the
+refactor", "fixed the bug where", "added per review", and agent steps. Version
+control records history. When a kept comment mixes a reason with history,
+rewrite it as a present-tense fact: "Retries once because the API drops the
+first request after idle", not "Added a retry after we saw failures". State a
+rejected alternative as a current constraint: "Not cached: results depend on the
+caller's locale". Describe supported legacy data as the current contract:
+"Accepts v1 records without `owner`".
 
-**Condense** each kept comment. Use one line when possible. State the fact and its reason, with no hedging or filler. Keep every condition, limit, and link that makes it complete.
+**Condense** each kept comment. Use one line when possible. State the fact and
+its reason, with no hedging or filler. Keep every condition, limit, and link
+that makes it complete.
 
-**Preserve without judging content:** license and copyright headers, tool directives (`noqa`, `type: ignore`, `eslint-disable`, `@ts-expect-error`, `//go:build`, pragmas, shebangs, encoding lines), doctests and other executable examples, annotations that tools parse, and docs that project lint rules require. For a required docstring, shorten its content instead of removing it.
+**Preserve without judging content:** license and copyright headers, tool
+directives (`noqa`, `type: ignore`, `eslint-disable`, `@ts-expect-error`,
+`//go:build`, pragmas, shebangs, encoding lines), doctests and other executable
+examples, annotations that tools parse, and docs that project lint rules
+require. For a required docstring, shorten its content instead of removing it.
 
-A comment that contradicts the code is a finding. When current requirements show that the code is correct, fix or delete the comment. When they do not show which one is correct, report the conflict at MEDIUM and do not guess. Restatement, narration, and commented-out code are HIGH.
+A comment that contradicts the code is a finding. When current requirements show
+that the code is correct, fix or delete the comment. When they do not show which
+one is correct, report the conflict at MEDIUM and do not guess. Restatement,
+narration, and commented-out code are HIGH.
 
-Do not add comments to code that had none. After a comment-only group, confirm from the diff that no code changed, and run any documentation lint the project uses. No new tests are needed.
+Do not add comments to code that had none. After a comment-only group, confirm
+from the diff that no code changed, and run any documentation lint the project
+uses. No new tests are needed.
 
 ## Fail-visible bias
 
-Inside trusted code, unexpected failures should normally surface. Robustness is not a license to hide programming errors. Investigate these patterns first:
+Inside trusted code, unexpected failures should normally surface. Robustness is
+not a license to hide programming errors. Investigate these patterns first:
 
 - broad `except Exception` around ordinary internal work;
 - catch-log-rethrow that adds no stable translation, cleanup, or attribution;
 - catch-and-fallback after a new path raises unexpectedly;
-- `try new behavior; otherwise run old behavior` without a supported version or protocol signal;
+- `try new behavior; otherwise run old behavior` without a supported version or
+  protocol signal;
 - silent defaults after malformed or missing internal state;
 - compatibility branches with no reachable supported consumer;
-- repeated validation after a trusted boundary or after a typed representation is established;
+- repeated validation after a trusted boundary or after a typed representation
+  is established;
 - defensive branches whose only evidence is tests created for those branches.
 
 For each branch, ask:
 
 1. What exact failure is recoverable?
-2. Does the current user requirement or protocol require recovery, translation, cleanup, or compatibility?
+2. Does the current user requirement or protocol require recovery, translation,
+   cleanup, or compatibility?
 3. Can ordinary runtime failure expose an internal bug more usefully?
-4. Is the fallback's test an independent contract, or part of a closed justification loop?
+4. Is the fallback's test an independent contract, or part of a closed
+   justification loop?
 5. What supported consumer would break if this branch disappeared?
 
-If the answer is only “be robust,” “future-proof,” or “keep old tests green,” prefer direct failure. A bug fix should replace incorrect behavior, not preserve it behind a fallback. Preserve narrow exception handling when it performs concrete cleanup, translates a stable public error, enforces a documented legacy protocol, or protects a real resource/transaction boundary.
+If the answer is only “be robust,” “future-proof,” or “keep old tests green,”
+prefer direct failure. A bug fix should replace incorrect behavior, not preserve
+it behind a fallback. Preserve narrow exception handling when it performs
+concrete cleanup, translates a stable public error, enforces a documented legacy
+protocol, or protects a real resource/transaction boundary.
 
 ## Defensive clusters, not isolated lines
 
-Do not delete only the most visible helper while leaving its mutually supporting tests, validators, wrappers, or fallback branches. Follow the justification chain outward. If production code, a test, and a receipt/validator each exist only to justify one another, treat them as one deletion candidate. A cluster is preserved only when its chain reaches an independent user requirement, external caller, protocol, security boundary, persistence/corruption boundary, or scientific invariant.
+Do not delete only the most visible helper while leaving its mutually supporting
+tests, validators, wrappers, or fallback branches. Follow the justification
+chain outward. If production code, a test, and a receipt/validator each exist
+only to justify one another, treat them as one deletion candidate. A cluster is
+preserved only when its chain reaches an independent user requirement, external
+caller, protocol, security boundary, persistence/corruption boundary, or
+scientific invariant.
 
 ## Deletion Evidence
 
@@ -96,12 +138,27 @@ Do not cite AI authorship as evidence.
 
 ## Abstraction Check
 
-Before keeping an abstraction, ask what independent variation it contains today. “Could support another implementation later” is not enough. Before deleting one, check for external implementations, framework discovery, package commitments, platform variants, and tests that model a real seam rather than merely mock internals.
+Before keeping an abstraction, ask what independent variation it contains today.
+“Could support another implementation later” is not enough. Before deleting one,
+check for external implementations, framework discovery, package commitments,
+platform variants, and tests that model a real seam rather than merely mock
+internals.
 
-Do not replace removed abstraction with a differently named abstraction. A few duplicated obvious lines can be clearer than a shared layer that forces navigation across files.
+Do not replace removed abstraction with a differently named abstraction. A few
+duplicated obvious lines can be clearer than a shared layer that forces
+navigation across files.
 
-A thin wrapper can still own a real boundary. Preserve one that bridges independently versioned formats, manages a temporary dataset or resource lifecycle, maintains a published import path, or translates a stable external contract. Thinness alone is not deletion evidence.
+A thin wrapper can still own a real boundary. Preserve one that bridges
+independently versioned formats, manages a temporary dataset or resource
+lifecycle, maintains a published import path, or translates a stable external
+contract. Thinness alone is not deletion evidence.
 
-For a pure forwarding alias, preserve the public name without necessarily preserving its function body: `format_user = render_user` can retain both entry points when their contract allows it. Keep a distinct wrapper when it owns format conversion, error translation, or lifecycle behavior. Likewise, removing a writer's private receipt/checksum chain does not retire the public writer; simplify its body while preserving its arguments, result, and side effects.
+For a pure forwarding alias, preserve the public name without necessarily
+preserving its function body: `format_user = render_user` can retain both entry
+points when their contract allows it. Keep a distinct wrapper when it owns
+format conversion, error translation, or lifecycle behavior. Likewise, removing
+a writer's private receipt/checksum chain does not retire the public writer;
+simplify its body while preserving its arguments, result, and side effects.
 
-For active-config reachability and cross-layer ownership, also read [evidence-and-reachability.md](evidence-and-reachability.md).
+For active-config reachability and cross-layer ownership, also read
+[evidence-and-reachability.md](evidence-and-reachability.md).

@@ -1,59 +1,73 @@
 # STE Review Checklist
 
-Use this checklist as an operational review aid. It is not a replacement for the official
-ASD-STE100 standard or dictionary. A search result identifies text to inspect. It does not prove
+Use this checklist as an operational review aid. It is not a replacement for the
+official
+ASD-STE100 standard or dictionary. A search result identifies text to inspect.
+It does not prove
 that the text violates a rule.
 
 ## Quick Check
 
 Use this check for a general clarity rewrite:
 
-- Compare the source and revision. Preserve facts, conditions, limits, units, exceptions,
+- Compare the source and revision. Preserve facts, conditions, limits, units,
+  exceptions,
   sequence, and responsibility.
-- Confirm that code, identifiers, commands, paths, labels, quoted messages, and other protected
+- Confirm that code, identifiers, commands, paths, labels, quoted messages, and
+  other protected
   literals did not change.
 - Use explicit actors, referents, conditions, actions, and results.
 - Put a prerequisite condition before the action that depends on it.
-- Keep one independent action in each procedural sentence unless actions occur at the same time.
+- Keep one independent action in each procedural sentence unless actions occur
+  at the same time.
 - Use one term for one concept and one wording for one repeated action.
 - Separate observed facts, possible causes, and recovery actions.
-- Keep the strength of each hedge and modal verb. Do not add a cause or certainty.
+- Keep the strength of each hedge and modal verb. Do not add a cause or
+  certainty.
 - Report unresolved technical, lexical, safety, or regulatory questions.
 
 ## Full Check
 
-Use this check for strict STE work, compliance reviews, safety text, high-risk content, or long
+Use this check for strict STE work, compliance reviews, safety text, high-risk
+content, or long
 documents.
 
 ### 1. Meaning and Scope
 
-- Make an inventory of actions, facts, conditions, negation, quantities, units, limits,
+- Make an inventory of actions, facts, conditions, negation, quantities, units,
+  limits,
   exceptions, warnings, consequences, and cross-references.
 - Confirm the scope of each modifier and logical connector.
-- Confirm that the revision does not add a cause, risk level, requirement, or technical fact.
+- Confirm that the revision does not add a cause, risk level, requirement, or
+  technical fact.
 
 ### 2. Vocabulary and Terminology
 
 - Verify each general word against the official Issue 9 dictionary.
 - Verify its approved meaning, part of speech, form, and use.
-- Verify each technical noun and technical verb against the applicable category and project
+- Verify each technical noun and technical verb against the applicable category
+  and project
   glossary.
 - Record unverified terms instead of assuming that they are approved.
 - Check abbreviations, spelling, and alternate names for the same concept.
 
 ### 3. Grammar and Sentences
 
-- Check active voice, permitted verb forms, articles, complete constructions, and explicit
+- Check active voice, permitted verb forms, articles, complete constructions,
+  and explicit
   referents.
-- Inspect each `-ing` form, passive construction, modal verb, and multi-word verb in context.
+- Inspect each `-ing` form, passive construction, modal verb, and multi-word
+  verb in context.
 - Split overloaded sentences and complex alternatives.
 - Confirm that connecting words show the intended logical relation.
 
 ### 4. Procedures and Descriptions
 
-- Classify each section as a procedure, description, safety instruction, or mixed content.
+- Classify each section as a procedure, description, safety instruction, or
+  mixed content.
 - For procedures, use imperative commands and put prerequisite conditions first.
-- For descriptions, present information gradually and keep one topic in each paragraph.
+- For descriptions, present information gradually and keep one topic in each
+  paragraph.
 - Put complex sequences and alternatives in vertical lists.
 
 ### 5. Length and Mechanics
@@ -72,10 +86,12 @@ documents.
 
 ### 7. Delivery
 
-- Apply project, regulatory, and customer directives before general STE preferences.
+- Apply project, regulatory, and customer directives before general STE
+  preferences.
 - Use the correct verification status.
 - List unresolved checks.
-- Cite a rule number only after direct verification in an authoritative copy of Issue 9.
+- Cite a rule number only after direct verification in an authoritative copy of
+  Issue 9.
 
 ## Search Cues
 
@@ -86,17 +102,22 @@ Search for these features during a large review:
 - `-ing` forms.
 - Perfect or continuous auxiliary constructions.
 - Forms of `be` followed by a past participle.
-- Modal verbs such as `should`, `would`, `may`, `might`, and `could`. Change one only when the
+- Modal verbs such as `should`, `would`, `may`, `might`, and `could`. Change one
+  only when the
   replacement keeps the same strength.
-- Stacked hedges and filler, such as `it is important to note that this may potentially help`.
+- Stacked hedges and filler, such as `it is important to note that this may
+  potentially help`.
 - Nominalizations, such as `perform an analysis of` or `provide assistance to`.
-- Promotional adjectives, such as `seamless`, `robust`, `powerful`, and `cutting-edge`.
+- Promotional adjectives, such as `seamless`, `robust`, `powerful`, and
+  `cutting-edge`.
 - Phrasal verbs, such as `spin up`, `reach out`, `set up`, and `kick off`.
-- Em dashes or spaced hyphens that join two statements and hide the relation between them.
+- Em dashes or spaced hyphens that join two statements and hide the relation
+  between them.
 - Vague referents such as `it`, `this`, `that`, `they`, and `which`.
 - `and` or `then` between commands.
 - Different nouns or verbs that might name the same concept or action.
 - Sentences and description paragraphs above their applicable limits.
 
-Inspect each match in context. Do not treat every `if`, `when`, `-ing` form, passive construction,
+Inspect each match in context. Do not treat every `if`, `when`, `-ing` form,
+passive construction,
 modal verb, or repeated connector as an automatic violation.

@@ -1,7 +1,9 @@
 # Text-Type Patterns
 
-Use these patterns when the source does not already have a required structure. They describe
-useful information order, not additional ASD-STE100 rules. Preserve the user's requested format
+Use these patterns when the source does not already have a required structure.
+They describe
+useful information order, not additional ASD-STE100 rules. Preserve the user's
+requested format
 and all protected literals.
 
 ## Procedure or Runbook
@@ -13,9 +15,12 @@ Present information in this order:
 3. Expected result, when the reader must verify it.
 4. Recovery or escalation action, when the source supplies one.
 
-Name each fact that a command depends on, such as the host, the flag, or the prior step. For
-example, write `Restart the sync service on the host that runs the job`, not `Restart the
-service`. If the source does not supply the fact, report it as an unresolved check.
+Name each fact that a command depends on, such as the host, the flag, or the
+prior step. For
+example, write `Restart the sync service on the host that runs the job`, not
+`Restart the
+service`. If the source does not supply the fact, report it as an unresolved
+check.
 
 Do not move a command into a note. Do not invent missing steps or sequence.
 
@@ -29,7 +34,8 @@ Include only the fields that are known:
 4. What the user can do next.
 5. A stable identifier or context value.
 
-Separate facts from possible causes. Preserve quoted system messages, codes, paths, and
+Separate facts from possible causes. Preserve quoted system messages, codes,
+paths, and
 identifiers unless the user asks to rewrite those exact values.
 
 ## API or Tool Documentation
@@ -43,7 +49,8 @@ Present:
 5. Errors and recovery actions.
 6. A minimal example when it adds necessary clarity.
 
-Keep API names, parameter names, commands, flags, code, and protocol terms unchanged.
+Keep API names, parameter names, commands, flags, code, and protocol terms
+unchanged.
 
 ## Prompt or Agent Instruction
 
@@ -68,8 +75,10 @@ Separate:
 4. Completed and current actions.
 5. Next action, owner, or checkpoint when provided.
 
-Use time references that are unambiguous in the target context. Do not present a hypothesis as a
-fact. Write `unknown` for a time, cause, or scope that the source does not state.
+Use time references that are unambiguous in the target context. Do not present a
+hypothesis as a
+fact. Write `unknown` for a time, cause, or scope that the source does not
+state.
 
 ## Release Note, Commit, or Pull Request
 
@@ -85,15 +94,19 @@ Do not add promotional claims to a technical summary.
 
 ## Support or UI Text
 
-Name the problem or action directly. Use the same terms that the interface uses. Give the next
+Name the problem or action directly. Use the same terms that the interface uses.
+Give the next
 action before secondary explanation when the reader must act.
 
-Treat exact UI labels, control names, placeholders, and external error text as protected literals
+Treat exact UI labels, control names, placeholders, and external error text as
+protected literals
 unless the task explicitly targets them for revision.
 
 ## Translation-ready Text
 
-Use self-contained sentences and stable sentence boundaries. Repeat terminology instead of
-rotating synonyms. Make conditions, negation, quantities, units, and references explicit.
+Use self-contained sentences and stable sentence boundaries. Repeat terminology
+instead of
+rotating synonyms. Make conditions, negation, quantities, units, and references
+explicit.
 
 Preserve placeholders, markup, segmentation controls, and variables exactly.

@@ -1,6 +1,9 @@
 # Verification and Trust
 
-Verification adds value only when the verifier has information, authority, or a failure domain meaningfully independent from the producer. A checksum is not automatically a trust boundary, and a second function or test is not automatically an independent oracle.
+Verification adds value only when the verifier has information, authority, or a
+failure domain meaningfully independent from the producer. A checksum is not
+automatically a trust boundary, and a second function or test is not
+automatically an independent oracle.
 
 ## Closed justification loops
 
@@ -14,20 +17,30 @@ production result
     -> independent evidence root?
 ```
 
-Production code does not justify a test merely because the test exercises it. A test does not justify production code merely because the production code exists. If a checksum exists only because its test expects it, and that test exists only because the checksum was added, the pair is **mutual-support slop**. The same loop can contain serialization added only for hashing, digest fields, result envelopes, manifests, receipts, recomputation, wrappers, and wrapper-only tests.
+Production code does not justify a test merely because the test exercises it. A
+test does not justify production code merely because the production code exists.
+If a checksum exists only because its test expects it, and that test exists only
+because the checksum was added, the pair is **mutual-support slop**. The same
+loop can contain serialization added only for hashing, digest fields, result
+envelopes, manifests, receipts, recomputation, wrappers, and wrapper-only tests.
 
-Delete the whole closed cluster when its chain reaches no independent root. Independent roots include:
+Delete the whole closed cluster when its chain reaches no independent root.
+Independent roots include:
 
 - a current user requirement or correction;
 - a real external caller or public API contract;
 - a documented wire protocol or specification;
 - a separately controlled security key or trust authority;
-- an independently supplied manifest, release digest, or content-addressed identity;
+- an independently supplied manifest, release digest, or content-addressed
+  identity;
 - a persistence/readback or corruption boundary;
-- an independent consumer, regulator, reproducibility workflow, or operational system;
-- a scientific or numerical invariant with an independently derived expected result.
+- an independent consumer, regulator, reproducibility workflow, or operational
+  system;
+- a scientific or numerical invariant with an independently derived expected
+  result.
 
-Preserve one member only when the remaining cluster still serves such a root. Do not preserve every member because another member depends on it.
+Preserve one member only when the remaining cluster still serves such a root. Do
+not preserve every member because another member depends on it.
 
 ## Trust-boundary decision tree
 
@@ -49,19 +62,38 @@ Does the value cross out of the current trusted execution domain?
                 `-- No  -> identify the concrete failure model first
 ```
 
-Public visibility alone does not create a trust boundary. Two services owned by the same producer can still be circular; one process can still cross a real failure domain by writing, publishing, reopening, decoding, or reading persisted output.
+Public visibility alone does not create a trust boundary. Two services owned by
+the same producer can still be circular; one process can still cross a real
+failure domain by writing, publishing, reopening, decoding, or reading persisted
+output.
 
 ## Declared authority is not optional enrichment
 
-When a config, package manifest, or sidecar declares an authoritative artifact, require and verify that artifact. A pattern such as `if path.exists(): verify(path)` silently changes a missing authority into compatibility mode. Missing and mismatched authoritative inputs should fail at the same boundary unless the protocol explicitly defines absence as valid.
+When a config, package manifest, or sidecar declares an authoritative artifact,
+require and verify that artifact. A pattern such as `if path.exists():
+verify(path)` silently changes a missing authority into compatibility mode.
+Missing and mismatched authoritative inputs should fail at the same boundary
+unless the protocol explicitly defines absence as valid.
 
-Lower-level sidecars or caches do not replace a missing package-level authority merely because they remain internally consistent. Conversely, a thumbnail, annotation, or cache marked optional by the current protocol may be absent without failure. Determine required versus optional from the contract, not from filesystem presence.
+Lower-level sidecars or caches do not replace a missing package-level authority
+merely because they remain internally consistent. Conversely, a thumbnail,
+annotation, or cache marked optional by the current protocol may be absent
+without failure. Determine required versus optional from the contract, not from
+filesystem presence.
 
 ## Schema and identity closure
 
-A writer and its main loader do not complete a schema migration. Enumerate every public deserialize boundary: library API, CLI, `tools/`, visualizer, converter, resume/recovery path, and validator. Each current reader should reuse the canonical validator or enforce the same shared version contract. Keep an explicit migration reader only when old data remains supported.
+A writer and its main loader do not complete a schema migration. Enumerate every
+public deserialize boundary: library API, CLI, `tools/`, visualizer, converter,
+resume/recovery path, and validator. Each current reader should reuse the
+canonical validator or enforce the same shared version contract. Keep an
+explicit migration reader only when old data remains supported.
 
-For critical identity, source path, count, or handedness fields, align all three layers: type declaration, parser, and validation. A required annotation paired with `mapping.get(..., old_default)` remains an implicit compatibility path. Remove defaults that can reinterpret malformed current data as a historical format.
+For critical identity, source path, count, or handedness fields, align all three
+layers: type declaration, parser, and validation. A required annotation paired
+with `mapping.get(..., old_default)` remains an implicit compatibility path.
+Remove defaults that can reinterpret malformed current data as a historical
+format.
 
 ## Independence test
 
@@ -69,16 +101,20 @@ For every claimed verification, record:
 
 1. **Producer:** who created the value?
 2. **Verifier:** who checks it?
-3. **Independent knowledge:** what does the verifier know that the producer did not generate?
-4. **Independent authority:** is there a separate key, manifest, specification, identity, or consumer?
+3. **Independent knowledge:** what does the verifier know that the producer did
+   not generate?
+4. **Independent authority:** is there a separate key, manifest, specification,
+   identity, or consumer?
 5. **Independent failure domain:** can producer and verifier fail differently?
 6. **Action:** what meaningful response follows failure?
 
-If all inputs, logic, authority, and failure modes are shared, the check is circular even when it uses cryptography or another process.
+If all inputs, logic, authority, and failure modes are shared, the check is
+circular even when it uses cryptography or another process.
 
 ## SHA256 and checksum clusters
 
-Treat SHA256/checksum machinery as a cluster, not as one function. Search for the entire chain:
+Treat SHA256/checksum machinery as a cluster, not as one function. Search for
+the entire chain:
 
 ```text
 canonicalization / serialization added only for hashing
@@ -88,9 +124,17 @@ canonicalization / serialization added only for hashing
     -> tests and fixtures created only for those mechanisms
 ```
 
-When there is no independent expected digest, identity authority, trust transition, persistence-corruption role, content-addressing role, or external consumer, investigate and remove the whole support chain. Strong deletion candidates include hashes of local arguments, parameter objects, internal arrays, result dataclasses, self-created manifests, self-issued receipts, and evidence consumed only by the same agent or process.
+When there is no independent expected digest, identity authority, trust
+transition, persistence-corruption role, content-addressing role, or external
+consumer, investigate and remove the whole support chain. Strong deletion
+candidates include hashes of local arguments, parameter objects, internal
+arrays, result dataclasses, self-created manifests, self-issued receipts, and
+evidence consumed only by the same agent or process.
 
-Do not call a local digest authentication merely because it is SHA256. A digest retained after secret redaction can be a legitimate non-secret correlation fingerprint when an independently recorded input or consumer uses it; that is provenance, not authentication, and its independent role must be explicit.
+Do not call a local digest authentication merely because it is SHA256. A digest
+retained after secret redaction can be a legitimate non-secret correlation
+fingerprint when an independently recorded input or consumer uses it; that is
+provenance, not authentication, and its independent role must be explicit.
 
 ## Verification-theater patterns
 
@@ -100,7 +144,10 @@ Do not call a local digest authentication merely because it is SHA256. A digest 
 calculate result -> repeat the same calculation -> call it verified
 ```
 
-Delete when both computations share algorithm, inputs, constants, and likely bugs. Preserve independently derived analytical checks, diversified implementations with a concrete safety purpose, and cheap invariants that detect a distinct failure class.
+Delete when both computations share algorithm, inputs, constants, and likely
+bugs. Preserve independently derived analytical checks, diversified
+implementations with a concrete safety purpose, and cheap invariants that detect
+a distinct failure class.
 
 ### Schema and envelope theater
 
@@ -108,7 +155,9 @@ Delete when both computations share algorithm, inputs, constants, and likely bug
 producer emits payload -> producer-owned schema mirrors payload -> producer validates it
 ```
 
-Delete when no external protocol, persisted format, or independent consumer relies on the schema. Preserve wire contracts and independently maintained schemas.
+Delete when no external protocol, persisted format, or independent consumer
+relies on the schema. Preserve wire contracts and independently maintained
+schemas.
 
 ### Receipt, manifest, and evidence theater
 
@@ -116,7 +165,11 @@ Delete when no external protocol, persisted format, or independent consumer reli
 operation -> evidence.json / receipt -> local validator -> local test
 ```
 
-Common authorship and a constant assigned by the writer do not make a persisted reader check a closed loop. Check the stored record's contract before deleting the field or its validator. Preserve records required by a separate authority, operational system, regulator, reproducibility workflow, transaction, idempotency boundary, or corruption detector.
+Common authorship and a constant assigned by the writer do not make a persisted
+reader check a closed loop. Check the stored record's contract before deleting
+the field or its validator. Preserve records required by a separate authority,
+operational system, regulator, reproducibility workflow, transaction,
+idempotency boundary, or corruption detector.
 
 ### Signature theater
 
@@ -124,31 +177,82 @@ Common authorship and a constant assigned by the writer do not make a persisted 
 generate local key -> sign local result -> verify with paired local key
 ```
 
-Delete when no identity, key custody, distribution boundary, or independent trust anchor exists. Preserve signatures authenticating an external publisher, protocol peer, or independently controlled key.
+Delete when no identity, key custody, distribution boundary, or independent
+trust anchor exists. Preserve signatures authenticating an external publisher,
+protocol peer, or independently controlled key.
 
 ## Persistence and readback
 
-Reopening an encoded file, archive, media object, or persisted record can be genuinely independent when it detects truncation, partial publication, codec mismatch, schema loss, or corruption across a write/read boundary. Do not collapse that into circular in-memory recomputation. Conversely, reading a value back from the same memory representation without a distinct failure domain adds little.
+Reopening an encoded file, archive, media object, or persisted record can be
+genuinely independent when it detects truncation, partial publication, codec
+mismatch, schema loss, or corruption across a write/read boundary. Do not
+collapse that into circular in-memory recomputation. Conversely, reading a value
+back from the same memory representation without a distinct failure domain adds
+little.
 
-Decide separately whether verification machinery and its surrounding representation can be removed. A self-issued checksum can be redundant while the stored container, field names, public return value, or externally defined digest still has a supported contract. Prefer keeping that representation while subtracting the redundant fields and helpers. Adding format detection or a compatibility branch is unnecessary when the existing representation already serves the surviving contract.
+Decide separately whether verification machinery and its surrounding
+representation can be removed. A self-issued checksum can be redundant while the
+stored container, field names, public return value, or externally defined digest
+still has a supported contract. Prefer keeping that representation while
+subtracting the redundant fields and helpers. Adding format detection or a
+compatibility branch is unnecessary when the existing representation already
+serves the surviving contract.
 
-When cleanup touches a persisted or wire representation, check an existing or contract-specified pre-change input against the resulting reader, including a rejected input where the contract requires rejection. A round trip through the edited writer and reader can hide a shared regression. Use available independent examples; report missing lifecycle evidence rather than generating proof files or inventing support for unknown versions.
+When cleanup touches a persisted or wire representation, check an existing or
+contract-specified pre-change input against the resulting reader, including a
+rejected input where the contract requires rejection. A round trip through the
+edited writer and reader can hide a shared regression. Use available independent
+examples; report missing lifecycle evidence rather than generating proof files
+or inventing support for unknown versions.
 
-- **Supported representation:** a report stores `records` in an object and validates them against an independently supplied digest. Remove an unused local receipt and self-check while retaining that object and digest meaning. Replacing it with a bare list requires separate format-change authority; successful new round trips do not establish it.
-- **Retired representation:** a current contract explicitly ends support for an old version and defines its rejection or migration path. Remove its obsolete decoder and dedicated tests when no supported path needs them; preserve the specified rejection or migration behavior. An ephemeral internal envelope with no independent consumer can likewise be removed with its self-only checks.
+- **Supported representation:** a report stores `records` in an object and
+  validates them against an independently supplied digest. Remove an unused
+  local receipt and self-check while retaining that object and digest meaning.
+  Replacing it with a bare list requires separate format-change authority;
+  successful new round trips do not establish it.
+- **Retired representation:** a current contract explicitly ends support for an
+  old version and defines its rejection or migration path. Remove its obsolete
+  decoder and dedicated tests when no supported path needs them; preserve the
+  specified rejection or migration behavior. An ephemeral internal envelope with
+  no independent consumer can likewise be removed with its self-only checks.
 
-Check what the retained integrity mechanism actually covers. A digest of payload bytes does not validate separately stored metadata such as publication state, declared counts, or identity. Those fields can be invalid while the payload digest still matches. Treat each metadata check as a separate candidate; preserve its supported contract, and require evidence of equivalent coverage or retirement before deleting it.
+Check what the retained integrity mechanism actually covers. A digest of payload
+bytes does not validate separately stored metadata such as publication state,
+declared counts, or identity. Those fields can be invalid while the payload
+digest still matches. Treat each metadata check as a separate candidate;
+preserve its supported contract, and require evidence of equivalent coverage or
+retirement before deleting it.
 
-For example, a reader given correct payload bytes and digest but a wrong or missing required `size` still has an invalid manifest. Preserve that rejection separately from content-corruption detection. In contrast, a writer that hashes its in-memory input and immediately verifies the same input against that newly generated value has no independent readback evidence; that local chain can be removed once its lack of another consumer is established. Preserve the public write/read operations in both cases.
+For example, a reader given correct payload bytes and digest but a wrong or
+missing required `size` still has an invalid manifest. Preserve that rejection
+separately from content-corruption detection. In contrast, a writer that hashes
+its in-memory input and immediately verifies the same input against that newly
+generated value has no independent readback evidence; that local chain can be
+removed once its lack of another consumer is established. Preserve the public
+write/read operations in both cases.
 
 ## Defensive and fallback checks
 
-Repeated null/type/shape checks, broad catches, catch-log-rethrow, catch-and-fallback, repeated normalization, and self-validating result objects are suspicious when they add no boundary or failure domain. Preserve checks that enforce a documented safety, resource, authorization, transaction, concurrency, persistence, protocol, or numerical invariant.
+Repeated null/type/shape checks, broad catches, catch-log-rethrow,
+catch-and-fallback, repeated normalization, and self-validating result objects
+are suspicious when they add no boundary or failure domain. Preserve checks that
+enforce a documented safety, resource, authorization, transaction, concurrency,
+persistence, protocol, or numerical invariant.
 
-Prefer direct failure for unexpected internal errors. A narrow fallback for one documented missing field or supported legacy version is different from `except Exception: use_old_path()`. The former may be contractual while the compatibility window remains; the latter hides bugs unless independent evidence proves otherwise.
+Prefer direct failure for unexpected internal errors. A narrow fallback for one
+documented missing field or supported legacy version is different from `except
+Exception: use_old_path()`. The former may be contractual while the
+compatibility window remains; the latter hides bugs unless independent evidence
+proves otherwise.
 
 ## Preserve by default
 
-When evidence is incomplete, preserve security and authorization, real external protocols, supported compatibility, persistence and transactions, concurrency, resource limits, scientific invariants, independently supplied artifact verification, and content-addressed identity. Report the missing evidence instead of inventing a justification or deleting on aesthetic grounds.
+When evidence is incomplete, preserve security and authorization, real external
+protocols, supported compatibility, persistence and transactions, concurrency,
+resource limits, scientific invariants, independently supplied artifact
+verification, and content-addressed identity. Report the missing evidence
+instead of inventing a justification or deleting on aesthetic grounds.
 
-For production reachability, public-reader enumeration, and documentation/config ownership, also read [evidence-and-reachability.md](evidence-and-reachability.md).
+For production reachability, public-reader enumeration, and documentation/config
+ownership, also read
+[evidence-and-reachability.md](evidence-and-reachability.md).
