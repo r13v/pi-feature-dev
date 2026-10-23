@@ -32,6 +32,10 @@ _Avoid_: custom rules file
 A deferred idea with its reason and evidence, kept as a file under `docs/backlog/`. It is an option to return to, not a commitment to do the work.
 _Avoid_: ticket, task, TODO
 
+**Friction Entry**:
+A line in a `ship` progress file that records a moment where the run struggled, with its evidence. The `retro` skill uses these lines to find improvements to the environment of the agent.
+_Avoid_: issue, struggle, problem
+
 ## Relationships
 
 - A **Host Agent** executes one or more **Skills**.
