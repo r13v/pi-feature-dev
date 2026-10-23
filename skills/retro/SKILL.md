@@ -30,10 +30,11 @@ Read these sources:
   section has one friction entry for each moment where the run struggled. The
   `ship` skill describes the format of the entries;
 - the last 10 progress files that have `status: finished` and a `Friction`
-  section, sorted by `started`, from all branches. They are in the directory
-  that `git rev-parse --path-format=absolute --git-path ship` prints. If the
-  directory does not exist or this is not a git repository, skip this
-  source. Use these files to find friction that repeats across runs.
+  section, sorted by `started`, from all branches and worktrees. They are in
+  the `ship` directory inside the directory that `git rev-parse
+  --path-format=absolute --git-common-dir` prints. If the directory does not
+  exist or this is not a git repository, skip this source. Use these files to
+  find friction that repeats across runs.
 
 ## Categories
 

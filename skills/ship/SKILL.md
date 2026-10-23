@@ -39,20 +39,22 @@ Keep the state of the pipeline in a progress file, not only in the
 conversation. The file prevents skipped stages and lets the work continue
 after the context is compacted or in a new session in the same checkout.
 
-Put the file in the directory that `git rev-parse --path-format=absolute
---git-path ship` prints, as `<run-id>.md`. Make the run ID from the start date
-and time and a short task slug, such as `20261022-1530-add-export`. Create the
-directory if it does not exist. Git does not track this directory, so the file
-does not change the working tree or the diff of the task. If the host does not
-let you write there, tell the user and ask where to keep the file. Do not
-continue without a progress file.
+Put the file in the `ship` directory inside the directory that `git
+rev-parse --path-format=absolute --git-common-dir` prints, as `<run-id>.md`.
+All worktrees of the repository share this directory. Make the run ID from the
+start date and time and a short task slug, such as `20261022-1530-add-export`.
+Create the directory if it does not exist. Git does not track this directory,
+so the file does not change the working tree or the diff of the task. If the
+host does not let you write there, tell the user and ask where to keep the
+file. Do not continue without a progress file.
 
 Before the first stage, look for a progress file with `status: active` on the
 current branch. If it matches this task, read it and continue from the first
 stage that has no result. If the file has no `Friction` section or no retro
 entry, add an empty section and `retro: selection pending after final-check or
-deslop`. If you cannot tell whether it matches, ask the user. Do not resume a
-file with `status: finished`.
+deslop`. If you cannot tell whether it matches, ask the user. When the
+branch is `detached`, a file of another worktree can also match, so ask the
+user before you resume. Do not resume a file with `status: finished`.
 
 Otherwise, start a new run. If a file `<run-id>.md` already exists, choose
 another run ID. Start the file with YAML frontmatter:
