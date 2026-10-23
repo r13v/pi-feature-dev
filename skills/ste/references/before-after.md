@@ -1,7 +1,9 @@
 # Before and After Examples
 
-Use these original examples to recognize rewrite patterns. They illustrate the skill workflow.
-They are not evidence that a word is approved in the official ASD-STE100 dictionary.
+Use these original examples to recognize rewrite patterns. They illustrate the
+skill workflow.
+They are not evidence that a word is approved in the official ASD-STE100
+dictionary.
 
 ## Contents
 
@@ -17,8 +19,10 @@ They are not evidence that a word is approved in the official ASD-STE100 diction
 
 **Before**
 
-> Prior to carrying out removal of the filter housing, the technician should ensure that
-> electrical power has been disconnected, and thereafter the retaining bolts should be taken
+> Prior to carrying out removal of the filter housing, the technician should
+> ensure that
+> electrical power has been disconnected, and thereafter the retaining bolts
+> should be taken
 > off.
 
 **Issues**
@@ -36,46 +40,54 @@ They are not evidence that a word is approved in the official ASD-STE100 diction
 >
 > Remove the filter housing.
 
-**Why the first step is a check:** The source tells the technician to confirm a state, not to
+**Why the first step is a check:** The source tells the technician to confirm a
+state, not to
 disconnect the power. The revision keeps that task.
 
-**Unresolved check:** Confirm that these steps have the correct sequence and that the project
+**Unresolved check:** Confirm that these steps have the correct sequence and
+that the project
 glossary approves `retaining bolt` and `filter housing`.
 
 ## Tool Description
 
 **Before**
 
-> This tool is intended to facilitate the synchronization of configuration values across all of
+> This tool is intended to facilitate the synchronization of configuration
+> values across all of
 > the services that have been selected.
 
 **After**
 
 > The tool synchronizes configuration values across the selected services.
 
-**Why:** The revision identifies the actor and action directly. It removes a nominalization and a
+**Why:** The revision identifies the actor and action directly. It removes a
+nominalization and a
 passive construction.
 
 ## Error Message
 
 **Before**
 
-> The request could not be completed due to the fact that the credentials which were provided
+> The request could not be completed due to the fact that the credentials which
+> were provided
 > are no longer valid.
 
 **After**
 
 > The request failed because the credentials are no longer valid.
 
-**Why:** The revision separates the result from the cause and removes indirect wording. It does
-not change `no longer valid` to `expired`, because the source does not state why the credentials
+**Why:** The revision separates the result from the cause and removes indirect
+wording. It does
+not change `no longer valid` to `expired`, because the source does not state why
+the credentials
 became invalid.
 
 ## Agent Instruction
 
 **Before**
 
-> Once the build has finished, the agent should inspect the report and then, if any failures have
+> Once the build has finished, the agent should inspect the report and then, if
+> any failures have
 > been identified, it should post a summary.
 
 **After**
@@ -86,21 +98,24 @@ became invalid.
 >
 > If the report shows failures, post a summary.
 
-**Why:** The revision uses direct commands, simple verb forms, an explicit condition, and one
+**Why:** The revision uses direct commands, simple verb forms, an explicit
+condition, and one
 instruction per sentence.
 
 ## Status Report
 
 **Before**
 
-> We have successfully completed the database migration, which was performed after all of the
+> We have successfully completed the database migration, which was performed
+> after all of the
 > validation checks had been carried out.
 
 **After**
 
 > We completed all validation checks. Then we migrated the database.
 
-**Why:** The revision uses simple past tense and makes the sequence explicit. Keep `successfully`
+**Why:** The revision uses simple past tense and makes the sequence explicit.
+Keep `successfully`
 only when it communicates a defined result that the text must preserve.
 
 ## Terminology Consistency
@@ -111,14 +126,16 @@ only when it communicates a defined result that the text must preserve.
 
 **Decision**
 
-Do not replace these verbs automatically. First determine whether they describe one action or
+Do not replace these verbs automatically. First determine whether they describe
+one action or
 three different actions.
 
 **After, only if the intended action is identical**
 
 > Check the connection. Check the cable. Check the plug.
 
-**Why:** STE favors one term for one concept, but terminology consistency must not erase a real
+**Why:** STE favors one term for one concept, but terminology consistency must
+not erase a real
 technical distinction.
 
 ## Already Clear Text
@@ -131,5 +148,6 @@ technical distinction.
 
 Keep the text unchanged if the terms are correct for the project.
 
-**Why:** A rewrite is not an objective by itself. Change text only when the change improves
+**Why:** A rewrite is not an objective by itself. Change text only when the
+change improves
 clarity, correctness, or compliance.

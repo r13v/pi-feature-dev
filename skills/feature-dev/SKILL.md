@@ -21,18 +21,21 @@ contract, scope, or an irreversible action. Research discoverable facts first.
 State routine implementation assumptions and proceed; honor delegated choices
 without asking the user to approve the same decision again. The only default
 checkpoint is design approval when a design trigger applies. If the user
-requests another approval checkpoint, present a concrete proposal and wait there.
+requests another approval checkpoint, present a concrete proposal and wait
+there.
 
 ## Discovery and exploration
 
-Define the expected behavior, constraints, non-goals, and evidence of completion.
+Define the expected behavior, constraints, non-goals, and evidence of
+completion.
 Inspect the affected entry points, exports, immediate callers, shared utilities,
 and nearby tests. Follow dependencies far enough to understand the change's
 impact; a full repository map or fixed file count is unnecessary.
 
 Use lightweight progress tracking for work spanning several steps. Optional
 read-only workers can investigate independent questions when delegation is
-available and permitted; ask them for file:line entry points, the execution flow,
+available and permitted; ask them for file:line entry points, the execution
+flow,
 risks, and the essential files, then read those files yourself before designing.
 For a large feature, run two or three such passes in parallel, each with a
 different focus: similar existing features, the architecture and abstractions of
@@ -81,7 +84,8 @@ criteria, validation commands, and authority boundaries.
 
 Reuse existing code and match project conventions. Add or update tests when they
 protect a changed requirement or regression risk. Reuse adequate existing checks
-for mechanical or low-impact edits. Update documentation when the feature changes
+for mechanical or low-impact edits. Update documentation when the feature
+changes
 what a reader needs to know.
 
 If evidence invalidates the approach, revise it within scope. Ask only when the
@@ -90,7 +94,8 @@ revision needs a material user decision or authority not already granted.
 ## Review and validation
 
 Inspect the actual diff for correctness, requirement coverage, meaningful tests,
-convention fit, and unnecessary complexity or duplication. Use independent review
+convention fit, and unnecessary complexity or duplication. Use independent
+review
 only when its benefit justifies it and the host permits it; there is no
 review-worker quota.
 

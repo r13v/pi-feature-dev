@@ -23,19 +23,28 @@ _Avoid_: Client, buyer, account
 
 ## Rules
 
-- Be opinionated. When several words describe the same concept, choose one canonical term and list the others under `_Avoid_`.
-- Keep definitions to one or two sentences. Define what the concept is, not everything it does.
-- Include only terms specific to this project's domain. Exclude general programming concepts, implementation details, requirements, and architectural decisions.
-- Group terms under subheadings only when natural clusters emerge. Keep a flat list for one cohesive area.
-- Add or change a term after the user resolves it or delegates that terminology choice. Record the selected meaning without requesting the same authority again.
+- Be opinionated. When several words describe the same concept, choose one
+  canonical term and list the others under `_Avoid_`.
+- Keep definitions to one or two sentences. Define what the concept is, not
+  everything it does.
+- Include only terms specific to this project's domain. Exclude general
+  programming concepts, implementation details, requirements, and architectural
+  decisions.
+- Group terms under subheadings only when natural clusters emerge. Keep a flat
+  list for one cohesive area.
+- Add or change a term after the user resolves it or delegates that terminology
+  choice. Record the selected meaning without requesting the same authority
+  again.
 
-Before adding a term, ask whether it is unique to this domain or merely a general technical concept. Include only the former.
+Before adding a term, ask whether it is unique to this domain or merely a
+general technical concept. Include only the former.
 
 ## Single- and multi-context repositories
 
 Use one root `CONTEXT.md` for a single context.
 
-For multiple contexts, use a root `CONTEXT-MAP.md` to list the contexts, locations, and relationships:
+For multiple contexts, use a root `CONTEXT-MAP.md` to list the contexts,
+locations, and relationships:
 
 ```md
 # Context Map
@@ -57,5 +66,7 @@ Infer the structure from existing files:
 
 - If `CONTEXT-MAP.md` exists, read it and update the relevant context.
 - If only a root `CONTEXT.md` exists, use the single context.
-- If neither exists, create a root `CONTEXT.md` lazily after the first term is resolved.
-- If several contexts exist and the correct owner is unclear, ask before writing.
+- If neither exists, create a root `CONTEXT.md` lazily after the first term is
+  resolved.
+- If several contexts exist and the correct owner is unclear, ask before
+  writing.

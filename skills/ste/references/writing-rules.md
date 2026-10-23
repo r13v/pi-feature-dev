@@ -15,12 +15,14 @@
 Apply these priorities:
 
 1. Preserve technical accuracy, safety intent, limits, and required sequence.
-2. Follow applicable law, regulation, customer requirements, and project directives.
+2. Follow applicable law, regulation, customer requirements, and project
+   directives.
 3. Apply the current Issue 9 rule and dictionary entry.
 4. Use the approved project glossary for technical nouns and technical verbs.
 5. Prefer one clear construction when more than one construction is permitted.
 
-If priorities conflict, select the higher-priority requirement and report the conflict. Do not merge
+If priorities conflict, select the higher-priority requirement and report the
+conflict. Do not merge
 two inconsistent wordings.
 
 ## Vocabulary and Terminology
@@ -38,15 +40,23 @@ For an approved general word, verify all of these properties:
 - Approved inflected form.
 - Correct use in the sentence.
 
-Treat a project term as a technical noun only when it names a precise subject-field concept. Use
-terms from drawings, parts data, standards, official documents, and the approved project
-glossary. Issue 9 organizes technical nouns into broad areas such as parts, machines, tools,
-materials, systems, science, navigation, measurements, quoted labels, roles, medical concepts,
-documents, conditions, colors, damage, computing, operations, law, and living things.
+Treat a project term as a technical noun only when it names a precise
+subject-field concept. Use
+terms from drawings, parts data, standards, official documents, and the approved
+project
+glossary. Issue 9 organizes technical nouns into broad areas such as parts,
+machines, tools,
+materials, systems, science, navigation, measurements, quoted labels, roles,
+medical concepts,
+documents, conditions, colors, damage, computing, operations, law, and living
+things.
 
-Treat a project verb as a technical verb only when it names a precise subject-field process.
-Issue 9 permits categories for manufacturing, computer operations, applicable technical fields,
-and legal or regulatory texts. Use a dictionary-approved verb instead when it communicates the
+Treat a project verb as a technical verb only when it names a precise
+subject-field process.
+Issue 9 permits categories for manufacturing, computer operations, applicable
+technical fields,
+and legal or regulatory texts. Use a dictionary-approved verb instead when it
+communicates the
 same action accurately.
 
 Apply these terminology controls:
@@ -56,18 +66,21 @@ Apply these terminology controls:
 - Do not use a technical verb as a noun.
 - Prefer short, familiar, project-approved terms.
 - Reject slang, regional wording, and unexplained jargon.
-- Define an abbreviation at first use unless the audience and governing directive make it
+- Define an abbreviation at first use unless the audience and governing
+  directive make it
   unnecessary.
 - Keep quoted interface text, placards, labels, and identifiers unchanged.
 
 ## Compact Rule Coverage Map
 
-Use this map to confirm coverage. Consult the authoritative standard for definitions, exceptions,
+Use this map to confirm coverage. Consult the authoritative standard for
+definitions, exceptions,
 dictionary entries, and official examples.
 
 ### Words (Issue 9 section 1)
 
-- Limit vocabulary to approved general words, technical nouns, and technical verbs.
+- Limit vocabulary to approved general words, technical nouns, and technical
+  verbs.
 - Use each approved word only with its listed part of speech, meaning, and form.
 - Validate technical nouns and verbs by category and project authority.
 - Keep one term for one concept and do not change noun/verb roles.
@@ -76,51 +89,68 @@ dictionary entries, and official examples.
 ### Multi-word nouns (section 2)
 
 - Keep a multi-word noun to three words or fewer when possible.
-- When the official term is longer, write it in full first. Then define a clear short form or use
+- When the official term is longer, write it in full first. Then define a clear
+  short form or use
   hyphens to show words that function as one unit.
 - Do not shorten a term in a way that creates ambiguity.
 
 ### Verbs (section 3)
 
 - Use only approved verb forms.
-- Use the infinitive, imperative, simple present, simple past, simple future, or a past participle
+- Use the infinitive, imperative, simple present, simple past, simple future, or
+  a past participle
   used as an adjective.
 - Avoid complex auxiliary constructions.
-- Use an `-ing` form only as a technical noun or as a modifier inside a technical noun.
-- Prefer active voice. In descriptive text, use passive voice only when the agent is unknown.
-  To repair a passive construction without a named agent, use `you` for the reader or `we` for
+- Use an `-ing` form only as a technical noun or as a modifier inside a
+  technical noun.
+- Prefer active voice. In descriptive text, use passive voice only when the
+  agent is unknown.
+  To repair a passive construction without a named agent, use `you` for the
+  reader or `we` for
   the organization when that actor is correct.
 - Express an action with an accurate verb, not a noun-heavy construction.
-- Replace a modal verb that is not approved only with a form of the same strength:
+- Replace a modal verb that is not approved only with a form of the same
+  strength:
   - A required `should` becomes `must`.
   - A recommendation becomes a statement of fact with its reason.
   - A conditional `should`, as in `should a failure occur`, becomes `if`.
-  - A possibility or permission `may`, `might`, or `could` becomes `can` when `can` keeps the
+  - A possibility or permission `may`, `might`, or `could` becomes `can` when
+    `can` keeps the
     meaning.
   - A hypothetical `would` becomes `can`, or a condition followed by its result.
-  - If no permitted form keeps a hedge such as `may have failed`, keep the source wording and
+  - If no permitted form keeps a hedge such as `may have failed`, keep the
+    source wording and
     report it as an unresolved check.
 
 ### Sentences (section 4)
 
 - Write short, complete, explicit sentences.
 - Do not omit necessary words and do not use contractions.
-- Convert complex series or alternatives into vertical lists. End the lead-in with a colon,
-  start each item with an uppercase letter, and put a period only after an item that is a full
-  sentence. Do not mix instructions and facts in one list, and do not nest lists.
+- Convert complex series or alternatives into vertical lists. End the lead-in
+  with a colon,
+  start each item with an uppercase letter, and put a period only after an item
+  that is a full
+  sentence. Do not mix instructions and facts in one list, and do not nest
+  lists.
 - Use clear connecting words between related statements.
-- Use an article or demonstrative adjective before a noun when English grammar requires one.
-  Omit the article when an identifier follows the noun, as in `Restart pod web-7f9b2`.
+- Use an article or demonstrative adjective before a noun when English grammar
+  requires one.
+  Omit the article when an identifier follows the noun, as in `Restart pod
+  web-7f9b2`.
 
 ### Procedures (section 5)
 
-- Limit each sentence to 20 words. The limit also applies to warnings and cautions.
-- Put one instruction in each sentence, except for actions that occur at the same time.
-- Count independent actions, not only grammatical clauses. Do not join sequential actions with
+- Limit each sentence to 20 words. The limit also applies to warnings and
+  cautions.
+- Put one instruction in each sentence, except for actions that occur at the
+  same time.
+- Count independent actions, not only grammatical clauses. Do not join
+  sequential actions with
   `and`.
 - Use the imperative form.
 - Put a prerequisite condition before the command and separate it with a comma.
-- Keep commands and limits out of notes. Put a limit with the action that it controls. The
+- Keep commands and limits out of notes. Put a limit with the action that it
+  controls. The
   procedure must still work if the reader ignores every note.
 
 ### Descriptions (section 6)
@@ -133,8 +163,10 @@ dictionary entries, and official examples.
 
 ### Safety instructions (section 7)
 
-- Identify risk with the label required by the applicable safety system. Where the project uses
-  the Issue 9 labels, `WARNING` identifies a risk of injury or death and `CAUTION` identifies a
+- Identify risk with the label required by the applicable safety system. Where
+  the project uses
+  the Issue 9 labels, `WARNING` identifies a risk of injury or death and
+  `CAUTION` identifies a
   risk of damage. Use `WARNING` when both risks apply.
 - Begin with a clear command or condition.
 - Explain the risk or possible result.
@@ -144,11 +176,14 @@ dictionary entries, and official examples.
 
 - Do not use semicolons.
 - Use hyphens only to connect words that function together.
-- Use parentheses only for clear supporting purposes, such as references, identifiers,
+- Use parentheses only for clear supporting purposes, such as references,
+  identifiers,
   abbreviations, alternatives, or brief explanations.
-- In a vertical list, treat the introductory colon as a sentence boundary for word count.
+- In a vertical list, treat the introductory colon as a sentence boundary for
+  word count.
 - Count a complete parenthetical group as one word.
-- Count each number, number-plus-unit, abbreviation, alphanumeric identifier, quoted text,
+- Count each number, number-plus-unit, abbreviation, alphanumeric identifier,
+  quoted text,
   title, label, and applicable proper name as one word.
 - Count a hyphenated unit as one word.
 
@@ -176,20 +211,27 @@ These recommendations help quality but are not part of the 53 rules.
 
 ## General-Purpose Transfer
 
-For prompts, tool descriptions, error messages, agent instructions, and status reports:
+For prompts, tool descriptions, error messages, agent instructions, and status
+reports:
 
 - Treat a command as procedural text and an explanation as descriptive text.
 - Name the actor when responsibility matters.
 - State conditions before the action that depends on them.
 - Separate actual results from possible causes and suggested recovery actions.
-- Keep a compound tense when the simple tense loses information. `The job has completed` states
-  that the result applies now. `The request may have failed` is a hedge. Flag the departure.
-- Treat an em dash that joins two statements as a hidden relation. Name the relation, or write
+- Keep a compound tense when the simple tense loses information. `The job has
+  completed` states
+  that the result applies now. `The request may have failed` is a hedge. Flag
+  the departure.
+- Treat an em dash that joins two statements as a hidden relation. Name the
+  relation, or write
   two sentences.
-- Replace vague references such as `it`, `this`, and `they` when more than one referent is
+- Replace vague references such as `it`, `this`, and `they` when more than one
+  referent is
   possible.
-- Keep API names, identifiers, quoted UI text, code, and protocol terms unchanged.
-- Define a necessary domain term once, at first use, and use it consistently. Do not define product names, standard names, or the subject of the document.
+- Keep API names, identifiers, quoted UI text, code, and protocol terms
+  unchanged.
+- Define a necessary domain term once, at first use, and use it consistently. Do
+  not define product names, standard names, or the subject of the document.
 
 For translation-ready text:
 
@@ -197,7 +239,8 @@ For translation-ready text:
 - Keep sentence boundaries aligned with complete ideas.
 - Make negation, quantities, units, and conditions explicit.
 
-Use the status `STE-style rewrite` for these transferred applications unless strict verification
+Use the status `STE-style rewrite` for these transferred applications unless
+strict verification
 also occurred.
 
 ## Authoring Templates
@@ -262,17 +305,23 @@ Do not reuse the example risk level without validating it for the real hazard.
 
 Review in separate passes:
 
-1. **Meaning:** Compare source and output action by action. Confirm conditions, negation, limits,
+1. **Meaning:** Compare source and output action by action. Confirm conditions,
+   negation, limits,
    units, sequence, references, and consequences.
-2. **Vocabulary:** Verify each general word in the Issue 9 dictionary. Record technical nouns and
+2. **Vocabulary:** Verify each general word in the Issue 9 dictionary. Record
+   technical nouns and
    technical verbs in the term ledger.
-3. **Grammar:** Check verb form, voice, articles, complete constructions, pronouns, and
+3. **Grammar:** Check verb form, voice, articles, complete constructions,
+   pronouns, and
    modifiers.
 4. **Structure:** Apply the procedure, description, or safety pattern.
-5. **Mechanics:** Apply sentence and paragraph limits, punctuation, spelling, and word-count
+5. **Mechanics:** Apply sentence and paragraph limits, punctuation, spelling,
+   and word-count
    rules.
-6. **Consistency:** Search for alternate names and alternate wording for the same concept or
+6. **Consistency:** Search for alternate names and alternate wording for the
+   same concept or
    action.
 
-Record unverified items. A clear limitation is more accurate than an unsupported claim of
+Record unverified items. A clear limitation is more accurate than an unsupported
+claim of
 compliance.

@@ -27,7 +27,7 @@
     "LICENSE"
   ],
   "scripts": {
-    "test": "npm pack --dry-run",
+    "test": "npm pack --dry-run && node scripts/check-line-length.mjs",
     "release": "semantic-release"
   },
   "pi": {

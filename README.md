@@ -45,8 +45,22 @@ runs the diff review and `final-check` in a subagent with a fresh context when
 the host can. It writes documentation changes with `ste` and applies
 `creator-vibe` as a lens when the work has a human experience to carry. It
 collects the ideas outside the scope during the run, and at the end offers
-them to `backlog` in one batch. It can also start from a backlog item. It is
-for non-trivial implementation and does not commit, push, or deploy.
+them to `backlog` in one batch. It records each moment where the run
+struggled as a friction entry, and when there are entries, runs `retro` before
+that batch. It can also start from a backlog item. It is for non-trivial
+implementation and does not commit, push, or deploy.
+
+The `retro` skill looks back on a session or a `ship` run and proposes changes
+to the environment of the agent, so that the next run does not struggle in the
+same place. Each candidate must point to a moment of the session or of a
+past `ship` run, such as a friction entry, a failed check, or a correction
+from the user. A mechanical
+mistake gets an automated check, a judgement call gets a rule in the standards
+document that the reviewer reads, and a long search gets a pointer. It reads
+the last `ship` runs to find friction that repeats. Candidates about a skill
+go to a separate list with the path of the skill file, not to the backlog of
+the current repository. Under `ship` it only adds candidates to the deferred
+ideas; on request, it does the candidates that the user chooses.
 
 The `backlog` skill keeps deferred ideas as one Markdown file per item under
 `docs/backlog/`. Each item records why it matters, its evidence, the task that
@@ -120,7 +134,7 @@ from:
 
 - [umputun/cc-thingz](https://github.com/umputun/cc-thingz)
 - [anthropics/claude-code feature-dev plugin](https://github.com/anthropics/claude-code/tree/main/plugins/feature-dev)
-- [mattpocock/skills grilling and domain-modeling skills](https://github.com/mattpocock/skills)
+- [mattpocock/skills grilling, domain-modeling, and retro skills](https://github.com/mattpocock/skills)
 - [MrZoyo/deslop-GPT](https://github.com/MrZoyo/deslop-GPT/tree/main/skills/deslop)
 - [danyuchn/asd-ste100-skill](https://github.com/danyuchn/asd-ste100-skill)
 - [AminBlg/SimpleEnglish](https://github.com/AminBlg/SimpleEnglish/tree/main/skills/simple-english)
@@ -187,6 +201,12 @@ Start the pipeline from a deferred idea:
 /skill:ship docs/backlog/export-ignores-time-zone.md
 ```
 
+Learn from a hard session:
+
+```text
+/skill:retro
+```
+
 Review the deferred ideas, or defer a new one:
 
 ```text
@@ -226,7 +246,7 @@ The skills chain from choosing the target to cleaning up the result. Steps in
 brackets are optional:
 
 ```text
-[elevate] → grill → [deepen] → feature-dev → deslop → [final-check]
+[elevate] → grill → [deepen] → feature-dev → deslop → [final-check] → [retro]
 ```
 
 - `elevate` comes first because it decides what to do. `grill` then settles
@@ -236,6 +256,8 @@ brackets are optional:
 - `deepen` comes before `feature-dev` so that its external check, such as a
   test, a reproduction, or a reconciliation against source data, becomes the
   validation criterion for the implementation.
+- `retro` comes last because it reviews how the run went, not the result.
+  Skip it when the run was smooth.
 
 Use `elevate` when:
 
@@ -336,6 +358,9 @@ pi-feature-dev/
     │   ├── SKILL.md
     │   ├── CONTEXT-FORMAT.md
     │   └── ADR-FORMAT.md
+    ├── retro/
+    │   ├── agents/openai.yaml
+    │   └── SKILL.md
     ├── ship/
     │   ├── agents/openai.yaml
     │   └── SKILL.md
@@ -373,7 +398,9 @@ feat!: redesign workflow phases
 
 ## Development
 
-Validate the package shape:
+Validate the package shape, and check that no line in the skill files is
+longer than 80 characters. The check skips the frontmatter, code blocks,
+tables, and headings. CI runs the same command on each pull request:
 
 ```bash
 npm test

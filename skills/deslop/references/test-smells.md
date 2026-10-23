@@ -1,6 +1,8 @@
 # Test Smells
 
-Tests are code and can be accumulated agent slop. Test signal matters more than test volume. Preserve the minimum sufficient set of tests that protects distinct externally meaningful behavior with an independent oracle.
+Tests are code and can be accumulated agent slop. Test signal matters more than
+test volume. Preserve the minimum sufficient set of tests that protects distinct
+externally meaningful behavior with an independent oracle.
 
 ## Start with the oracle
 
@@ -14,7 +16,9 @@ same helper / same algorithm / implementation-generated expected value / mock se
     -> self-referential test: delete, consolidate, or find a real oracle
 ```
 
-An independently implemented cross-check is useful only when it can fail differently. Repeating an implementation with different names is not independence.
+An independently implemented cross-check is useful only when it can fail
+differently. Repeating an implementation with different names is not
+independence.
 
 ## Build an evidence map
 
@@ -24,9 +28,17 @@ For a non-trivial suite, make the reasoning inspectable before deleting nodes:
 | --- | --- | --- | --- | --- | --- | --- |
 | one row per candidate | active config, caller, protocol, or none | actual branch reached | success, rejection, error, or state | independent source | what can fail differently | test that dominates it, if any |
 
-This can remain working notes; do not add a permanent audit artifact merely to prove cleanup. The map prevents three common errors: merging tests that have different failure semantics, retaining permutations that reach the same branch and result, and deleting production behavior merely because its only test was redundant.
+This can remain working notes; do not add a permanent audit artifact merely to
+prove cleanup. The map prevents three common errors: merging tests that have
+different failure semantics, retaining permutations that reach the same branch
+and result, and deleting production behavior merely because its only test was
+redundant.
 
-One test dominates another only when it protects the same owner, branch, result, and failure domain with an equally independent or stronger oracle. A public integration test does not automatically dominate a known numerical example, corruption test, or protocol rejection. Conversely, a long snapshot does not dominate a focused test merely because it asserts more fields.
+One test dominates another only when it protects the same owner, branch, result,
+and failure domain with an equally independent or stronger oracle. A public
+integration test does not automatically dominate a known numerical example,
+corruption test, or protocol rejection. Conversely, a long snapshot does not
+dominate a focused test merely because it asserts more fields.
 
 ## High-priority accumulated patterns
 
@@ -58,7 +70,13 @@ One test dominates another only when it protects the same owner, branch, result,
 
 ## Closed justification loops
 
-Apply the [closed-loop evidence rules](../SKILL.md#closed-justification-loops) and [confidence gate](../SKILL.md#confidence-and-apply-behavior). Trace test -> production branch -> reason -> independent evidence root. Resolve whether the test records a distinct supported contract or merely repeats the implementation's assumptions. An unsuccessful search alone does not establish a closed loop. Delete the pair only after its lack of an independent purpose is established.
+Apply the [closed-loop evidence rules](../SKILL.md#closed-justification-loops)
+and [confidence gate](../SKILL.md#confidence-and-apply-behavior). Trace test ->
+production branch -> reason -> independent evidence root. Resolve whether the
+test records a distinct supported contract or merely repeats the
+implementation's assumptions. An unsuccessful search alone does not establish a
+closed loop. Delete the pair only after its lack of an independent purpose is
+established.
 
 ## Keep or delete
 
@@ -72,44 +90,88 @@ For every test, answer:
 6. Would a harmless refactor break it while behavior stayed identical?
 7. Was it added only after a local correction, without a new failure mode?
 
-Delete or consolidate when no distinct regression remains. Preserve separate tests for distinct contracts, failure semantics, security properties, persistence/transaction behavior, concurrency, supported compatibility, resource limits, scientific invariants, known numerical results, and real prior regressions.
+Delete or consolidate when no distinct regression remains. Preserve separate
+tests for distinct contracts, failure semantics, security properties,
+persistence/transaction behavior, concurrency, supported compatibility, resource
+limits, scientific invariants, known numerical results, and real prior
+regressions.
 
-Do not optimize for test count, assertion count, branch coverage, or line coverage. A smaller suite with independent signal is better than a larger suite that merely documents its own implementation.
+Do not optimize for test count, assertion count, branch coverage, or line
+coverage. A smaller suite with independent signal is better than a larger suite
+that merely documents its own implementation.
 
 ## Retire fixtures by behavior
 
-An obsolete fixture and the behavior once reached through it are separate decisions. Map every fixture-backed test to a current owner. Retire behavior only when evidence establishes it is obsolete or unreachable; move surviving behavior to the lowest stable public seam. Before removing a cross-layer fixture, confirm that one hermetic test still crosses the current producer, reader, and consumer. Green endpoint unit tests do not prove that edge.
+An obsolete fixture and the behavior once reached through it are separate
+decisions. Map every fixture-backed test to a current owner. Retire behavior
+only when evidence establishes it is obsolete or unreachable; move surviving
+behavior to the lowest stable public seam. Before removing a cross-layer
+fixture, confirm that one hermetic test still crosses the current producer,
+reader, and consumer. Green endpoint unit tests do not prove that edge.
 
-Delete a fixture's private builders, fakes, compatibility fields, and helper stack when no surviving test or production path uses them. Do not restore an unmanaged experiment artifact or preserve a whole legacy package merely to keep one current assertion reachable.
+Delete a fixture's private builders, fakes, compatibility fields, and helper
+stack when no surviving test or production path uses them. Do not restore an
+unmanaged experiment artifact or preserve a whole legacy package merely to keep
+one current assertion reachable.
 
 ## Adding tests during cleanup
 
 Adding a test is not the default response. Add one only when:
 
-- cleanup removes verification of a real externally meaningful behavior or exposes a concrete protection gap;
+- cleanup removes verification of a real externally meaningful behavior or
+  exposes a concrete protection gap;
 - a plausible regression would fail the test;
 - the expected result has an independent source; and
 - the test observes a meaningful seam rather than cleanup details.
 
-A small test can replace an obsolete fixture while preserving a fully specified contract. Reuse or adapt surviving coverage when it already protects that behavior.
+A small test can replace an obsolete fixture while preserving a fully specified
+contract. Reuse or adapt surviving coverage when it already protects that
+behavior.
 
-When production slop is deleted, delete tests whose only purpose was to protect that slop in the same change. Do not add a replacement test merely because a function now lacks a unit test, coverage falls, or a model prefers symmetry. An explicit current-task requirement or current authoritative project document outranks a historical test that asserts obsolete or incorrect behavior; an inferred preference does not.
+When production slop is deleted, delete tests whose only purpose was to protect
+that slop in the same change. Do not add a replacement test merely because a
+function now lacks a unit test, coverage falls, or a model prefers symmetry. An
+explicit current-task requirement or current authoritative project document
+outranks a historical test that asserts obsolete or incorrect behavior; an
+inferred preference does not.
 
 ### Correction examples
 
-- **Delete:** a documented change replaces implementation A with B, but a leftover test scans source text to prove A is absent. If no contract constrains the implementation, keep B's observable behavior covered and remove the source scan with A's private support. Renaming A or adding another absence test does not finish the cleanup.
-- **Preserve:** the current protocol explicitly rejects an old format, or a migration API still supports it. Test that observable rejection or migration; the fact that it mentions an old format does not make it obsolete.
-- **Retarget surviving behavior:** when a self-only checksum cluster is removed and its tests were the last ones exercising a surviving public contract, adapt one to an independently specified result. Preserve that behavioral root; retire all dedicated tests when the entire target is confirmed obsolete. Do not invent an oracle just to obtain a nonzero count.
-- **Repair existing coverage:** a writer test raises before creating a file, so it cannot expose a leaked partial output. Replacing it with a partial-write failure and checking the old destination and temporary-file cleanup can add a few lines while improving independent signal. Test length and checksum words alone do not establish a new self-proof loop.
+- **Delete:** a documented change replaces implementation A with B, but a
+  leftover test scans source text to prove A is absent. If no contract
+  constrains the implementation, keep B's observable behavior covered and remove
+  the source scan with A's private support. Renaming A or adding another absence
+  test does not finish the cleanup.
+- **Preserve:** the current protocol explicitly rejects an old format, or a
+  migration API still supports it. Test that observable rejection or migration;
+  the fact that it mentions an old format does not make it obsolete.
+- **Retarget surviving behavior:** when a self-only checksum cluster is removed
+  and its tests were the last ones exercising a surviving public contract, adapt
+  one to an independently specified result. Preserve that behavioral root;
+  retire all dedicated tests when the entire target is confirmed obsolete. Do
+  not invent an oracle just to obtain a nonzero count.
+- **Repair existing coverage:** a writer test raises before creating a file, so
+  it cannot expose a leaked partial output. Replacing it with a partial-write
+  failure and checking the old destination and temporary-file cleanup can add a
+  few lines while improving independent signal. Test length and checksum words
+  alone do not establish a new self-proof loop.
 
 ## Consolidation discipline
 
 - Prefer one readable test per distinct behavior, not one per branch or helper.
-- Parameterize only genuine equivalence classes; do not hide an opaque generated matrix.
-- Keep scenario names and failure messages capable of localizing a real regression.
-- Run the remaining applicable checks and preserve verification for surviving behavior. Explain empty test collection under the [proportional verification rules](../SKILL.md#proportional-verification).
-- Preserve low-level tests when low-level behavior itself is a stable contract, not merely because the code is private.
-- Count collected nodes before and after, then inspect skips and deselections; a smaller reported total can hide lost execution.
-- Fingerprint the worktree around suites that invoke compilers, materializers, exporters, or code generators.
+- Parameterize only genuine equivalence classes; do not hide an opaque generated
+  matrix.
+- Keep scenario names and failure messages capable of localizing a real
+  regression.
+- Run the remaining applicable checks and preserve verification for surviving
+  behavior. Explain empty test collection under the [proportional verification
+  rules](../SKILL.md#proportional-verification).
+- Preserve low-level tests when low-level behavior itself is a stable contract,
+  not merely because the code is private.
+- Count collected nodes before and after, then inspect skips and deselections; a
+  smaller reported total can hide lost execution.
+- Fingerprint the worktree around suites that invoke compilers, materializers,
+  exporters, or code generators.
 
-For generated inputs, current configuration, and cross-layer path checks, also read [evidence-and-reachability.md](evidence-and-reachability.md).
+For generated inputs, current configuration, and cross-layer path checks, also
+read [evidence-and-reachability.md](evidence-and-reachability.md).

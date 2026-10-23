@@ -1,0 +1,4 @@
+interface:
+  display_name: "Retro"
+  short_description: "Turn the friction of a session into checks, pointers, and review rules"
+  default_prompt: "Use $retro to review this session and propose changes to the agent environment."
