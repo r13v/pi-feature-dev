@@ -1,0 +1,4 @@
+interface:
+  display_name: "Backlog"
+  short_description: "Defer ideas with their context and bring them back later"
+  default_prompt: "Use $backlog to list, add, or review deferred ideas in docs/backlog/."
