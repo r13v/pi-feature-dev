@@ -16,16 +16,24 @@ selects the stages, passes each result to the next stage, and keeps the
 approval points of each stage. Ship ends with validated changes in the working
 tree. Do not commit, push, publish, or deploy unless the user asks.
 
+When a stage starts, load the skill of that stage and follow it, even when
+an earlier run in the same session loaded it. A stage that ran from memory
+is not done. Talk to the user in the language of the request. The formats in
+the skills fix the structure, not the words.
+
 ## Check the request first
 
 Use ship only for non-trivial implementation. If the request is a mechanical
 edit, a small fix, or work with no implementation, such as a report or an
 analysis, do not run the pipeline. Name the shorter path that fits, such as a
-direct edit or one skill, and stop.
+direct edit or one skill, and stop. If the host started ship without the user
+asking for it, propose ship and wait.
 
 If the request is the path of a backlog item under `docs/backlog/`, read the
 item as the `backlog` skill describes. Check its `where` and its evidence
-against the current code. If the item is stale or the idea is already done,
+against the current code. Measure the claim of the evidence again before you
+call the item stale. If only its `where` is out of date, update it and
+continue. If the item is stale or the idea is already done,
 offer to drop it as the `backlog` skill describes, and then stop. If its `worth`
 is `no`, give the
 reason from the item and ask whether to continue. Otherwise, use the item as
@@ -56,8 +64,11 @@ deslop`. If you cannot tell whether it matches, ask the user. When the
 branch is `detached`, a file of another worktree can also match, so ask the
 user before you resume. Do not resume a file with `status: finished`.
 
-Otherwise, start a new run. If a file `<run-id>.md` already exists, choose
-another run ID. Start the file with YAML frontmatter:
+Otherwise, start a new run. Fetch the remote first. If the branch is behind
+its upstream or the default branch, tell the user and ask whether to update
+it before you write the start commit. If the fetch fails, say so in one line
+and continue. If a file `<run-id>.md` already exists,
+choose another run ID. Start the file with YAML frontmatter:
 
 ```yaml
 ---
@@ -77,13 +88,19 @@ branch with no commits. In the body, write:
 - one entry for each stage: `selected`, `skipped: <reason>`, or, for deepen,
   `selection pending after grill`, and for retro, `selection pending after
   final-check or deslop`;
+- an entry `feature-dev review: pending`, after the feature-dev entry;
 - an entry `deferred ideas: pending`;
 - an empty `Friction` section;
 - an empty `Deferred ideas` section.
 
 Before a stage starts, read the file. Do not start a stage until each earlier
 stage has an entry with `done` or `skipped: <reason>`. An entry with
-`selection pending` does not count. When a stage ends, write its
+`selection pending` does not count. The `feature-dev review` entry counts as
+an earlier stage of deslop. If a file has no `feature-dev review` entry and
+deslop has no result, add `feature-dev review: pending`. If the entry is
+missing and deslop has a result, the review counts as done. If feature-dev is
+skipped, set it to `skipped: feature-dev skipped`. When a stage ends,
+write its
 status and its result: the approved elevated request, the Grill Result, the
 acceptance criteria, the selected design, and the checks that ran. Write each
 user decision when the user makes it.
@@ -102,13 +119,24 @@ of these happens:
   confirm it;
 - the user corrects a statement or an action of the agent. An answer to a
   question is not a correction;
+- the user rejects a recommendation, rejects or reshapes a round or a
+  deliverable, or states the goal again in other words;
+- the user asks a question that shows the agent left out context that it
+  had, such as the meaning of a term in a round;
+- the user runs a skill or a check by hand that a stage of this run covers,
+  or finds a defect in the result;
 - a stage gets `reopened: <reason>`;
 - the agent cannot find a file or a fact that it needs, and asks the user or
   searches more than once without a result.
 
 Write one line for each entry: the stage, what happened, and the evidence,
-such as the command, the file, or the finding. Do not write entries for other
-moments. The `retro` skill reads these entries.
+such as the command, the file, the finding, or the user's words. Do not write
+entries for other moments. The `retro` skill reads these entries.
+
+After ship ends, keep recording in the same session. When one of these
+moments happens about the result of the run, add the entry to the progress
+file, even when its status is `finished`. Start the line with `post-run:`.
+A later retro reads it.
 
 ## Changes of the task
 
@@ -163,6 +191,10 @@ stage, do what the user says.
 If a run condition and a skip condition both hold, skip elevate, because it
 grows the scope, and run deepen, because it keeps the goal.
 
+A cost inside a budget that the user stated is approved. Do not drop an
+acceptance check against the real system or a real model to save cost. If the
+check costs more than the budget, ask.
+
 State the selected stages in one line. Give a reason for each skipped stage.
 
 ## Run the stages
@@ -176,16 +208,19 @@ points of each stage stay in effect. A ship request does not approve them.
    skill describes. Use the confirmed `Grill Result` as the input for all
    later stages. Glossary and ADR updates from grill are changes of this
    task. If grill changes the goal, tell the user and ask whether to continue
-   with the new goal. Do not run elevate again without telling the user.
+   with the new goal. Do not run elevate again without telling the user. If
+   the user accepted every recommendation and feature-dev needs a design
+   choice, explore first, and then ask for the final confirmation of grill
+   and the design choice in one message.
 3. **Deepen.** A ship request counts as a request to proceed. Continue with
    the rewritten request without a separate stop. Stop if deepen lists
-   blockers. If deepen proposes a different deliverable, stop and offer to run
-   elevate with it. If the user accepts, write the new deliverable to the
-   progress file. Set the elevate, grill, and deepen entries to `reopened:
-   <reason>`, which does not count as a result. Keep the start commit. Then
-   run elevate, and run grill again for the decisions that the new
-   deliverable changes. Add the external validation from deepen to the
-   acceptance criteria of feature-dev.
+   blockers. Add each target and external validation from deepen to the
+   acceptance criteria. If deepen proposes a different deliverable, stop and
+   offer to run elevate with it. If the user accepts, write the new
+   deliverable to the progress file. Set the elevate, grill, and deepen
+   entries to `reopened: <reason>`, which does not count as a result. Keep the
+   start commit. Then run elevate, and run grill again for the decisions that
+   the new deliverable changes.
 4. **Feature-dev.** Implement the confirmed scope. When a design trigger of
    feature-dev applies, present the architecture approaches with a
    recommendation, as feature-dev describes. If the Grill Result already
@@ -193,13 +228,32 @@ points of each stage stay in effect. A ship request does not approve them.
    A ship request is not a request to proceed without design approval. Skip
    the wait only if the user explicitly asked to skip design approval.
    Validate against the success criteria in the Grill Result and against the
-   deepen validation, if there is one.
+   deepen validation, if there is one. Feature-dev ends when each acceptance
+   criterion is met, or is not met with evidence and a blocker that
+   feature-dev allows. Add a new direction that the work shows to the
+   deferred ideas. Ask whether to extend the scope only when the accepted
+   objective cannot be met without it. Then run
+   the diff review in a fresh context, as described below, and set the
+   `feature-dev review` entry to `done: <N> findings` or `skipped: <reason>`.
+   When the user asks for a commit after each group of changes, review the
+   whole range once before deslop.
 5. **Deslop.** A ship request approves cleanup of the changes of this task
    only. Give deslop that scope explicitly: the hunks in `git diff
    <start_commit>` and the untracked files that are not ignored. After
-   cleanup, run the affected checks again.
+   cleanup, run the affected checks again. When the changes of the task are
+   large, such as more than about 500 changed lines, offer the `deep` mode of
+   deslop for those files.
 6. **Final-check.** Compare the result with the original request, the Grill
-   Result, and the acceptance criteria. Fix the confirmed gaps in scope.
+   Result, and the acceptance criteria. Report each deepen target as met, not
+   met, or not measured. Fix the confirmed gaps in scope. Then run deslop on
+   the files that these fixes changed, and run the affected checks again.
+   Skip this when deslop was skipped. Set final-check to `done` only after
+   this deslop.
+
+   When the result has a user interface or behavior that the user can try,
+   start it in a clean state before the output: no test stubs, patches, or
+   stopped servers. Give the user the address and the observable qualities to
+   try.
 7. **Retro.** Run the `retro` skill in this context, not in a subagent,
    because the friction of the run is in this context. Set the retro entry
    to `done: <N> candidates`.
@@ -225,18 +279,35 @@ section to the `add` mode of the `backlog` skill. It asks the user about the
 ideas in one batch. Ask it to add the option "do now" only for an idea that
 does not change the accepted objective and is not a confirmed non-goal. Do
 not add "do now" to the `retro:` ideas. A `retro` idea is a
-separate change, so it passes the first condition of the filing bar. Do not
-give the `retro-skill:` ideas to the `backlog` skill. Show them in the output,
-and write `shown in output` next to each of them as its decision. If no ideas
-are left for the `backlog` skill, do not call it. Write each decision next to
-its idea in the progress file.
+separate change, so it passes the first condition of the filing bar. If no
+ideas are left for the `backlog` skill, do not call it. Write each decision
+next to its idea in the progress file. Do not skip the batch because you
+guess that the user is away. If the user does not answer, leave the
+`deferred ideas` entry `pending`.
+
+If the user delegated the decisions in this run, such as "do everything" or
+"decide yourself", do not ask. Decide each idea yourself: "do now" for a small
+idea that passes the "do now" conditions, file an idea that is worth its own
+change, and drop the rest. Give these decisions to the `add` mode as
+delegated decisions, so that it writes them without asking. Report each
+decision with its reason in the output.
+
+Do not give the `retro-skill:` ideas to the `backlog` skill, because the
+skill lives in another repository. Append each of them to the skill feedback
+file: the file that the `SKILL_FEEDBACK_FILE` environment variable names, or
+else `~/.agents/skill-feedback.md`. Create the file if it does not exist.
+Write one line for each idea: the date, the repository, the name of the
+skill, the idea, and the moment. Write `sent to feedback file` next to each
+idea as its decision. If you cannot write the file, show the ideas in the
+output, and write `shown in output` as the decision.
 
 Implement each "do now" idea in this run. Then run deslop on the new hunks,
 and run final-check again for them, or the feature-dev validation if the user
-skipped final-check. Mark each step next to the idea when it ends. Give the
-ideas that this second pass finds to the `add` mode without the "do now"
-option. Record the friction of the second pass, but do not run retro again.
-A later retro reads it from the past runs.
+skipped final-check. Run a slow check, such as an end-to-end suite, once
+after this pass, not before it and again after it. Mark each step next to the
+idea when it ends. Give the ideas that this second pass finds to the `add`
+mode without the "do now" option. Record the friction of the second pass, but
+do not run retro again. A later retro reads it from the past runs.
 
 Set the `deferred ideas` entry to `done` when the section is empty, or when
 each idea has a decision and each "do now" idea has passed its checks.
@@ -259,6 +330,9 @@ the scope separately.
 Before you fix a finding, open the code that it cites and confirm it. Make
 all fixes yourself, so that one agent writes the code. If the host cannot run
 subagents, run the checks yourself, and read the standards document first.
+When the host can run subagents, a diff review or a final-check that the
+writing agent ran itself is not done. If the subagent fails, set the entry
+to `skipped: <reason>`.
 
 ## Creator-vibe lens
 
@@ -268,7 +342,10 @@ Do not add a stage or an approval point for it.
 - **Grill.** Turn the intended feeling into observable qualities, such as
   "a first-time user finds the next action without help". Add them to the
   success criteria of the Grill Result. If the feeling is too vague to guide
-  a choice, ask one question about it in a grill round.
+  a choice, ask one question about it in a grill round. For a decision about
+  how something looks or moves, show a quick render or a sketch of the
+  options. If you cannot, mark the decision provisional until the user tries
+  the result.
 - **Feature-dev design.** Compare the approaches also by how well each one
   carries the intended experience: defaults, the path to a first result, and
   behavior on failure. Include this comparison in the recommendation.
@@ -293,5 +370,8 @@ clarity mode.
 - The validation that ran, and the items that remain unverified.
 - The path of the progress file.
 - The backlog items that this run created, changed, or deleted.
-- The `retro-skill:` ideas, if any.
+- The `retro-skill:` ideas, if any, and where they went.
 - Blockers and follow-ups, if any.
+- One next step toward the accepted objective, with its evidence.
+- One question: whether to commit the changes and open a pull request or a
+  merge request, unless the user already said what to do with them.

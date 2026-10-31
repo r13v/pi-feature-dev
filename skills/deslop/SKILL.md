@@ -12,7 +12,9 @@ beautifier, dead-code sweeper, generic refactoring tool, or redesign assistant.
 ## Priority order
 
 Work in this order. Do not let an easy dead-code deletion displace a
-higher-priority cluster.
+higher-priority cluster. The order sets what to inspect first, not what to
+skip: every run that has comments in scope also does the comment pass, even
+when a higher cluster found work.
 
 1. **Test-suite bloat.** Treat tests as production code that can accumulate
    after every agent correction. Remove duplicate, self-referential,
@@ -32,7 +34,7 @@ higher-priority cluster.
    [code-smells.md](references/code-smells.md#comment-check).
 
 Generic dead code, wrappers, abstractions, and ordinary duplication are
-secondary. Touch them only when they belong to one of the three target clusters
+secondary. Touch them only when they belong to one of the four target clusters
 or have direct high-confidence evidence.
 
 **Reduce test surface, not behavior surface.** Evidence that a test is redundant
@@ -254,6 +256,10 @@ Read only the relevant references:
 8. Keep permanent tests hermetic: use repository-managed or test-created inputs,
    write to temporary outputs, and skip only when the test actually crosses the
    optional dependency boundary.
+9. Last, read the [comment check](references/code-smells.md#comment-check)
+   and apply it to every comment in scope, in production code and in tests.
+   Do it after the code edits, because deleted code leaves comments behind.
+   Count the comments you inspected.
 
 ## Negative-change budget
 
@@ -300,7 +306,8 @@ content, do not run it in audit mode; state that plainly.
 ## Final report
 
 Report the inspected scope; removed test, verification, and fallback clusters;
-comments removed or condensed, plus comment/code conflicts left for review;
+the number of comments inspected, and the comments removed or condensed, plus
+comment/code conflicts left for review;
 independent evidence roots; preserved boundaries; tests removed or consolidated;
 before/after collection plus skips or deselections when available; checks
 actually run; approximate production/test size changes when useful; and

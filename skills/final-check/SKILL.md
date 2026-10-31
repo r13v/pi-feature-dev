@@ -9,6 +9,10 @@ What else have we missed? Compare the requested outcome with the current work
 and validation evidence. Inspect only the affected scope and dependencies needed
 to resolve a concrete concern; do not start an unrelated repository audit.
 
+When the work renames or removes a public name, such as a function, a
+command, a flag, or a domain term, search the whole repository, including
+the documentation and the site pages, for the old name.
+
 Fix confirmed in-scope gaps when implementation is already authorized. If the
 request is review-only, report findings without editing. Reuse passing checks;
 rerun or broaden them only after changes, failures, or a newly identified risk.

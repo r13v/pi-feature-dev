@@ -110,6 +110,9 @@ Search for these features during a large review:
 - Nominalizations, such as `perform an analysis of` or `provide assistance to`.
 - Promotional adjectives, such as `seamless`, `robust`, `powerful`, and
   `cutting-edge`.
+- Filler and inflated words, such as `leverage`, `utilize`, `in order to`,
+  `prior to`, `due to the fact that`, and `facilitate`. Replace each with a
+  plain word. Delete it when it carries no fact.
 - Phrasal verbs, such as `spin up`, `reach out`, `set up`, and `kick off`.
 - Em dashes or spaced hyphens that join two statements and hide the relation
   between them.
