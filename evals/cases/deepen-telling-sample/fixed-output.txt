@@ -1,0 +1,2 @@
+## Rewritten request
+Run v1 and v2 on 8 representative cases, 2 per tag, about $24. v2 wins if it finds the cause in at least 2 more cases. Widen the run only if the signal is unclear.

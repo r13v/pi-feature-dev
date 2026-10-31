@@ -1,0 +1,4 @@
+checkout(cart, user) --> total(items, discount)   [changed]
+  passes user.discount ?? 0      amount = sum * (1 - discount)
+
+Risk: a discount above 1 makes the amount negative.

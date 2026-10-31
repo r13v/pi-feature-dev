@@ -1,0 +1,172 @@
+# Skill evals. Each test runs one skill in a clean CLI session on a fixture
+# repo, and checks the result with code. See evals/README.md.
+description: Skill evals
+
+prompts:
+  - "{{request}}"
+
+# `skills` is `working` (the working tree) or a git ref. Compare a change
+# with `main` by running both providers on the same tests.
+providers:
+  - id: file://provider.mjs
+    label: claude@working
+    config: { agent: claude, skills: working }
+  - id: file://provider.mjs
+    label: claude@main
+    config: { agent: claude, skills: main }
+  - id: file://provider.mjs
+    label: codex@working
+    config: { agent: codex, skills: working }
+  - id: file://provider.mjs
+    label: codex@main
+    config: { agent: codex, skills: main }
+
+tests:
+  - description: deslop removes the bloat that the task added
+    vars:
+      case: deslop-task-bloat
+      request: >-
+        Use the deslop skill and apply it to the uncommitted changes of
+        this task. Do not ask questions.
+    assert:
+      - type: javascript
+        value: file://checks.mjs:deslopTaskBloat
+
+  - description: final-check finds a missed requirement
+    vars:
+      case: final-check-missed-item
+      request: >-
+        Use the final-check skill. The task was to add `slugify(s)` to
+        src/text.js that (1) lowercases the text, (2) replaces spaces with
+        dashes, and (3) removes every character that is not a-z, 0-9, or a
+        dash. The implementation is in the uncommitted changes.
+    assert:
+      - type: javascript
+        value: file://checks.mjs:finalCheckMissedItem
+
+  - description: grill asks a small first round
+    vars:
+      case: grill-round-size
+      request: >-
+        Use the grill skill. I want to add tags to notes, and search notes
+        by tag.
+    assert:
+      - type: javascript
+        value: file://checks.mjs:grillRoundSize
+
+  # Cases below come from real uses of the skills. `source` quotes the user's
+  # reaction in that session. Fixtures keep no names of the original projects.
+
+  - description: final-check removes leftovers of a removed feature
+    vars:
+      case: final-check-removal-leftovers
+      source: "ты добавил … исторические данные"
+      request: >-
+        Use the final-check skill. The task was to remove the built-in
+        `translate` command and everything tied to it (the LLM key, its
+        docs) from this CLI. The implementation is in the uncommitted
+        changes. Fix what you find. Do not ask questions.
+    assert:
+      - type: javascript
+        value: file://checks.mjs:finalCheckRemovalLeftovers
+
+  - description: feature-dev reuses the existing control
+    vars:
+      case: feature-dev-existing-control
+      source: "почему slackChannel не используется?"
+      request: >-
+        Use the feature-dev skill. On the resources form, let the user set
+        the Slack channel of a resource. Today they type the channel name
+        and the id by hand, which is inconvenient. Do not ask questions;
+        decide and implement.
+    assert:
+      - type: javascript
+        value: file://checks.mjs:featureDevExistingControl
+
+  - description: grill answers from the code before asking
+    vars:
+      case: grill-answers-from-code
+      source: "если уже можно сделать lazy"
+      request: >-
+        Use the grill skill. I want lazy contributions: the code of disabled
+        plugins must not load until the plugin is enabled. Do not edit
+        files.
+    assert:
+      - type: javascript
+        value: file://checks.mjs:grillAnswersFromCode
+
+  - description: elevate keeps the user's constraint
+    vars:
+      case: elevate-keeps-constraint
+      source: "пока без теста на реальном api. нужны идеи"
+      request: >-
+        Use the elevate skill. We now have an image classifier API (docs in
+        docs/classifier.md). I need product ideas for our apartment-rental
+        site. No tests against the real API and no API keys for now, ideas
+        only. Do not ask questions.
+    assert:
+      - type: javascript
+        value: file://checks.mjs:elevateKeepsConstraint
+
+  - description: deepen keeps a quick check small
+    vars:
+      case: deepen-telling-sample
+      source: "прогони на самых показательных кейсах"
+      request: >-
+        Use the deepen skill on this request: "Check whether prompt v2 is
+        better than v1 on our eval cases. I want a quick read on whether v2
+        is the right direction." Do not ask questions; stop after the
+        rewrite.
+    assert:
+      - type: javascript
+        value: file://checks.mjs:deepenTellingSample
+
+  - description: deslop removes a speculative defaults merge
+    vars:
+      case: deslop-speculative-defaults
+      source: "убери мерж дефолтов"
+      request: >-
+        Use the deslop skill and apply it to the uncommitted changes of this
+        task. The watch settings are new in this task and were never
+        deployed, so no saved settings exist yet. Do not ask questions.
+    assert:
+      - type: javascript
+        value: file://checks.mjs:deslopSpeculativeDefaults
+
+  - description: backlog files an idea that another document mentions
+    vars:
+      case: backlog-files-noted-idea
+      source: "запиши в беклог"
+      request: >-
+        Use the backlog skill in add mode. Ideas: (1) issueLink in
+        src/sentry.js builds links from the long issue id; use the short id.
+        (2) listIssues in src/sentry.js returns an empty list on HTTP 403,
+        so a missing access looks like "no issues"; report the missing
+        access instead. File every idea that passes the filing bar. Do not
+        ask questions.
+    assert:
+      - type: javascript
+        value: file://checks.mjs:backlogFilesNotedIdea
+
+  - description: ste keeps every instruction and limit
+    vars:
+      case: ste-keeps-every-limit
+      source: "чтобы feature-dev всё еще предлагал архитектуру"
+      request: >-
+        Use the ste skill in clarity mode. Rewrite docs/deploy.md in place.
+        Keep every instruction and limit. Do not ask questions.
+    assert:
+      - type: javascript
+        value: file://checks.mjs:steKeepsEveryLimit
+
+  - description: visual-recap draws ASCII for a terminal
+    vars:
+      case: visual-recap-ascii
+      source: "переделай mermaid на ascii"
+      request: >-
+        Use the visual-recap skill on the uncommitted changes. I read the
+        answer in a plain terminal that does not render Markdown diagrams.
+        Do not ask questions.
+    assert:
+      - type: javascript
+        value: file://checks.mjs:visualRecapAscii
