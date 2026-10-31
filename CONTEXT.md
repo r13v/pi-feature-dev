@@ -36,6 +36,10 @@ _Avoid_: ticket, task, TODO
 A line in a `ship` progress file that records a moment where the run struggled, with its evidence. The `retro` skill uses these lines to find improvements to the environment of the agent.
 _Avoid_: issue, struggle, problem
 
+**Skill Feedback File**:
+A file outside any repository that collects the candidates about skills from the `retro` runs in other repositories, so that they reach the source repository of the skill. It is `SKILL_FEEDBACK_FILE`, or `~/.agents/skill-feedback.md`.
+_Avoid_: inbox, skill backlog
+
 ## Relationships
 
 - A **Host Agent** executes one or more **Skills**.

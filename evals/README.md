@@ -14,14 +14,25 @@ npx promptfoo view
 - `claude@working` uses the skills in the working tree. `claude@main` uses
   the skills at `main`. To test a change, compare the two columns on the same
   cases. Use the `codex@` providers for Codex.
+- Claude runs Sonnet 5.5 and Codex runs GPT 6.1 sol, both at medium effort.
+  Change `model` and `effort` in `promptfooconfig.yaml` for all providers at
+  once, so that the columns stay comparable.
+- A run is slow and costs money. Run only the cases of the skills that a
+  change touches: `--filter-pattern '<words of the descriptions>'`.
 - Run each case 3 times (`--repeat 3`). One run can pass or fail by chance.
-- A case costs about $0.1–0.2 per run on Claude.
+- A case costs about $0.1–0.2 per run on Claude. A `ship` case that
+  continues a run costs more.
 
 ## How a run is isolated
 
 - The provider copies `cases/<case>/repo` to a new directory in the system
   temp directory and commits it. Then it copies `cases/<case>/change` over
   it, as the uncommitted changes of the task.
+- Files in `change/gitdir/` go into `.git/` after the commit, such as a
+  `ship` progress file in `.git/ship/`. In them, `{{BASE}}` becomes the base
+  commit and `{{BRANCH}}` the current branch. `fixed/gitdir/` works the same.
+- `SKILL_FEEDBACK_FILE` points to `.git/skill-feedback.md` of the run, so
+  that `ship` does not write to your own feedback file.
 - The skills go to `.claude/skills` and `.agents/skills` in that directory.
   The global install is not used.
 - Claude runs with `--setting-sources project --strict-mcp-config`. The

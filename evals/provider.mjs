@@ -2,8 +2,8 @@
 // Each call gets a fresh git repo from the case fixture and the skills from
 // `config.skills`: `working` for the working tree, or any git ref.
 import { execFileSync, spawnSync } from "node:child_process";
-import { cpSync, existsSync, mkdirSync, mkdtempSync, symlinkSync }
-  from "node:fs";
+import { cpSync, existsSync, mkdirSync, mkdtempSync, readdirSync,
+  readFileSync, statSync, symlinkSync, writeFileSync } from "node:fs";
 import { homedir, tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -29,6 +29,28 @@ function copySkills(ref, dest) {
   });
 }
 
+// Copies `from` over the run directory. Its `gitdir/` goes into `.git/`,
+// such as a `ship` progress file, with `{{BASE}}` and `{{BRANCH}}` replaced
+// by the base commit and the current branch.
+export function overlay(from, dir) {
+  cpSync(from, dir, { recursive: true,
+    filter: (src) => src !== join(from, "gitdir") });
+  const gitdir = join(from, "gitdir");
+  if (!existsSync(gitdir)) return;
+  const base = sh(dir, "git", ["rev-parse", "--short", "HEAD"]).trim();
+  const branch = sh(dir, "git", ["branch", "--show-current"]).trim();
+  const copy = (src, dest) => {
+    if (statSync(src).isDirectory()) {
+      mkdirSync(dest, { recursive: true });
+      for (const f of readdirSync(src)) copy(join(src, f), join(dest, f));
+      return;
+    }
+    writeFileSync(dest, readFileSync(src, "utf8")
+      .replaceAll("{{BASE}}", base).replaceAll("{{BRANCH}}", branch));
+  };
+  copy(gitdir, join(dir, ".git"));
+}
+
 export function makeWorkdir(caseName, skillsRef) {
   const caseDir = join(ROOT, "evals", "cases", caseName);
   mkdirSync(RUNS, { recursive: true });
@@ -40,7 +62,7 @@ export function makeWorkdir(caseName, skillsRef) {
     "commit", "-qm", "base"]);
   // Files in `change/` are the uncommitted changes of the task.
   if (existsSync(join(caseDir, "change"))) {
-    cpSync(join(caseDir, "change"), dir, { recursive: true });
+    overlay(join(caseDir, "change"), dir);
   }
   // Skills are project skills, so the global install is not used. They are
   // excluded from git so that a check sees only the changes of the agent.
@@ -50,6 +72,13 @@ export function makeWorkdir(caseName, skillsRef) {
   return dir;
 }
 
+// `ship` appends the candidates about skills here instead of the user's
+// global feedback file.
+function env(dir) {
+  return { ...process.env,
+    SKILL_FEEDBACK_FILE: join(dir, ".git", "skill-feedback.md") };
+}
+
 function runClaude(dir, prompt, config) {
   const args = ["-p", prompt, "--output-format", "json",
     "--setting-sources", "project", "--strict-mcp-config",
@@ -57,7 +86,7 @@ function runClaude(dir, prompt, config) {
   if (config.model) args.push("--model", config.model);
   if (config.effort) args.push("--effort", config.effort);
   const r = spawnSync("claude", args, { cwd: dir, encoding: "utf8",
-    timeout: 20 * 60_000 });
+    env: env(dir), timeout: 20 * 60_000 });
   if (r.status !== 0) return { error: r.stderr || r.stdout || "claude failed" };
   const json = JSON.parse(r.stdout);
   return { output: json.result, cost: json.total_cost_usd };
@@ -71,11 +100,17 @@ function runCodex(dir, prompt, config) {
   symlinkSync(join(process.env.CODEX_HOME ?? join(homedir(), ".codex"),
     "auth.json"), join(home, "auth.json"));
   const last = join(dir, ".git", "codex-last.txt");
+  // The sandbox keeps `.git/` read-only, but `ship` writes its progress file
+  // and the skill feedback file there.
   const args = ["exec", "--ephemeral",
-    "--sandbox", "workspace-write", "--output-last-message", last, prompt];
+    "--sandbox", "workspace-write", "--add-dir", join(dir, ".git"),
+    "--output-last-message", last, prompt];
   if (config.model) args.splice(1, 0, "--model", config.model);
+  if (config.effort) {
+    args.splice(1, 0, "-c", `model_reasoning_effort="${config.effort}"`);
+  }
   const r = spawnSync("codex", args, { cwd: dir, encoding: "utf8",
-    env: { ...process.env, CODEX_HOME: home }, timeout: 20 * 60_000 });
+    env: { ...env(dir), CODEX_HOME: home }, timeout: 20 * 60_000 });
   if (r.status !== 0) return { error: r.stderr || "codex failed" };
   return { output: sh(dir, "cat", [last]) };
 }

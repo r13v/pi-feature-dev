@@ -16,7 +16,8 @@ It does not require specific task-tracking, question, delegation, or review tool
 
 The `deslop` skill audits or applies evidence-backed subtractive cleanup for
 accumulated test bloat, circular verification, defensive or fallback machinery,
-and comment noise. Audit mode is read-only. An explicit cleanup request authorizes edits
+and comment noise. It checks every comment in scope in each run, also when
+tests or fallbacks take most of the work. Audit mode is read-only. An explicit cleanup request authorizes edits
 within its scope; the literal `apply` command is optional.
 
 The `final-check` skill asks: “What else have we missed? Is there anything we
@@ -45,10 +46,16 @@ runs the diff review and `final-check` in a subagent with a fresh context when
 the host can. It writes documentation changes with `ste` and applies
 `creator-vibe` as a lens when the work has a human experience to carry. It
 collects the ideas outside the scope during the run, and at the end offers
-them to `backlog` in one batch. It records each moment where the run
-struggled as a friction entry, and when there are entries, runs `retro` before
-that batch. It can also start from a backlog item. It is for non-trivial
-implementation and does not commit, push, or deploy.
+them to `backlog` in one batch, or decides them itself when the user
+delegated the decisions. It records each moment where the run struggled as a
+friction entry, including the corrections and manual steps of the user, also
+after the run ends. When there are entries, it runs `retro` before that batch,
+and sends the candidates about skills to a skill feedback file outside the
+repository. It loads the skill of each stage when the stage starts, and
+records the diff review as its own entry, so that the review is not skipped.
+It can also start from a backlog item. It is for non-trivial implementation.
+It does not commit, push, or deploy, but at the end it asks whether to commit
+and open a pull request.
 
 The `retro` skill looks back on a session or a `ship` run and proposes changes
 to the environment of the agent, so that the next run does not struggle in the
@@ -59,8 +66,12 @@ mistake gets an automated check, a judgement call gets a rule in the standards
 document that the reviewer reads, and a long search gets a pointer. It reads
 the last `ship` runs to find friction that repeats. Candidates about a skill
 go to a separate list with the path of the skill file, not to the backlog of
-the current repository. Under `ship` it only adds candidates to the deferred
-ideas; on request, it does the candidates that the user chooses.
+the current repository; `ship` sends them to the skill feedback file
+(`SKILL_FEEDBACK_FILE` or `~/.agents/skill-feedback.md`). In the source
+repository of a skill, retro reads that file, counts the repeats, and
+removes the lines that a done or dropped candidate covers. Under
+`ship` it only adds candidates to the deferred ideas; on request, it does the
+candidates that the user chooses.
 
 The `backlog` skill keeps deferred ideas as one Markdown file per item under
 `docs/backlog/`. Each item records why it matters, its evidence, the task that
@@ -74,7 +85,10 @@ undecided items that are older than 90 days. It does not commit or push.
 
 The `grill` skill runs a dependency-aware interview that researches facts,
 exhausts the current decision frontier round by round, sharpens domain language,
-and records agreed terminology and durable architectural decisions.
+and records agreed terminology and durable architectural decisions. A round
+asks at most three decisions that have no safe default, and lists the
+reversible ones as defaults that the user can reject. It reads the rules of
+the repository before it recommends an option.
 
 The `ste` skill drafts, rewrites, and reviews clear English with
 [ASD-STE100 Simplified Technical English](https://www.asd-ste100.org/)
@@ -133,7 +147,7 @@ The original skills and workflows that informed these portable versions came
 from:
 
 - [umputun/cc-thingz](https://github.com/umputun/cc-thingz)
-- [anthropics/claude-code feature-dev plugin](https://github.com/anthropics/claude-code/tree/main/plugins/feature-dev)
+- [anthropics/claude-code feature-dev plugin](https://github.com/anthropics/claude-plugins-official/tree/main/plugins/feature-dev)
 - [mattpocock/skills grilling, domain-modeling, and retro skills](https://github.com/mattpocock/skills)
 - [MrZoyo/deslop-GPT](https://github.com/MrZoyo/deslop-GPT/tree/main/skills/deslop)
 - [danyuchn/asd-ste100-skill](https://github.com/danyuchn/asd-ste100-skill)

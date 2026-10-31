@@ -35,6 +35,8 @@ Read these sources:
   --path-format=absolute --git-common-dir` prints. If the directory does not
   exist or this is not a git repository, skip this source. Use these files to
   find friction that repeats across runs.
+- the skill feedback file, when the current repository is the source of a
+  skill. The section "Candidates about skills" describes it.
 
 ## Categories
 
@@ -86,8 +88,16 @@ If the friction came from the instructions of a skill, such as a step of
 `ship` or `feature-dev`, put the candidate in a separate list. Give the path
 of the skill file and the moment. Do not add these candidates to the backlog
 of the current repository, because the skill lives in another repository.
-If the current repository is the source of the skill, treat the candidate as
-any other candidate.
+`ship` sends them to the skill feedback file, so that they reach the source
+repository of the skill. If the current repository is the source of the
+skill, treat the candidate as any other candidate.
+
+The skill feedback file is the file that the `SKILL_FEEDBACK_FILE`
+environment variable names, or else `~/.agents/skill-feedback.md`. It has one
+line for each candidate from the runs in other repositories, with the name
+of the skill. When the current repository is the source of a skill, read the
+lines that name its skills as evidence, and count the lines that report the
+same friction: a repeat is more severe.
 
 ## Modes
 
@@ -97,7 +107,9 @@ any other candidate.
 change files in the working tree. Write only to the progress file. Add each
 candidate as one line to the `Deferred ideas` section. Start the line with
 `retro:`, then give the category, the fix, and the moment. Add each candidate
-about skills in the same way, but start the line with `retro-skill:`.
+about skills in the same way, but start the line with `retro-skill:`, and
+give the name of the skill. In the source repository of the skill, start the
+line with `retro:`.
 
 ### On request
 
@@ -108,7 +120,9 @@ moment, and the proposed fix. Show the candidates about skills
 as a separate list. Ask the user which candidates to do now. Offer a
 candidate about skills only when the current repository is the source of the
 skill. Do the chosen
-candidates, and run the checks that they affect. Offer to give the other
+candidates, and run the checks that they affect. Remove from the skill
+feedback file each line that a done candidate covers, and each line that the
+user drops. Offer to give the other
 candidates to the `add` mode of the `backlog` skill. Run that mode as if the
 user asked for it, so that its rule for the default branch applies.
 

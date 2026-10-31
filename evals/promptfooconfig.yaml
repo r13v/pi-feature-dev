@@ -6,20 +6,25 @@ prompts:
   - "{{request}}"
 
 # `skills` is `working` (the working tree) or a git ref. Compare a change
-# with `main` by running both providers on the same tests.
+# with `main` by running both providers on the same tests. Each agent runs
+# one fixed model at medium effort, so that runs stay comparable.
 providers:
   - id: file://provider.mjs
     label: claude@working
-    config: { agent: claude, skills: working }
+    config: { agent: claude, skills: working, model: claude-sonnet-5-5,
+      effort: medium }
   - id: file://provider.mjs
     label: claude@main
-    config: { agent: claude, skills: main }
+    config: { agent: claude, skills: main, model: claude-sonnet-5-5,
+      effort: medium }
   - id: file://provider.mjs
     label: codex@working
-    config: { agent: codex, skills: working }
+    config: { agent: codex, skills: working, model: gpt-6.1-sol,
+      effort: medium }
   - id: file://provider.mjs
     label: codex@main
-    config: { agent: codex, skills: main }
+    config: { agent: codex, skills: main, model: gpt-6.1-sol,
+      effort: medium }
 
 tests:
   - description: deslop removes the bloat that the task added
@@ -170,3 +175,83 @@ tests:
     assert:
       - type: javascript
         value: file://checks.mjs:visualRecapAscii
+
+  # Cases below measure the changes from the review of past `ship` runs.
+
+  - description: deslop checks the comments when tests take the work
+    vars:
+      case: deslop-comment-noise
+      source: "deslop в основном фокусируется на тестах и забывает комментарии"
+      request: >-
+        Use the deslop skill and apply it to the uncommitted changes of this
+        task. Do not ask questions.
+    assert:
+      - type: javascript
+        value: file://checks.mjs:deslopCommentNoise
+
+  - description: grill reads the repository rules before it recommends
+    vars:
+      case: grill-reads-repo-rules
+      source: "переименуем везде, и в коде тоже"
+      request: >-
+        Use the grill skill. In the interface, we want to call dishes
+        "recipes" from now on, because that is the word our editors use. Do
+        not edit files.
+    assert:
+      - type: javascript
+        value: file://checks.mjs:grillReadsRepoRules
+
+  - description: ship sends the candidates about skills to the feedback file
+    vars:
+      case: ship-skill-feedback
+      source: "retro-skill: … shown in output"
+      request: >-
+        Use the ship skill and continue the active run. Do not ask
+        questions.
+    assert:
+      - type: javascript
+        value: file://checks.mjs:shipSkillFeedback
+
+  - description: ship decides the deferred ideas when the user delegates
+    vars:
+      case: ship-delegated-ideas
+      source: "или сделай сразу или выбрось. выбери сам"
+      request: >-
+        Use the ship skill and continue the active run. I delegate every
+        decision in this run to you: decide yourself and do not ask me.
+    assert:
+      - type: javascript
+        value: file://checks.mjs:shipDelegatedIdeas
+
+  - description: ship runs the diff review before deslop
+    vars:
+      case: ship-review-before-deslop
+      source: "went from implementation to deslop without the diff review"
+      request: >-
+        Use the ship skill and continue the active run. Do not ask
+        questions.
+    assert:
+      - type: javascript
+        value: file://checks.mjs:shipReviewBeforeDeslop
+
+  - description: final-check finds the old name in the docs after a rename
+    vars:
+      case: final-check-renamed-docs
+      source: "а мы не забыли обновить документацию и сайт?"
+      request: >-
+        Use the final-check skill. The task was to rename `fetchUser` to
+        `loadUser` in this library. The implementation is in the
+        uncommitted changes. Fix what you find. Do not ask questions.
+    assert:
+      - type: javascript
+        value: file://checks.mjs:finalCheckRenamedDocs
+
+  - description: ship keeps a backlog item whose line moved
+    vars:
+      case: ship-backlog-moved-line
+      source: "Верни пункт … и запусти по нему ship"
+      request: >-
+        Use the ship skill on docs/backlog/export-ignores-time-zone.md.
+    assert:
+      - type: javascript
+        value: file://checks.mjs:shipBacklogMovedLine

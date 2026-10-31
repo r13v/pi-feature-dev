@@ -84,6 +84,9 @@ can do that. This step is for challenging and changing the domain model.
 Look for `CONTEXT-MAP.md` and the relevant `CONTEXT.md` before inventing
 terminology:
 
+- If the repository already uses `GLOSSARY.md` or `GLOSSARY-MAP.md` for the
+  same purpose, use them in place of `CONTEXT.md` and `CONTEXT-MAP.md`. Do
+  not create a second glossary.
 - If `CONTEXT-MAP.md` exists, use it to locate the applicable bounded context
   and its ADR directory.
 - If only a root `CONTEXT.md` exists, treat the repository as a single context.
@@ -107,11 +110,35 @@ Compute the full current frontier. Exclude:
 - questions whose prerequisites are unresolved
 - questions whose answers cannot change the outcome
 
-Ask independent frontier questions together, in chat. Do not use a host question
+Sort the frontier into two kinds:
+
+- **Decide.** A real trade-off with no safe default, or a choice that is hard
+  to reverse. Ask it in the full format below.
+- **Default.** The recommended option is cheap to reverse and a reasonable
+  person would pick it. Do not ask it as a question. List it in one line:
+  the decision, the option you take, and a short reason.
+
+Ask at most three decide questions in a round, the ones that block the most
+other branches. Keep the rest in the ledger for later rounds. Put the
+defaults after the questions, under one line such as "I will take these
+unless you object". Keep a round short: give only the facts that the
+questions need, define a term of art on first use, and give each option and
+each default one line.
+
+Before you recommend an option, read the rules that the repository gives
+for the subject, such as `AGENTS.md` and the documents it names, and the
+rules or feedback that the user gave in earlier sessions, when the host keeps
+them. If an option breaks such a rule, say so in the option. Recommend the
+option that best serves the outcome. Give cost as a trade-off, not as the
+reason, unless the user set a budget.
+
+Write the questions in the language of the user's request. The format below
+fixes the structure, not the words.
+
+Ask the decide questions together, in chat. Do not use a host question
 interface or tool, even when one is available: it limits the number of
 questions, shortens the options, and hides the reason for the recommendation.
-Split a large frontier into manageable rounds and retain the remaining questions
-in the ledger. Every question must include explicit answer options and a
+Every question must include explicit answer options and a
 recommendation. This requirement also applies to clarification questions,
 ADR-recording questions, and the final shared-understanding confirmation. For
 each question:
@@ -158,8 +185,11 @@ and a recommendation pointing to one of them. A question followed only by a
 recommendation is incomplete; add the missing options before sending.
 
 Word each question so a bare "yes" accepts the recommended option. Treat "yes",
-"ok", or "agreed" without an option label as accepting the recommendation. Treat
-a bare "no" as a request to reconsider the alternatives, not as a choice.
+"ok", or "agreed" without an option label as accepting the recommendation and
+the listed defaults. Treat a bare "no" as a request to reconsider the
+alternatives, not as a choice. If the user rejects a default and names an
+option, take it. If the user rejects it without an option, ask it as a
+decide question in the next round.
 
 Then stop and wait for the user's answers. A question that depends on another
 question in the same round belongs to a later round.
@@ -173,7 +203,7 @@ After each response:
 3. For delegated choices, record the chosen recommendation and its trade-off.
    Ask again only if new evidence exceeds the delegated scope.
 4. Update the terminology and decision ledger.
-5. Recompute the tree and ask the next complete frontier round.
+5. Recompute the tree and ask the next round.
 
 Continue until no unresolved branch can materially affect the result. Respect an
 explicit request to stop or defer a branch, but record the resulting unresolved

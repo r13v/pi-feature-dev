@@ -78,6 +78,9 @@ Choose the mode from the argument:
 - `--all`: walk;
 - any other text, or ideas from another skill: add.
 
+A single token of lowercase words joined by hyphens that matches no item is a
+mistyped slug, not an idea. Say so and list the items. Do not add it.
+
 ### List
 
 Use this mode when there is no argument. Read all items. For each item with
@@ -105,10 +108,10 @@ the item, change `worth`, drop the item, or keep it as it is.
 ### Walk
 
 Use this mode for `--all`. First find the links between items: an item that
-blocks another, and items that repeat each other. Ask about these first. Do
-not record the links in the items. Then
-brief one item at a time and say "item N of M". Read the item again before you
-act on an answer.
+blocks another, and items that repeat each other. Ask about these first. For
+a blocker outside the backlog, recommend to keep the item and name the
+blocker. Do not record the links in the items. Then brief one item at a time
+and say "item N of M". Read the item again before you act on an answer.
 
 ### Add
 
@@ -116,21 +119,24 @@ Use this mode for one or more ideas from the user or from another skill.
 
 1. Apply the filing bar. Name each idea that fails it, and give the reason.
 2. Find repeats. Search `docs/backlog/` by the slug, the `where` path, and
-   the claim of the idea. Skip the item that the calling task works on. If an
-   item already covers the idea, propose to add the new evidence to that item.
-   Do not create a second file.
+   the claim of the idea. A shared `where` path alone does not make a
+   repeat: compare the claims. Skip the item that the calling task works on.
+   If an item already covers the idea, propose to add the new evidence to
+   that item. Do not create a second file.
 3. Show all remaining ideas in one batch. For each idea, give the title, the
    proposed `worth`, and one line about why it matters. For a repeat, name
    the existing item. Ask the user to choose for each idea: file it, or add
    the evidence to the existing item, or drop it. The user can also change
    `worth`. A calling skill can add its own option, such as "do now" in
    `ship`. Give the ideas with that option back to the calling skill. Write
-   only what the user approved.
+   only what the user approved. When the calling skill passes decisions that
+   the user delegated to it, apply them without asking.
 4. Choose where to write:
    - When another skill, such as `ship`, calls this mode, write in the
      current working tree. The items become changes of that task.
    - Otherwise, find the default branch from `git symbolic-ref
-     refs/remotes/origin/HEAD`, or use `main` or `master`. If the current
+     refs/remotes/origin/HEAD`, or use `origin/main` or `origin/master`
+     before a local branch of the same name. If the current
      branch is not the default branch, ask the user before you write: write
      on this branch, or stop so that the user can switch.
    - Do not create a branch or a worktree.

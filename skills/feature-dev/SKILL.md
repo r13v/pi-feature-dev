@@ -82,6 +82,9 @@ Implement the authorized scope with one writer. If handing off to an isolated
 worker, supply the request, relevant files, decisions, constraints, acceptance
 criteria, validation commands, and authority boundaries.
 
+After an edit by a script or a search-and-replace, confirm that the change is
+in the file: a replace that matched nothing reports no error.
+
 Reuse existing code and match project conventions. Add or update tests when they
 protect a changed requirement or regression risk. Reuse adequate existing checks
 for mechanical or low-impact edits. Update documentation when the feature
@@ -105,10 +108,12 @@ drop speculation and style points no rule covers. Fix confirmed issues within
 the authorized scope. Report unrelated issues separately without expanding
 the task or asking permission to fix ordinary defects in the requested work.
 
-Run the relevant project checks and any required final checks. After a failure,
-fix its in-scope cause and rerun affected checks. Broaden or repeat validation
-only for new changes, failures, or an unresolved risk. If runtime or visual
-inspection is part of the requested result, perform it before completion.
+Run the relevant project checks and any required final checks. A new linter
+or type warning in a changed file is a failure, unless the user accepts it.
+After a failure, fix its in-scope cause and rerun affected checks. Broaden or
+repeat validation only for new changes, failures, or an unresolved risk. If
+runtime or visual inspection is part of the requested result, perform it
+before completion.
 
 ## Completion
 
