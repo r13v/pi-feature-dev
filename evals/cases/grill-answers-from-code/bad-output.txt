@@ -1,0 +1,1 @@
+❓ **Q1** - **Lazy flag**: Should we add a `lazy` flag to contributions, or load every plugin on demand?

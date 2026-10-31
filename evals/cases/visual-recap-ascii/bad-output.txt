@@ -1,0 +1,5 @@
+```mermaid
+flowchart LR
+  checkout --> total
+```
+The discount now flows from checkout to total.
