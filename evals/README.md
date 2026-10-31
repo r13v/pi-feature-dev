@@ -42,8 +42,9 @@ npx promptfoo view
    in `fixed-output.txt`, or both. Add `bad-output.txt` if the check reads
    the answer. `npm test` shows that the check fails on the fixture and
    passes on the good result.
-4. Add a test to `promptfooconfig.yaml`. Put the session and the user's
-   words in `source`.
+4. Add a test to `promptfooconfig.yaml`. Quote the user's
+   words in `source`. Do not name the company, its projects, or its
+   internal services anywhere in a case.
 
 Take cases from real runs: a place where a skill failed the user is a case.
 Check only that failure. Do not fail a case for a choice that the skill

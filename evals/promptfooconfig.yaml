@@ -54,13 +54,13 @@ tests:
       - type: javascript
         value: file://checks.mjs:grillRoundSize
 
-  # Cases below come from real uses of the skills. `source` names the session
-  # in ~/.claude/projects and the user's reaction there.
+  # Cases below come from real uses of the skills. `source` quotes the user's
+  # reaction in that session. Fixtures keep no names of the original projects.
 
   - description: final-check removes leftovers of a removed feature
     vars:
       case: final-check-removal-leftovers
-      source: digger/2824990b "ты добавил … исторические данные"
+      source: "ты добавил … исторические данные"
       request: >-
         Use the final-check skill. The task was to remove the built-in
         `translate` command and everything tied to it (the LLM key, its
@@ -73,7 +73,7 @@ tests:
   - description: feature-dev reuses the existing control
     vars:
       case: feature-dev-existing-control
-      source: outages-service-anamnez/c7d702f0 "почему slackChannel не используется?"
+      source: "почему slackChannel не используется?"
       request: >-
         Use the feature-dev skill. On the resources form, let the user set
         the Slack channel of a resource. Today they type the channel name
@@ -86,7 +86,7 @@ tests:
   - description: grill answers from the code before asking
     vars:
       case: grill-answers-from-code
-      source: create-slot/f11d696f "если уже можно сделать lazy"
+      source: "если уже можно сделать lazy"
       request: >-
         Use the grill skill. I want lazy contributions: the code of disabled
         plugins must not load until the plugin is enabled. Do not edit
@@ -98,7 +98,7 @@ tests:
   - description: elevate keeps the user's constraint
     vars:
       case: elevate-keeps-constraint
-      source: hf-ru/09e2a269 "пока без теста на реальном api. нужны идеи"
+      source: "пока без теста на реальном api. нужны идеи"
       request: >-
         Use the elevate skill. We now have an image classifier API (docs in
         docs/classifier.md). I need product ideas for our apartment-rental
@@ -111,7 +111,7 @@ tests:
   - description: deepen keeps a quick check small
     vars:
       case: deepen-telling-sample
-      source: anamnez/64f5ba4a "прогони на самых показательных кейсах"
+      source: "прогони на самых показательных кейсах"
       request: >-
         Use the deepen skill on this request: "Check whether prompt v2 is
         better than v1 on our eval cases. I want a quick read on whether v2
@@ -124,7 +124,7 @@ tests:
   - description: deslop removes a speculative defaults merge
     vars:
       case: deslop-speculative-defaults
-      source: outages-service-anamnez/85a68a03 "убери мерж дефолтов"
+      source: "убери мерж дефолтов"
       request: >-
         Use the deslop skill and apply it to the uncommitted changes of this
         task. The watch settings are new in this task and were never
@@ -136,7 +136,7 @@ tests:
   - description: backlog files an idea that another document mentions
     vars:
       case: backlog-files-noted-idea
-      source: anamnez/47bf97c5 "запиши в беклог"
+      source: "запиши в беклог"
       request: >-
         Use the backlog skill in add mode. Ideas: (1) issueLink in
         src/sentry.js builds links from the long issue id; use the short id.
@@ -151,7 +151,7 @@ tests:
   - description: ste keeps every instruction and limit
     vars:
       case: ste-keeps-every-limit
-      source: pi-feature-dev/b1bd350b "чтобы feature-dev всё еще предлагал архитектуру"
+      source: "чтобы feature-dev всё еще предлагал архитектуру"
       request: >-
         Use the ste skill in clarity mode. Rewrite docs/deploy.md in place.
         Keep every instruction and limit. Do not ask questions.
@@ -162,7 +162,7 @@ tests:
   - description: visual-recap draws ASCII for a terminal
     vars:
       case: visual-recap-ascii
-      source: hf-ru/322fcf08 "переделай mermaid на ascii"
+      source: "переделай mermaid на ascii"
       request: >-
         Use the visual-recap skill on the uncommitted changes. I read the
         answer in a plain terminal that does not render Markdown diagrams.
