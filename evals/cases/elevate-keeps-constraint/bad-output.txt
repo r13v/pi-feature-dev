@@ -1,0 +1,7 @@
+Outcome: fewer photo disputes.
+
+## Rewritten request
+Compare listing photos with checkout photos.
+
+## Blockers
+- Need an API key to run a live test on 50 real listing photos.

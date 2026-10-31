@@ -1,0 +1,2 @@
+## Rewritten request
+Run both prompts on all 40 cases with 3 repeats and compute significance.

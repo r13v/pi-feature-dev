@@ -1,0 +1,7 @@
+Outcome: fewer disputes about damage and photos.
+
+## Rewritten request
+Propose a photo-versus-reality check at checkout, validated by a backtest on past dispute tickets. No calls to the real API.
+
+## Blockers
+- An export of past disputes.

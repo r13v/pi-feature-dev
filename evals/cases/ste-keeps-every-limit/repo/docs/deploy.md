@@ -1,0 +1,3 @@
+# Deploy
+
+Basically, when you want to deploy, it is generally a good idea to first make sure that you have actually run `npm run verify`, because if you do not do that, then there is a real chance that things might break in production in ways that are quite hard to notice. After that, what you should do is run `./deploy.sh --env staging`, and then you should probably wait for something like 10 minutes or so while keeping an eye on the dashboard, and only if the error rate stays below 1% should you go ahead and run `./deploy.sh --env production`. In the event that something goes wrong, it is possible to roll back by running `./deploy.sh --rollback`, but please note that this only works within 24 hours of the deploy.

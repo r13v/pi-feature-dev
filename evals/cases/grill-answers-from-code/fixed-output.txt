@@ -1,0 +1,3 @@
+`src/slot.js` already calls `load()` only for enabled contributions, and `test/slot.test.js` covers it. What remains is a recipe in the docs.
+
+❓ **Q1** - **Where**: README or docs/recipes?
