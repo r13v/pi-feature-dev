@@ -1,0 +1,2 @@
+The item is stale: src/export.js:4 does not format times any more. I stopped
+before ship and propose to drop the item.

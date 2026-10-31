@@ -1,0 +1,11 @@
+docs/naming.md says a renamed term changes everywhere in one change, with no
+alias. So the rename covers the UI, code, files, tests, and CONTEXT.md.
+
+❓ **Q1** - **Glossary entry**: Does "recipe" keep the definition?
+
+- **A: Same definition**: a list of ingredients with the steps.
+- **B: New definition**: the editors mean something wider.
+
+➡️ **Recommend A**: the editors renamed the word, not the idea.
+
+You can choose an option or give a different answer.

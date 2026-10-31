@@ -1,0 +1,2 @@
+Ship finished. Ideas about skills, for you to apply:
+- retro-skill: skills/grill/SKILL.md: define a term of art on first use.

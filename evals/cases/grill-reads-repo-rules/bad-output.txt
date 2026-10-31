@@ -1,0 +1,10 @@
+The UI heading lives in src/ui.js, and the code calls them dishes.
+
+❓ **Q1** - **Scope of the rename**: Where do we rename?
+
+- **A: UI text only**: change the heading, keep the code names.
+- **B: Everywhere**: UI, code, files, tests, glossary.
+
+➡️ **Recommend A**: the smallest change.
+
+You can choose an option or give a different answer.

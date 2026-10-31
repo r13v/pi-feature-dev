@@ -1,7 +1,7 @@
 // Assertions for the cases in promptfooconfig.yaml. Each one reads the
 // working directory of the run from the provider metadata.
 import { spawnSync } from "node:child_process";
-import { readdirSync, readFileSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 
 function result(checks) {
@@ -71,7 +71,9 @@ export function grillRoundSize(output, { metadata }) {
   const words = output.split(/\s+/).filter(Boolean).length;
   return result({
     "at most 3 questions": questions > 0 && questions <= 3,
-    "at most 350 words": words <= 350,
+    // A ceiling, not a target: rounds of 660+ words lost the user in real
+    // runs, and a tighter limit would cut the reasons for recommendations.
+    "at most 600 words": words <= 600,
     "no files changed": unchanged(metadata.workdir),
   });
 }
@@ -176,5 +178,110 @@ export function visualRecapAscii(output, { metadata }) {
     "discount mentioned": /discount/i.test(output),
     "sources not edited":
       /discount = 0/.test(read(metadata.workdir, "src/price.js")),
+  });
+}
+
+// The text of the option that each "Recommend X" line points to.
+function recommendedOptions(output) {
+  return output.split("❓").slice(1).map((block) => {
+    const label = block.match(/Recommend\**\s*\**([A-Z])\b/)?.[1];
+    return label ? block.match(new RegExp(`\\*\\*${label}:([^\\n]*)`))?.[1]
+      ?? "" : "";
+  });
+}
+
+// The newest progress file: the agent may start a new run instead of
+// continuing the one in the fixture.
+function progressFile(dir) {
+  const ship = join(dir, ".git", "ship");
+  const files = existsSync(ship) ? readdirSync(ship).sort() : [];
+  return files.length ? readFileSync(join(ship, files.at(-1)), "utf8") : "";
+}
+
+export function grillReadsRepoRules(output, { metadata }) {
+  // A recommendation is the recommended option of a question, or a line in
+  // the list of defaults after the questions.
+  const start = output.search(/unless you object|если не возразите/i);
+  const defaults = start < 0 ? [] : output.slice(start).split("\n")
+    .filter((l) => /^\s*- /.test(l));
+  const uiOnly = /UI[- ]?(text )?only|only (in )?(the )?(UI|interface)|только (в )?(UI|интерфейсе)/i;
+  return result({
+    "cites the naming rule": /naming\.md/.test(output),
+    "no UI-only recommendation": ![...recommendedOptions(output), ...defaults]
+      .some((o) => saysWithoutNegation(o, uiOnly)),
+    "no files changed": unchanged(metadata.workdir),
+  });
+}
+
+export function shipSkillFeedback(output, { metadata }) {
+  const feedback = join(metadata.workdir, ".git", "skill-feedback.md");
+  const text = existsSync(feedback) ? readFileSync(feedback, "utf8") : "";
+  const progress = progressFile(metadata.workdir);
+  return result({
+    "idea in the feedback file": /grill/.test(text)
+      && /term|defin|slug/i.test(text),
+    "run finished": /status: finished/.test(progress),
+    "nothing pending": !/deferred ideas: pending/.test(progress),
+  });
+}
+
+export function shipDelegatedIdeas(output, { metadata }) {
+  const dir = join(metadata.workdir, "docs", "backlog");
+  const items = existsSync(dir) ? readdirSync(dir)
+    .map((f) => readFileSync(join(dir, f), "utf8")) : [];
+  const progress = progressFile(metadata.workdir);
+  return result({
+    "run finished": /status: finished/.test(progress),
+    "nothing pending": !/: pending/.test(progress),
+    "CSV idea filed": items.some((t) => /csv/i.test(t)),
+    "tests pass": testsPass(metadata.workdir),
+  });
+}
+
+export function shipReviewBeforeDeslop(output, { metadata }) {
+  const r = spawnSync("node", ["--input-type=module", "-e",
+    "import { parseDuration } from './src/duration.js';"
+    + "try { parseDuration('5x'); process.exit(1); } catch { process.exit(0) }",
+  ], { cwd: metadata.workdir });
+  return result({
+    "review recorded": /feature-dev review: done/
+      .test(progressFile(metadata.workdir)),
+    "unknown unit throws": r.status === 0,
+    "tests pass": testsPass(metadata.workdir),
+  });
+}
+
+export function finalCheckRenamedDocs(output, { metadata }) {
+  const docs = read(metadata.workdir, "README.md")
+    + read(metadata.workdir, "docs/api.md");
+  return result({
+    "no old name in the docs":
+      !/## fetchUser|import \{ fetchUser|fetchUser\(1\)/.test(docs),
+    "new name documented": /loadUser/.test(docs),
+    "tests pass": testsPass(metadata.workdir),
+  });
+}
+
+export function shipBacklogMovedLine(output, { metadata }) {
+  return result({
+    "item kept": existsSync(join(metadata.workdir,
+      "docs/backlog/export-ignores-time-zone.md")),
+    "not called stale": !saysWithoutNegation(output,
+      /\bstale\b|already (done|fixed)|устарел|уже (сделан|исправлен)/i),
+    "run started": progressFile(metadata.workdir) !== "",
+  });
+}
+
+export function deslopCommentNoise(output, { metadata }) {
+  const fmt = read(metadata.workdir, "src/format.js");
+  const tests = read(metadata.workdir, "test/cart.test.js")
+    .match(/^test\(/gm) ?? [];
+  return result({
+    "duplicate tests removed": tests.length <= 6,
+    "history removed": !/Previously|after review/i.test(fmt),
+    "restatement removed": !/Formats money|divide by 100/i.test(fmt),
+    "commented-out code removed": !/toFixed/.test(fmt),
+    "reason kept": /printer driver/.test(fmt),
+    "tests pass": testsPass(metadata.workdir),
   });
 }

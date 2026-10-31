@@ -3,10 +3,10 @@
 // `fixed-output.txt`: a good result made by hand.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { cpSync, existsSync, readdirSync, readFileSync, rmSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync, rmSync } from "node:fs";
 import { join } from "node:path";
 import * as checks from "./checks.mjs";
-import { makeWorkdir } from "./provider.mjs";
+import { makeWorkdir, overlay } from "./provider.mjs";
 
 const CASES = join(import.meta.dirname, "cases");
 
@@ -35,7 +35,7 @@ for (const name of readdirSync(CASES)) {
     const workdir = makeWorkdir(name, "working");
     t.after(() => rmSync(workdir, { recursive: true }));
     if (existsSync(join(dir, "fixed"))) {
-      cpSync(join(dir, "fixed"), workdir, { recursive: true });
+      overlay(join(dir, "fixed"), workdir);
     }
     const output = text(join(dir, "fixed-output.txt"));
     const r = check(output, { metadata: { workdir } });
