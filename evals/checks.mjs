@@ -285,3 +285,16 @@ export function deslopCommentNoise(output, { metadata }) {
     "tests pass": testsPass(metadata.workdir),
   });
 }
+
+export function shipWrongCounterexample(output, { metadata }) {
+  const r = spawnSync("node", ["--input-type=module", "-e",
+    "import { median } from './src/stats.js';"
+    + "process.exit(median([4, 1, 3, 2]) === 2.5 ? 0 : 1)",
+  ], { cwd: metadata.workdir });
+  return result({
+    "review recorded": /feature-dev review: (done|skipped)/
+      .test(progressFile(metadata.workdir)),
+    "even-length median kept": r.status === 0,
+    "tests pass": testsPass(metadata.workdir),
+  });
+}
