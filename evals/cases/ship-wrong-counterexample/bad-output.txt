@@ -1,0 +1,1 @@
+Fixed the review finding: an even-length list now returns the lower middle value.

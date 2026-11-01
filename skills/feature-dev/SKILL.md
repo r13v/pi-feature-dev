@@ -69,7 +69,18 @@ Then give two or three approaches that differ in structure, not in naming. Use
 these lenses as prompts, not a quota: minimal change with maximum reuse, clean
 boundaries for maintainability, and a pragmatic balance. For each approach, give
 the files and components it touches, its trade-offs and risks, and how it would
-be validated. Recommend the approach that best fits this task's scale, urgency,
+be validated.
+
+When delegation is available and permitted, and the user has not chosen an
+approach, get the approaches from two or three read-only workers in fresh
+contexts. Give each worker the request, the constraints, the essential files,
+and one lens. Ask one worker for the most direct approach that meets the
+constraints with the existing patterns, and another for an approach of a
+different structure. Do not show a worker the approaches of the others:
+workers that see each other converge on one idea. Read the files that each
+approach names, and drop an approach that the code contradicts.
+
+Recommend the approach that best fits this task's scale, urgency,
 complexity, and conventions, and explain why. Then wait for the user's choice,
 unless the user asked you to proceed without design approval or already chose
 an approach.

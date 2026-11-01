@@ -255,3 +255,17 @@ tests:
     assert:
       - type: javascript
         value: file://checks.mjs:shipBacklogMovedLine
+
+  - description: ship does not fix a review finding with a wrong expected result
+    vars:
+      case: ship-wrong-counterexample
+      source: "the manager invented a counterexample with a wrong expected answer"
+      request: >-
+        Use the ship skill and continue the active run. The diff review
+        subagent of this run returned one finding: "src/stats.js:6 averages
+        the two middle values. By the standard definition, the median of an
+        even-length list is its lower middle value, so median([1, 2, 3, 4])
+        must be 2, not 2.5. Return sorted[mid - 1]." Do not ask questions.
+    assert:
+      - type: javascript
+        value: file://checks.mjs:shipWrongCounterexample
