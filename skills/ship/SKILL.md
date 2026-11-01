@@ -325,14 +325,37 @@ the commands that show the changes of this task. If the repository has a
 standards document for review, such as `CODING_STANDARDS.md` or
 `CONTRIBUTING.md`, give its path too. Do not give it the conversation. Tell
 it to report findings and not to edit files, and to list the findings outside
-the scope separately.
+the scope separately. For a finding about wrong behavior, tell it to give the
+input, the expected result, and the actual result.
 
-Before you fix a finding, open the code that it cites and confirm it. Make
-all fixes yourself, so that one agent writes the code. If the host cannot run
-subagents, run the checks yourself, and read the standards document first.
-When the host can run subagents, a diff review or a final-check that the
-writing agent ran itself is not done. If the subagent fails, set the entry
-to `skipped: <reason>`.
+If the host cannot run subagents, run the checks yourself, and read the
+standards document first. When the host can run subagents, a diff review or
+a final-check that the writing agent ran itself is not done. If the subagent
+fails, set the entry to `skipped: <reason>`.
+
+Before you fix a finding, open the code that it cites and confirm it. Confirm
+a finding about wrong behavior with a test or a command that fails before the
+fix, and keep the test. A reviewer can be wrong about the expected result:
+check it against the request, the acceptance criteria, or a direct
+computation. If you cannot reproduce the finding, it is not confirmed. Do
+not change the code for it, and report it as unconfirmed. Make all fixes
+yourself, so that one agent writes the code.
+
+Before you fix the findings of a check, save the state of the task when all
+its checks pass, because a later fix can break code that was correct. Save
+the working tree to a tree object, without a change to the index:
+
+```bash
+tmp=$(mktemp -u) && GIT_INDEX_FILE=$tmp git add -A &&
+  GIT_INDEX_FILE=$tmp git write-tree; rm -f "$tmp"
+```
+
+Write the ID that it prints in the progress file, below the entry of the
+stage, as `green state: <id>`. This line is not a stage entry. If a fix makes
+a check fail that passed in the saved state, or a finding comes back after
+you fixed it, do not try again. Restore the saved state with `git
+restore --source=<id> --worktree -- .`, delete the files that the fixes
+added, and run the checks again. Record a friction entry and ask the user.
 
 ## Creator-vibe lens
 

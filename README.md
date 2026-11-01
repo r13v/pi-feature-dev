@@ -43,7 +43,10 @@ keeps its state in a progress file under `.git/`, so it does not skip stages
 and can continue after the context is compacted or in a new session. It records
 the start commit, and treats all changes after it as the task's changes. It
 runs the diff review and `final-check` in a subagent with a fresh context when
-the host can. It writes documentation changes with `ste` and applies
+the host can. It fixes a finding about wrong behavior only after a test or a
+command reproduces it. Before the fixes, it saves the state in which all
+checks pass, and restores it when a fix breaks a check or a finding comes
+back. It writes documentation changes with `ste` and applies
 `creator-vibe` as a lens when the work has a human experience to carry. It
 collects the ideas outside the scope during the run, and at the end offers
 them to `backlog` in one batch, or decides them itself when the user
@@ -312,7 +315,7 @@ The `feature-dev` skill uses checkpoints that scale to the requested change:
 1. Discovery — understand the feature and establish lightweight progress tracking
 2. Codebase exploration — inspect relevant code and patterns, optionally with read-only helper passes
 3. Clarifying questions — resolve material unknowns that discovery cannot answer
-4. Architecture design — present two or three approaches with a recommendation when the change touches a public contract, data model, several modules, or a new abstraction
+4. Architecture design — present two or three approaches with a recommendation when the change touches a public contract, data model, several modules, or a new abstraction; when delegation is available, independent workers in fresh contexts propose the approaches
 5. Implementation — complete the authorized scope with a single writer
 6. Quality review — inspect the diff from correctness, validation, and maintainability perspectives
 7. Validation and summary — run focused checks and summarize changes and key decisions
