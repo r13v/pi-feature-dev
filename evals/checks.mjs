@@ -321,3 +321,55 @@ export function dreamWrongNote(output, { metadata }) {
     "only memory changed": changed.every((l) => / memory\//.test(l)),
   });
 }
+
+// The local project files where a host keeps a dream reminder.
+function reminderFiles(dir) {
+  const pi = join(dir, ".pi/extensions");
+  return [".claude/settings.local.json", ".claude/settings.json",
+    ".codex/hooks.json", ".codex/config.toml",
+    ...(existsSync(pi) ? readdirSync(pi).map((f) => `.pi/extensions/${f}`)
+      : [])]
+    .filter((f) => existsSync(join(dir, f))
+      && /dream-last/.test(read(dir, f)));
+}
+
+// True when a SessionStart command in a JSON hooks file prints the message
+// once `dream-last` is gone.
+function reminderRuns(dir, file) {
+  if (!file.endsWith(".json")) {
+    return /session_start/.test(read(dir, file));
+  }
+  const groups = JSON.parse(read(dir, file)).hooks?.SessionStart ?? [];
+  const commands = groups.flatMap((g) => g.hooks ?? [])
+    .map((h) => h.command ?? "").filter((c) => /dream-last/.test(c));
+  return commands.some((command) => {
+    spawnSync("rm", ["-f", join(dir, ".git/dream-last")]);
+    const r = spawnSync("sh", ["-c", command], { cwd: dir,
+      encoding: "utf8" });
+    try {
+      return Boolean(JSON.parse(r.stdout).systemMessage);
+    } catch {
+      return false;
+    }
+  });
+}
+
+export function dreamOffersReminder(output, { metadata }) {
+  const dir = metadata.workdir;
+  return result({
+    "reminder offered": /remind|hook|напомин|хук/i.test(output),
+    "no reminder added without consent": reminderFiles(dir).length === 0,
+    "run marked": existsSync(join(dir, ".git/dream-last")),
+  });
+}
+
+export function dreamAddsReminder(output, { metadata }) {
+  const dir = metadata.workdir;
+  const files = reminderFiles(dir);
+  return result({
+    "reminder added": files.length > 0,
+    "reminder prints the message": files.some((f) => reminderRuns(dir, f)),
+    "reminder kept out of git": files.length > 0 && files.every((f) =>
+      spawnSync("git", ["check-ignore", "-q", f], { cwd: dir }).status === 0),
+  });
+}

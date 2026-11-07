@@ -62,6 +62,52 @@ are the ground truth for what is true now. A note is not evidence.
 5. **Report and apply.** Show a table: note or candidate, verdict, evidence,
    and action. Ask which actions to do. When the user delegates the
    decisions, apply the memory edits that have evidence.
+6. **Mark the run.** In a git repository, touch `dream-last` in the
+   directory that `git rev-parse --git-common-dir` prints. The reminder
+   below reads this file.
+7. **Offer a reminder.** See the next section.
+
+## Reminder
+
+A reminder at the start of a session tells the user when the memory of this
+project has had no review for 7 days. Offer it at the end of a run when all
+of these are true:
+
+- the project is a git repository;
+- the host can run code at the start of a session (see the table);
+- the project has no reminder for dream yet for this host;
+- memory has no note that the user declined the reminder.
+
+Ask once, in one sentence. Add the reminder only when the user agrees to it
+in this conversation. A delegation of the memory edits is not an agreement.
+If the user declines, write a memory note that says so.
+
+All hosts use the same check. It prints a message at most once in 7 days,
+and a dream run resets the count:
+
+```sh
+d=$(git rev-parse --git-common-dir 2>/dev/null) || exit 0; find "$d/dream-last" -mtime -7 2>/dev/null | grep -q . || { touch "$d/dream-last"; printf '{"systemMessage":"Agent memory not reviewed for 7 days: run the dream skill."}\n'; }
+```
+
+Add it for the host that runs this session, in the local project layer:
+
+| Host | File | How |
+|------|------|-----|
+| Claude Code | `.claude/settings.local.json` | a `SessionStart` command hook with the check |
+| Codex | `.codex/hooks.json` | a `SessionStart` command hook with the check; the user trusts it in `/hooks` |
+| pi | `.pi/extensions/dream-reminder.ts` | on `session_start`, run the check with `pi.exec("sh", ["-c", check])`, and show the `systemMessage` with `ctx.ui.notify` |
+
+For another host, use its equivalent of these, or tell the user that the
+host has none. Then:
+
+- Keep the file out of git: if `git check-ignore` does not match it, add it
+  to `.git/info/exclude`. Do not put the reminder in the user settings,
+  because then every project gets it.
+- Show the change, then merge it into the existing file. Do not replace
+  other hooks. Check that the file is still valid.
+- Remove `dream-last`, run the check once, and check that it prints the
+  message.
+- Tell the user about a step that the host needs, such as a trust prompt.
 
 ## Writing a note
 
@@ -70,4 +116,4 @@ are the ground truth for what is true now. A note is not evidence.
 - Mark a fact that no session or file confirms as unconfirmed.
 - Write what the next session needs, not a log of what happened.
 
-If the memory is correct and nothing repeats, say so and change nothing.
+If the memory is correct and nothing repeats, say so and change no notes.

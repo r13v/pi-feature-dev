@@ -100,10 +100,13 @@ function runCodex(dir, prompt, config) {
   symlinkSync(join(process.env.CODEX_HOME ?? join(homedir(), ".codex"),
     "auth.json"), join(home, "auth.json"));
   const last = join(dir, ".git", "codex-last.txt");
-  // The sandbox keeps `.git/` read-only, but `ship` writes its progress file
-  // and the skill feedback file there.
+  // The sandbox keeps `.git/` and `.codex/` read-only, but `ship` writes its
+  // progress file and the skill feedback file to `.git/`, and `dream` writes
+  // its reminder hook to `.codex/`.
+  mkdirSync(join(dir, ".codex"), { recursive: true });
   const args = ["exec", "--ephemeral",
     "--sandbox", "workspace-write", "--add-dir", join(dir, ".git"),
+    "--add-dir", join(dir, ".codex"),
     "--output-last-message", last, prompt];
   if (config.model) args.splice(1, 0, "--model", config.model);
   if (config.effort) {

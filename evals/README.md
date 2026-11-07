@@ -38,6 +38,8 @@ npx promptfoo view
 - Claude runs with `--setting-sources project --strict-mcp-config`. The
   directory is outside your home directory, so Claude does not find your
   `~/.claude/CLAUDE.md` in a parent directory.
+- Codex can write to `.git/` and `.codex/` of the run, which its sandbox
+  keeps read-only by default.
 - Codex runs with `--ephemeral` and its own `CODEX_HOME`, which holds only a
   link to your `auth.json`. So it reads neither your `config.toml` nor your
   `~/.codex/AGENTS.md`.

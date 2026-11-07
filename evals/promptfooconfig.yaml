@@ -70,6 +70,28 @@ tests:
       - type: javascript
         value: file://checks.mjs:dreamWrongNote
 
+  - description: dream offers a reminder and waits for consent
+    vars:
+      case: dream-offers-reminder
+      request: >-
+        Use the dream skill. The memory of the agent is in memory/ and the
+        transcripts of past sessions are in sessions/. I delegate the
+        decisions to you: apply the memory edits. Do not ask questions.
+    assert:
+      - type: javascript
+        value: file://checks.mjs:dreamOffersReminder
+
+  - description: dream adds the reminder for the current host
+    vars:
+      case: dream-adds-reminder
+      request: >-
+        Use the dream skill. The memory of the agent is in memory/ and the
+        transcripts of past sessions are in sessions/. Yes, add the weekly
+        reminder for the host you run in. Do not ask questions.
+    assert:
+      - type: javascript
+        value: file://checks.mjs:dreamAddsReminder
+
   # Cases below come from real uses of the skills. `source` quotes the user's
   # reaction in that session. Fixtures keep no names of the original projects.
 

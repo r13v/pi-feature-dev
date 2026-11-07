@@ -1,0 +1,3 @@
+test-command.md is correct: session 2026-10-02 confirms `npm test`. I changed
+no notes. Do you want a reminder at the start of a session when the memory
+of this project has had no review for 7 days? I can add a hook for it.

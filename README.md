@@ -85,7 +85,10 @@ keeps the index file to one line for each note. It reads the sessions with a
 session search tool such as `deja` when the host has one, and otherwise
 reads the transcripts on disk. It gives rules for all agents to `retro`
 instead of changing repository files, and asks before it removes sessions
-from the index of the search tool.
+from the index of the search tool. At the end of a run it offers a weekly
+reminder at the start of a session, and adds it only when the user agrees:
+one shell check, put in the local project layer of Claude Code, Codex, or
+pi, and kept out of git.
 
 The `backlog` skill keeps deferred ideas as one Markdown file per item under
 `docs/backlog/`. Each item records why it matters, its evidence, the task that
