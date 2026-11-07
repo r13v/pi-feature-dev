@@ -1,0 +1,2 @@
+- [Test command](test-command.md) — how to run the tests
+- [Fixtures](fixtures.md) — where the test fixtures are

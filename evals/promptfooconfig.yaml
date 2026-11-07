@@ -59,6 +59,73 @@ tests:
       - type: javascript
         value: file://checks.mjs:grillRoundSize
 
+  - description: dream corrects a wrong note and records a repeated correction
+    vars:
+      case: dream-wrong-note
+      request: >-
+        Use the dream skill. The memory of the agent is in memory/ and the
+        transcripts of past sessions are in sessions/. I delegate the
+        decisions to you: apply the memory edits. Do not ask questions.
+    assert:
+      - type: javascript
+        value: file://checks.mjs:dreamWrongNote
+
+  - description: dream keeps an unverified note
+    vars:
+      case: dream-keeps-unverified
+      request: >-
+        Use the dream skill. The memory of the agent is in memory/ and the
+        transcripts of past sessions are in sessions/. I delegate the
+        decisions to you: apply the memory edits. Do not ask questions.
+    assert:
+      - type: javascript
+        value: file://checks.mjs:dreamKeepsUnverified
+
+  - description: dream records a repeated correction but not a one-time request
+    vars:
+      case: dream-single-correction
+      request: >-
+        Use the dream skill. The memory of the agent is in memory/ and the
+        transcripts of past sessions are in sessions/. I delegate the
+        decisions to you: apply the memory edits. Do not ask questions.
+    assert:
+      - type: javascript
+        value: file://checks.mjs:dreamSingleCorrection
+
+  - description: dream changes nothing when the memory is correct
+    vars:
+      case: dream-correct-memory-no-change
+      request: >-
+        Use the dream skill. The memory of the agent is in memory/ and the
+        transcripts of past sessions are in sessions/. I delegate the
+        decisions to you: apply the memory edits. Do not offer a reminder.
+        Do not ask questions.
+    assert:
+      - type: javascript
+        value: file://checks.mjs:dreamCorrectMemoryNoChange
+
+  - description: dream offers a reminder and waits for consent
+    vars:
+      case: dream-offers-reminder
+      request: >-
+        Use the dream skill. The memory of the agent is in memory/ and the
+        transcripts of past sessions are in sessions/. I delegate the
+        decisions to you: apply the memory edits. Do not ask questions.
+    assert:
+      - type: javascript
+        value: file://checks.mjs:dreamOffersReminder
+
+  - description: dream adds the reminder for the current host
+    vars:
+      case: dream-adds-reminder
+      request: >-
+        Use the dream skill. The memory of the agent is in memory/ and the
+        transcripts of past sessions are in sessions/. Yes, add the weekly
+        reminder for the host you run in. Do not ask questions.
+    assert:
+      - type: javascript
+        value: file://checks.mjs:dreamAddsReminder
+
   # Cases below come from real uses of the skills. `source` quotes the user's
   # reaction in that session. Fixtures keep no names of the original projects.
 

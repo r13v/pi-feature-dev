@@ -40,6 +40,10 @@ _Avoid_: issue, struggle, problem
 A file outside any repository that collects the candidates about skills from the `retro` runs in other repositories, so that they reach the source repository of the skill. It is `SKILL_FEEDBACK_FILE`, or `~/.agents/skill-feedback.md`.
 _Avoid_: inbox, skill backlog
 
+**Memory Note**:
+A file in the memory directory of the agent that keeps one fact for later sessions, such as a correction from the user, with why it holds and how to apply it. The `dream` skill checks memory notes against the past sessions and the code.
+_Avoid_: memory entry, recollection
+
 ## Relationships
 
 - A **Host Agent** executes one or more **Skills**.

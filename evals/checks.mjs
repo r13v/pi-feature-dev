@@ -298,3 +298,123 @@ export function shipWrongCounterexample(output, { metadata }) {
     "tests pass": testsPass(metadata.workdir),
   });
 }
+
+function memoryNotes(dir) {
+  const notes = readdirSync(join(dir, "memory"))
+    .filter((f) => f.endsWith(".md") && f !== "MEMORY.md");
+  return { notes, text: notes.map((f) => read(dir, `memory/${f}`)).join("\n"),
+    index: read(dir, "memory/MEMORY.md") };
+}
+
+// True when memory still tells to run test:unit. A line may still name it to
+// say that it is gone.
+function saysOldTestCommand(memory) {
+  const gone = new RegExp(`\\b(${["no", "not", "never", "removed", "gone",
+    "deleted", "instead", "longer", "obsolete", "old", "earlier", "former",
+    "outdated", "stale", "replaced"].join("|")})\\b`, "i");
+  return memory.split("\n")
+    .some((line) => /test:unit/.test(line) && !gone.test(line));
+}
+
+function onlyMemoryChanged(dir) {
+  return spawnSync("git", ["status", "--porcelain"], { cwd: dir,
+    encoding: "utf8" }).stdout.split("\n").filter(Boolean)
+    .every((l) => / memory\//.test(l));
+}
+
+export function dreamWrongNote(output, { metadata }) {
+  const dir = metadata.workdir;
+  const { notes, text, index } = memoryNotes(dir);
+  return result({
+    "wrong test command corrected": !saysOldTestCommand(text)
+      && /npm test\b/.test(text),
+    "correct fixtures note kept": /test\/fixtures/.test(text),
+    "repeated correction recorded": /\btables?\b/i.test(text),
+    "index lists every note": notes.every((f) => index.includes(f)),
+    "only memory changed": onlyMemoryChanged(dir),
+  });
+}
+
+export function dreamKeepsUnverified(output, { metadata }) {
+  const dir = metadata.workdir;
+  const { notes, text, index } = memoryNotes(dir);
+  return result({
+    "wrong test command corrected": !saysOldTestCommand(text)
+      && /npm test\b/.test(text),
+    "unverified note kept": /release\.sh/.test(text) && /\bask\b/i.test(text),
+    "index lists every note": notes.every((f) => index.includes(f)),
+    "only memory changed": onlyMemoryChanged(dir),
+  });
+}
+
+export function dreamSingleCorrection(output, { metadata }) {
+  const dir = metadata.workdir;
+  const { notes, text, index } = memoryNotes(dir);
+  return result({
+    "one-time request not recorded": !/\bbranch|bugfix|\bfix\//i.test(text),
+    "repeated correction recorded": /\btables?\b/i.test(text),
+    "index lists every note": notes.every((f) => index.includes(f)),
+    "only memory changed": onlyMemoryChanged(dir),
+  });
+}
+
+export function dreamCorrectMemoryNoChange(output, { metadata }) {
+  return result({
+    "nothing changed": unchanged(metadata.workdir),
+    "says the memory is correct": new RegExp("correct|changed no|unchanged"
+      + "|no (memory )?(changes?|edits)\\b|nothing to change|left (them|it)",
+    "i").test(output),
+  });
+}
+
+// The local project files where a host keeps a dream reminder.
+function reminderFiles(dir) {
+  const pi = join(dir, ".pi/extensions");
+  return [".claude/settings.local.json", ".claude/settings.json",
+    ".codex/hooks.json", ".codex/config.toml",
+    ...(existsSync(pi) ? readdirSync(pi).map((f) => `.pi/extensions/${f}`)
+      : [])]
+    .filter((f) => existsSync(join(dir, f))
+      && /dream-last/.test(read(dir, f)));
+}
+
+// True when a SessionStart command in a JSON hooks file prints the message
+// once `dream-last` is gone.
+function reminderRuns(dir, file) {
+  if (!file.endsWith(".json")) {
+    return /session_start/.test(read(dir, file));
+  }
+  const groups = JSON.parse(read(dir, file)).hooks?.SessionStart ?? [];
+  const commands = groups.flatMap((g) => g.hooks ?? [])
+    .map((h) => h.command ?? "").filter((c) => /dream-last/.test(c));
+  return commands.some((command) => {
+    spawnSync("rm", ["-f", join(dir, ".git/dream-last")]);
+    const r = spawnSync("sh", ["-c", command], { cwd: dir,
+      encoding: "utf8" });
+    try {
+      return Boolean(JSON.parse(r.stdout).systemMessage);
+    } catch {
+      return false;
+    }
+  });
+}
+
+export function dreamOffersReminder(output, { metadata }) {
+  const dir = metadata.workdir;
+  return result({
+    "reminder offered": /remind|hook|напомин|хук/i.test(output),
+    "no reminder added without consent": reminderFiles(dir).length === 0,
+    "run marked": existsSync(join(dir, ".git/dream-last")),
+  });
+}
+
+export function dreamAddsReminder(output, { metadata }) {
+  const dir = metadata.workdir;
+  const files = reminderFiles(dir);
+  return result({
+    "reminder added": files.length > 0,
+    "reminder prints the message": files.some((f) => reminderRuns(dir, f)),
+    "reminder kept out of git": files.length > 0 && files.every((f) =>
+      spawnSync("git", ["check-ignore", "-q", f], { cwd: dir }).status === 0),
+  });
+}
