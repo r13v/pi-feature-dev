@@ -1,0 +1,2 @@
+- [Test command](test-command.md) — how to run the tests
+- [No tables](no-tables-in-answers.md) — answer in plain sentences

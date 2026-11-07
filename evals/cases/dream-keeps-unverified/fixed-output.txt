@@ -1,0 +1,4 @@
+test-command.md was wrong: session 2026-10-02 shows `Missing script:
+"test:unit"`. I corrected it to npm test.
+release-approval.md is unverified: no session mentions it, and
+scripts/release.sh exists. I kept it.

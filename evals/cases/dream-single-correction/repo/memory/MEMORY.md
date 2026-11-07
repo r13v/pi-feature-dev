@@ -1,0 +1,1 @@
+- [Test command](test-command.md) — how to run the tests

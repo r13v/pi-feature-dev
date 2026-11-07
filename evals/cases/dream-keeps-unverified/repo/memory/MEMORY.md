@@ -1,0 +1,2 @@
+- [Test command](test-command.md) — how to run the tests
+- [Release approval](release-approval.md) — ask before a release

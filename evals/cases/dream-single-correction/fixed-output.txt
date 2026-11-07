@@ -1,0 +1,3 @@
+The user asked for no tables in two sessions. I added
+no-tables-in-answers.md. The branch name was a request for one task, given
+once, so I did not add a note for it.

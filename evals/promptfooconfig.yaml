@@ -70,6 +70,40 @@ tests:
       - type: javascript
         value: file://checks.mjs:dreamWrongNote
 
+  - description: dream keeps an unverified note
+    vars:
+      case: dream-keeps-unverified
+      request: >-
+        Use the dream skill. The memory of the agent is in memory/ and the
+        transcripts of past sessions are in sessions/. I delegate the
+        decisions to you: apply the memory edits. Do not ask questions.
+    assert:
+      - type: javascript
+        value: file://checks.mjs:dreamKeepsUnverified
+
+  - description: dream records a repeated correction but not a one-time request
+    vars:
+      case: dream-single-correction
+      request: >-
+        Use the dream skill. The memory of the agent is in memory/ and the
+        transcripts of past sessions are in sessions/. I delegate the
+        decisions to you: apply the memory edits. Do not ask questions.
+    assert:
+      - type: javascript
+        value: file://checks.mjs:dreamSingleCorrection
+
+  - description: dream changes nothing when the memory is correct
+    vars:
+      case: dream-correct-memory-no-change
+      request: >-
+        Use the dream skill. The memory of the agent is in memory/ and the
+        transcripts of past sessions are in sessions/. I delegate the
+        decisions to you: apply the memory edits. Do not offer a reminder.
+        Do not ask questions.
+    assert:
+      - type: javascript
+        value: file://checks.mjs:dreamCorrectMemoryNoChange
+
   - description: dream offers a reminder and waits for consent
     vars:
       case: dream-offers-reminder

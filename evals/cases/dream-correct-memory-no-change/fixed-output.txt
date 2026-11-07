@@ -1,0 +1,2 @@
+Both notes are correct: sessions 2026-10-02 and 2026-10-03 confirm them,
+and test/fixtures/note.json exists. Nothing repeats. I changed no notes.

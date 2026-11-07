@@ -1,0 +1,1 @@
+I added a note to name branches fix/<topic>, not bugfix/<topic>.

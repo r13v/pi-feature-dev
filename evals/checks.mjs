@@ -299,26 +299,71 @@ export function shipWrongCounterexample(output, { metadata }) {
   });
 }
 
-export function dreamWrongNote(output, { metadata }) {
-  const dir = metadata.workdir;
+function memoryNotes(dir) {
   const notes = readdirSync(join(dir, "memory"))
     .filter((f) => f.endsWith(".md") && f !== "MEMORY.md");
-  const memory = notes.map((f) => read(dir, `memory/${f}`)).join("\n");
-  const index = read(dir, "memory/MEMORY.md");
-  // A line may still name test:unit to say that it is gone.
+  return { notes, text: notes.map((f) => read(dir, `memory/${f}`)).join("\n"),
+    index: read(dir, "memory/MEMORY.md") };
+}
+
+// True when memory still tells to run test:unit. A line may still name it to
+// say that it is gone.
+function saysOldTestCommand(memory) {
   const gone = new RegExp(`\\b(${["no", "not", "never", "removed", "gone",
     "deleted", "instead", "longer", "obsolete", "old", "earlier", "former",
     "outdated", "stale", "replaced"].join("|")})\\b`, "i");
-  const oldCommand = memory.split("\n")
+  return memory.split("\n")
     .some((line) => /test:unit/.test(line) && !gone.test(line));
-  const changed = spawnSync("git", ["status", "--porcelain"], { cwd: dir,
-    encoding: "utf8" }).stdout.split("\n").filter(Boolean);
+}
+
+function onlyMemoryChanged(dir) {
+  return spawnSync("git", ["status", "--porcelain"], { cwd: dir,
+    encoding: "utf8" }).stdout.split("\n").filter(Boolean)
+    .every((l) => / memory\//.test(l));
+}
+
+export function dreamWrongNote(output, { metadata }) {
+  const dir = metadata.workdir;
+  const { notes, text, index } = memoryNotes(dir);
   return result({
-    "wrong test command corrected": !oldCommand && /npm test\b/.test(memory),
-    "correct fixtures note kept": /test\/fixtures/.test(memory),
-    "repeated correction recorded": /\btables?\b/i.test(memory),
+    "wrong test command corrected": !saysOldTestCommand(text)
+      && /npm test\b/.test(text),
+    "correct fixtures note kept": /test\/fixtures/.test(text),
+    "repeated correction recorded": /\btables?\b/i.test(text),
     "index lists every note": notes.every((f) => index.includes(f)),
-    "only memory changed": changed.every((l) => / memory\//.test(l)),
+    "only memory changed": onlyMemoryChanged(dir),
+  });
+}
+
+export function dreamKeepsUnverified(output, { metadata }) {
+  const dir = metadata.workdir;
+  const { notes, text, index } = memoryNotes(dir);
+  return result({
+    "wrong test command corrected": !saysOldTestCommand(text)
+      && /npm test\b/.test(text),
+    "unverified note kept": /release\.sh/.test(text) && /\bask\b/i.test(text),
+    "index lists every note": notes.every((f) => index.includes(f)),
+    "only memory changed": onlyMemoryChanged(dir),
+  });
+}
+
+export function dreamSingleCorrection(output, { metadata }) {
+  const dir = metadata.workdir;
+  const { notes, text, index } = memoryNotes(dir);
+  return result({
+    "one-time request not recorded": !/\bbranch|bugfix|\bfix\//i.test(text),
+    "repeated correction recorded": /\btables?\b/i.test(text),
+    "index lists every note": notes.every((f) => index.includes(f)),
+    "only memory changed": onlyMemoryChanged(dir),
+  });
+}
+
+export function dreamCorrectMemoryNoChange(output, { metadata }) {
+  return result({
+    "nothing changed": unchanged(metadata.workdir),
+    "says the memory is correct": new RegExp("correct|changed no|unchanged"
+      + "|no (memory )?(changes?|edits)\\b|nothing to change|left (them|it)",
+    "i").test(output),
   });
 }
 
