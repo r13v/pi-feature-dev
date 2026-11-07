@@ -20,11 +20,10 @@ are the ground truth for what is true now. A note is not evidence.
   such as the auto-memory directory of the host, with its index file. If no
   memory directory exists, say so and stop.
 - **Sessions:** the transcripts of the past sessions of this project. Use a
-  session search tool if the host has one, such as `deja`. Otherwise read the
-  transcripts that the host keeps on disk, or the directory that the user
-  names. Default window: 7 days, or the window that the user gives. If no
-  transcripts are available, check the notes against the code and git only,
-  and say so.
+  session search tool if the host has one. Otherwise read the transcripts
+  that the host keeps on disk, or the directory that the user names. Default
+  window: 7 days, or the window that the user gives. If no transcripts are
+  available, check the notes against the code and git only, and say so.
 - **Steering and docs:** the steering files, such as `AGENTS.md` or
   `CLAUDE.md`, the glossary, and the docs of the repository. Read them to
   find duplicates and the owner of a rule.

@@ -82,9 +82,9 @@ the ground truth for what is true now. It checks each memory note against
 them, corrects a wrong note with the evidence, deletes a stale or duplicate
 note, and records a correction that the user gave two or more times. It
 keeps the index file to one line for each note. It reads the sessions with a
-session search tool such as `deja` when the host has one, and otherwise
-reads the transcripts on disk. It gives rules for all agents to `retro`
-instead of changing repository files, and asks before it removes sessions
+session search tool when the host has one, and otherwise reads the
+transcripts on disk. It gives rules for all agents to `retro` instead of
+changing repository files, and asks before it removes sessions
 from the index of the search tool. At the end of a run it offers a weekly
 reminder at the start of a session, and adds it only when the user agrees:
 one shell check, put in the local project layer of Claude Code, Codex, or
