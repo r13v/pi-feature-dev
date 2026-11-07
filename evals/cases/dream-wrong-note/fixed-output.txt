@@ -1,0 +1,5 @@
+test-command.md was wrong: session 2026-10-02 shows `Missing script:
+"test:unit"`, and the user said to use npm test. I corrected it.
+fixtures.md is correct: test/fixtures/note.json exists. I kept it.
+The user asked twice for no tables (2026-10-01, 2026-10-03). I added
+no-tables.md and a line in MEMORY.md.

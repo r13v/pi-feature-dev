@@ -298,3 +298,26 @@ export function shipWrongCounterexample(output, { metadata }) {
     "tests pass": testsPass(metadata.workdir),
   });
 }
+
+export function dreamWrongNote(output, { metadata }) {
+  const dir = metadata.workdir;
+  const notes = readdirSync(join(dir, "memory"))
+    .filter((f) => f.endsWith(".md") && f !== "MEMORY.md");
+  const memory = notes.map((f) => read(dir, `memory/${f}`)).join("\n");
+  const index = read(dir, "memory/MEMORY.md");
+  // A line may still name test:unit to say that it is gone.
+  const gone = new RegExp(`\\b(${["no", "not", "never", "removed", "gone",
+    "deleted", "instead", "longer", "obsolete", "old", "earlier", "former",
+    "outdated", "stale", "replaced"].join("|")})\\b`, "i");
+  const oldCommand = memory.split("\n")
+    .some((line) => /test:unit/.test(line) && !gone.test(line));
+  const changed = spawnSync("git", ["status", "--porcelain"], { cwd: dir,
+    encoding: "utf8" }).stdout.split("\n").filter(Boolean);
+  return result({
+    "wrong test command corrected": !oldCommand && /npm test\b/.test(memory),
+    "correct fixtures note kept": /test\/fixtures/.test(memory),
+    "repeated correction recorded": /\btables?\b/i.test(memory),
+    "index lists every note": notes.every((f) => index.includes(f)),
+    "only memory changed": changed.every((l) => / memory\//.test(l)),
+  });
+}

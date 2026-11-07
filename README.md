@@ -76,6 +76,17 @@ removes the lines that a done or dropped candidate covers. Under
 `ship` it only adds candidates to the deferred ideas; on request, it does the
 candidates that the user chooses.
 
+The `dream` skill reviews the memory of the agent offline. It treats the
+past sessions as the ground truth for what happened, and the code and git as
+the ground truth for what is true now. It checks each memory note against
+them, corrects a wrong note with the evidence, deletes a stale or duplicate
+note, and records a correction that the user gave two or more times. It
+keeps the index file to one line for each note. It reads the sessions with a
+session search tool such as `deja` when the host has one, and otherwise
+reads the transcripts on disk. It gives rules for all agents to `retro`
+instead of changing repository files, and asks before it removes sessions
+from the index of the search tool.
+
 The `backlog` skill keeps deferred ideas as one Markdown file per item under
 `docs/backlog/`. Each item records why it matters, its evidence, the task that
 found it, and why that task deferred it. An item is an option to return to,
