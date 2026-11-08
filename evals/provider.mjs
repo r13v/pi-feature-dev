@@ -132,7 +132,8 @@ function runCodex(dir, prompt, config) {
     env: { ...env(dir), CODEX_HOME: home }, timeout: 20 * 60_000,
     maxBuffer: 16 * 1024 * 1024 });
   writeFileSync(join(dir, ".git", "codex-events.jsonl"), r.stdout ?? "");
-  if (r.status !== 0) return { error: r.stderr || "codex failed" };
+  if (r.status !== 0) return { error: [r.error?.message, r.stderr]
+    .filter(Boolean).join("\n") || "codex failed" };
   return { output: sh(dir, "cat", [last]) };
 }
 

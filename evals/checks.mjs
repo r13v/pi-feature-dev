@@ -309,14 +309,17 @@ function memoryNotes(dir) {
     index: read(dir, "memory/MEMORY.md") };
 }
 
-// True when memory still tells to run test:unit. A line may still name it to
-// say that it is gone.
+// True when memory still tells to run test:unit. A sentence may still name
+// it to say that it is gone.
 function saysOldTestCommand(memory) {
   const gone = new RegExp(`\\b(${["no", "not", "never", "removed", "gone",
     "deleted", "instead", "longer", "obsolete", "old", "earlier", "former",
     "outdated", "stale", "replaced"].join("|")})\\b`, "i");
-  return memory.split("\n")
-    .some((line) => /test:unit/.test(line) && !gone.test(line));
+  // A wrapped continuation belongs to the same instruction. Otherwise
+  // "do not use the removed\n`test:unit` script" looks affirmative.
+  return memory.split(/\n\s*\n/).flatMap((paragraph) => paragraph
+    .replace(/\n/g, " ").split(/(?<=[.!?])\s+/))
+    .some((sentence) => /test:unit/.test(sentence) && !gone.test(sentence));
 }
 
 function onlyMemoryChanged(dir) {
