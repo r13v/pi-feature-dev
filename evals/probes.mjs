@@ -39,9 +39,13 @@ export function probeChecks(probe, phase) {
   const completeRows = options.every((option) => rows.some((cells) =>
     cells.length === 4 && cells[0].includes(option)
       && cells.slice(1).every((cell) => cell.length > 0)));
+  const paidCost = [...comparison.matchAll(
+    /\b(paid|costs|subscription)\b|\b(hosting|ongoing|monthly) (cost|fee|charge)s?\b|\$[1-9]/gi,
+  )].some((match) => !/\b(no|zero|without|not)\s+((an?|any|ongoing|monthly|hosting|subscription)\s+)*$/i
+    .test(comparison.slice(Math.max(0, match.index - 60), match.index)));
   const complete = options.every((option) => comparison.includes(option))
     && /free|\$0|no cost/i.test(comparison)
-    && /paid|costs|\$[1-9]/i.test(comparison)
+    && paidCost
     && /shar|multi.user/i.test(comparison) && /quer|SQL/.test(comparison)
     && comparison.length > 150;
   return {

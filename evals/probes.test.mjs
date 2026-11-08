@@ -51,6 +51,13 @@ test("format probes reject empty work and check the applicable request", () => {
     if (name === "format-explicit") {
       assert.equal(check(table.split("\n").map((line) =>
         line.replace(/^\| | \|$/g, "")).join("\n")), true);
+      assert.equal(check(table.replace("Paid", "Free")), false);
+    } else {
+      assert.equal(check(prose.replace("costs money",
+        "has an ongoing hosting cost")), true);
+      assert.equal(check(prose.replace("costs money", "is free")), false);
+      assert.equal(check(prose.replace("costs money", "has no hosting cost")),
+        false);
     }
     assert.equal(check(name === "format-default" ? table : prose), false);
     assert.equal(check("JSON SQLite PostgreSQL ".repeat(8)
