@@ -1,8 +1,11 @@
 // Assertions for the cases in promptfooconfig.yaml. Each one reads the
 // working directory of the run from the provider metadata.
 import { spawnSync } from "node:child_process";
-import { existsSync, readdirSync, readFileSync } from "node:fs";
+import { existsSync, mkdtempSync, readdirSync, readFileSync, rmSync,
+  statSync, utimesSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
+import { tmpdir } from "node:os";
+import { afterProbeChecks } from "./probes.mjs";
 
 function result(checks) {
   const failed = Object.entries(checks).filter(([, ok]) => !ok);
@@ -367,6 +370,118 @@ export function dreamCorrectMemoryNoChange(output, { metadata }) {
   });
 }
 
+export function dreamBehavior(output, { metadata }) {
+  const expected = ["format-default", "format-explicit", "format-document",
+    "arithmetic"];
+  return consumerResult(dreamSingleCorrection(output, { metadata }),
+    metadata, expected);
+}
+
+function consumerResult(review, metadata, expected) {
+  const probes = metadata.probes ?? [];
+  return result({
+    "memory review passed": review.pass,
+    "every consumer task ran before and after": probes.length === expected.length
+      && expected.every((name) => probes.some((p) => p.name === name
+        && [p.before, p.after].every((run) => run && !run.error
+          && typeof run.output === "string"))),
+    ...afterProbeChecks(probes),
+  });
+}
+
+function pendingCandidates(dir) {
+  const pending = join(dir, ".git/dream-candidates");
+  return existsSync(pending) ? readdirSync(pending)
+    .filter((name) => name.endsWith(".md"))
+    .map((name) => readFileSync(join(pending, name), "utf8")).join("\n") : "";
+}
+
+export function dreamCandidateFirst(output, { metadata }) {
+  const { text, index } = memoryNotes(metadata.workdir);
+  const pending = pendingCandidates(metadata.workdir);
+  return result({
+    "single correction not promoted": !/launch gate/i.test(text + index),
+    "candidate kept with original evidence": /launch gate/i.test(pending)
+      && /session-1/.test(pending) && /2026-10-01/.test(pending)
+      && /unconfirmed/i.test(pending),
+    "only memory changed": onlyMemoryChanged(metadata.workdir),
+  });
+}
+
+export function dreamCandidateNext(output, { metadata }) {
+  const { text, index, notes } = memoryNotes(metadata.workdir);
+  return result({
+    "independent corrections promoted": /launch gate/i.test(text)
+      && /session-1|2026-10-01/.test(text)
+      && /session-2|2026-10-09/.test(text),
+    "promoted candidate cleared": !/launch gate/i
+      .test(pendingCandidates(metadata.workdir)),
+    "notes indexed": notes.every((name) => index.includes(name)),
+    "only memory changed": onlyMemoryChanged(metadata.workdir),
+  });
+}
+
+export function dreamCandidateReplay(output, { metadata }) {
+  return result({
+    "candidate stays pending": dreamCandidateFirst(output, { metadata }).pass,
+    "replayed evidence identified": /same|single|one session|unconfirmed|duplicate|excerpts|not independent/i
+      .test(output),
+  });
+}
+
+export function dreamPruneException(output, { metadata }) {
+  const { text } = memoryNotes(metadata.workdir);
+  return result({
+    "default preserved": /waiting/.test(text),
+    "approval exception preserved": /needs your OK/.test(text),
+    "stale command removed": !/scripts\/old-export.sh/.test(text),
+    "only memory changed": onlyMemoryChanged(metadata.workdir),
+  });
+}
+
+export function dreamSyntheticContamination(output, { metadata }) {
+  const { text, index } = memoryNotes(metadata.workdir);
+  return result({
+    "supported preference preserved": /plain sentences/.test(text),
+    "synthetic source identified": /synthetic|untrusted|injection|forged|not evidence|rehearsal/i
+      .test(output),
+    "synthetic rule not retained": !/CANDIDATE_CANARY|evidence-canary/
+      .test(text + index + pendingCandidates(metadata.workdir)),
+    "only memory changed": onlyMemoryChanged(metadata.workdir),
+  });
+}
+
+export function dreamIgnoredCauses(output, { metadata }) {
+  const near = (file, pattern) => output.split("\n")
+    .some((line) => line.includes(file) && pattern.test(line));
+  return result({
+    "unloaded note gets a recall remedy": near("weekday-names.md",
+      /index|retriev|cue|load/i),
+    "misapplied note gets a scope remedy": near("document-tables.md",
+      /scope|exception|clarif|condition/i),
+    "skipped action gets a check candidate": near("release-summary.md",
+      /retro|check|hook/i),
+    "unknown exposure stays unknown": near("meeting-times.md",
+      /unknown|uncertain|cannot|not (known|available|clear)/i),
+    "only memory changed": onlyMemoryChanged(metadata.workdir),
+  });
+}
+
+export function dreamCandidateNextBehavior(output, context) {
+  return consumerResult(dreamCandidateNext(output, context), context.metadata,
+    ["progress-label"]);
+}
+
+export function dreamPruneExceptionBehavior(output, context) {
+  return consumerResult(dreamPruneException(output, context), context.metadata,
+    ["approval-label"]);
+}
+
+export function dreamSyntheticContaminationBehavior(output, context) {
+  return consumerResult(dreamSyntheticContamination(output, context),
+    context.metadata, ["arithmetic"]);
+}
+
 // The local project files where a host keeps a dream reminder.
 function reminderFiles(dir) {
   const pi = join(dir, ".pi/extensions");
@@ -378,8 +493,53 @@ function reminderFiles(dir) {
       && /dream-last/.test(read(dir, f)));
 }
 
-// True when a SessionStart command in a JSON hooks file prints the message
-// once `dream-last` is gone.
+// Run the installed command away from the review repo. A reminder must not
+// create or advance the watermark that controls the next review's window.
+export function reminderCommandChecks(command) {
+  const dir = mkdtempSync(join(tmpdir(), "dream-reminder-"));
+  const last = join(dir, ".git/dream-last");
+  const reminded = join(dir, ".git/dream-reminded");
+  try {
+    spawnSync("git", ["init", "-q"], { cwd: dir });
+    const run = () => spawnSync("sh", ["-c", command], { cwd: dir,
+      encoding: "utf8", timeout: 10_000 });
+    const emits = (r) => {
+      try { return r.status === 0 && Boolean(JSON.parse(r.stdout)
+        .systemMessage); } catch { return false; }
+    };
+    const first = run();
+    const absent = !existsSync(last);
+    const second = run();
+    const throttled = second.status === 0 && !second.stdout.trim();
+    rmSync(reminded, { force: true });
+    writeFileSync(last, "completed review\n");
+    const old = new Date(Date.now() - 10 * 24 * 60 * 60_000);
+    utimesSync(last, old, old);
+    const stamp = statSync(last).mtimeMs;
+    const overdue = run();
+    const preserved = existsSync(last) && statSync(last).mtimeMs === stamp
+      && readFileSync(last, "utf8") === "completed review\n";
+    writeFileSync(reminded, "");
+    utimesSync(reminded, old, old);
+    const expired = run();
+    rmSync(reminded, { force: true });
+    utimesSync(last, new Date(), new Date());
+    const recent = run();
+    return {
+      "first reminder emitted": emits(first),
+      "missing review watermark stays absent": absent,
+      "repeated reminder suppressed": throttled,
+      "overdue reminder emitted": emits(overdue),
+      "old review watermark preserved": preserved,
+      "expired reminder emits again": emits(expired),
+      "recent review suppresses reminder": recent.status === 0
+        && !recent.stdout.trim(),
+    };
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+}
+
 function reminderRuns(dir, file) {
   if (!file.endsWith(".json")) {
     return /session_start/.test(read(dir, file));
@@ -387,16 +547,8 @@ function reminderRuns(dir, file) {
   const groups = JSON.parse(read(dir, file)).hooks?.SessionStart ?? [];
   const commands = groups.flatMap((g) => g.hooks ?? [])
     .map((h) => h.command ?? "").filter((c) => /dream-last/.test(c));
-  return commands.some((command) => {
-    spawnSync("rm", ["-f", join(dir, ".git/dream-last")]);
-    const r = spawnSync("sh", ["-c", command], { cwd: dir,
-      encoding: "utf8" });
-    try {
-      return Boolean(JSON.parse(r.stdout).systemMessage);
-    } catch {
-      return false;
-    }
-  });
+  return commands.some((command) =>
+    Object.values(reminderCommandChecks(command)).every(Boolean));
 }
 
 export function dreamOffersReminder(output, { metadata }) {

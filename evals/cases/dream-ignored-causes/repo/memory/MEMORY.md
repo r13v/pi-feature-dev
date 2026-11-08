@@ -1,0 +1,4 @@
+- [weekday-names.md](weekday-names.md) — user preference
+- [document-tables.md](document-tables.md) — user preference
+- [release-summary.md](release-summary.md) — user preference
+- [meeting-times.md](meeting-times.md) — user preference

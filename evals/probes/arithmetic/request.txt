@@ -1,0 +1,1 @@
+Calculate 17 + 25. Write only the numeric result to answer.txt.

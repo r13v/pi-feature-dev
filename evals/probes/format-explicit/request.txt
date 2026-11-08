@@ -1,0 +1,1 @@
+Compare local JSON files (free, one machine), SQLite (free, one machine, queries), and hosted PostgreSQL (paid, shared, queries). In your reply I explicitly want a Markdown table with columns Option, Cost, Sharing, Queries, followed by one sentence recommending an option for a single-person offline app.

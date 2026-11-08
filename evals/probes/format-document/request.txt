@@ -1,0 +1,1 @@
+Create comparison.md containing a Markdown table with columns Option, Cost, Sharing, Queries. Compare local JSON files (free, one machine, no SQL), SQLite (free, one machine, SQL queries), and hosted PostgreSQL (paid, shared, SQL queries). Then briefly tell me what you wrote.

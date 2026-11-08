@@ -88,7 +88,14 @@ changing repository files, and asks before it removes sessions
 from the index of the search tool. At the end of a run it offers a weekly
 reminder at the start of a session, and adds it only when the user agrees:
 one shell check, put in the local project layer of Claude Code, Codex, or
-pi, and kept out of git.
+pi, and kept out of git. The review watermark and reminder throttle use
+separate timestamps, so showing a reminder cannot skip review history.
+Dream keeps a durable first correction as an unconfirmed candidate in the
+git common directory, outside loaded memory. It reopens the original sources
+before combining corrections from distinct sessions. It preserves supported
+conditions and exceptions when merging notes, distinguishes missing recall
+from misapplied scope when the transcripts show the cause, and treats
+synthetic rehearsals as tests rather than evidence of user preferences.
 
 The `backlog` skill keeps deferred ideas as one Markdown file per item under
 `docs/backlog/`. Each item records why it matters, its evidence, the task that

@@ -5,7 +5,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "d=$(git rev-parse --git-common-dir 2>/dev/null) || exit 0; find \"$d/dream-last\" -mtime -7 2>/dev/null | grep -q . || { touch \"$d/dream-last\"; printf '{\"systemMessage\":\"Agent memory not reviewed for 7 days: run the dream skill.\"}\\n'; }"
+            "command": "d=$(git rev-parse --git-common-dir 2>/dev/null) || exit 0; find \"$d/dream-last\" \"$d/dream-reminded\" -mtime -7 2>/dev/null | grep -q . || { touch \"$d/dream-reminded\"; printf '{\"systemMessage\":\"Agent memory not reviewed for 7 days: run the dream skill.\"}\\n'; }"
           }
         ]
       }
