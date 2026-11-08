@@ -122,6 +122,17 @@ tests:
         value: file://checks.mjs:dreamCorrectMemoryNoChange
 
   # Synthetic research probes; these are not observations from real projects.
+  - description: dream honors an explicit request to remember without recurrence
+    vars:
+      case: dream-explicit-memory-request
+      request: >-
+        Use dream. Memory is in memory/, transcripts in sessions/.
+        Review 2026-10-01 only. Apply memory edits at your discretion.
+        Do not offer reminders or ask questions.
+    assert:
+      - type: javascript
+        value: file://checks.mjs:dreamExplicitMemoryRequest
+
   - description: dream distinguishes recall scope skipped action and unknown exposure
     vars:
       case: dream-ignored-causes

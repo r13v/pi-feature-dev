@@ -136,6 +136,11 @@ function runCodex(dir, prompt, config) {
   return { output: sh(dir, "cat", [last]) };
 }
 
+export function runSession(dir, prompt, config) {
+  return config.agent === "codex" ? runCodex(dir, prompt, config)
+    : runClaude(dir, prompt, config);
+}
+
 export default class SkillAgent {
   constructor(options) {
     this.config = { agent: "claude", skills: "working",
@@ -149,7 +154,7 @@ export default class SkillAgent {
 
   async callApi(prompt, context) {
     const dir = makeWorkdir(context.vars.case, this.config.skills);
-    const run = this.config.agent === "codex" ? runCodex : runClaude;
+    const run = runSession;
     const probes = (context.vars.probes ?? "").split(",").filter(Boolean)
       .map((name) => ({ name,
       request: readFileSync(join(ROOT, "evals", "probes", name,

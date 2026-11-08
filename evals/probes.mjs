@@ -16,7 +16,11 @@ export function probeChecks(probe, phase) {
   }
   if (probe.name === "progress-label" || probe.name === "approval-label") {
     return { "remembered wording applied": probe.name === "progress-label"
-      ? /launch gate/i.test(output) : /needs your OK/i.test(output) };
+      ? /launch gate/i.test(output)
+        && /complete|passed|ready|finished|successful/i.test(output)
+        && !/not[^.\n]{0,30}launch gate|launch gate[^.\n]{0,30}(not|incomplete|failed|pending)/i
+          .test(output)
+      : /needs your OK/i.test(output) };
   }
   if (!["format-default", "format-explicit", "format-document"]
     .includes(probe.name)) {

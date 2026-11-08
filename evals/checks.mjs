@@ -408,6 +408,16 @@ export function dreamCandidateFirst(output, { metadata }) {
   });
 }
 
+export function dreamExplicitMemoryRequest(output, { metadata }) {
+  const { text, index, notes } = memoryNotes(metadata.workdir);
+  return result({
+    "explicit preference recorded immediately": /24.hour/i.test(text)
+      && /meeting/i.test(text),
+    "notes indexed": notes.every((name) => index.includes(name)),
+    "only memory changed": onlyMemoryChanged(metadata.workdir),
+  });
+}
+
 export function dreamCandidateNext(output, { metadata }) {
   const { text, index, notes } = memoryNotes(metadata.workdir);
   return result({

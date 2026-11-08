@@ -72,6 +72,16 @@ test("document tables do not override the final-answer preference", (t) => {
   assert.equal(check(table), false);
 });
 
+test("the wording probe requires a completed task, not a label mention", () => {
+  const check = (output) => Object.values(probeChecks({ name: "progress-label",
+    after: { output } }, "after")).every(Boolean);
+  assert.equal(check("launch gate"), false);
+  assert.equal(check("The launch gate is not complete."), false);
+  assert.equal(check("Not the launch gate; the deployment check is complete."),
+    false);
+  assert.equal(check("The launch gate is complete."), true);
+});
+
 test("a behavior evaluation cannot pass with omitted consumer sessions", (t) => {
   const workdir = makeWorkdir("dream-single-correction", "working");
   t.after(() => rmSync(workdir, { recursive: true }));

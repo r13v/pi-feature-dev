@@ -101,3 +101,15 @@ task prompts, models, effort, and checks. Specify the fixture's dated review
 window; do not depend on the current date. Research fixtures are synthetic
 robustness tests, not measured incidents from real projects. Three repeats
 are a directional check, not a reliable estimate of a population effect.
+
+To check actual candidate carryover, run:
+
+```bash
+node evals/dream-cycle.mjs <skill-commit> /tmp/dream-cycle.json
+```
+
+This runs four fresh Codex sessions: the first correction, replayed excerpts,
+a genuinely independent correction, and a consumer task. Each review gets
+the memory and candidates actually produced by its predecessor, replacing
+all seeded state. The reviews use fresh repositories and explicit windows;
+this checks candidate carryover, not a host's default-window integration.
