@@ -35,7 +35,8 @@ claim its benchmark improvements.
 Baseline skill: `2d4039684c05a4688a1841db26f75ef347bc9301`.
 Candidate skill: `647dad1fa3f622c0f1c4f1a3d4f45bc2773924d3`.
 Final grading code: `da39308e1fabe09ba2bb651c7066d2eb44b5b515`.
-Later commits add this report; the evaluated skill is unchanged.
+These measurements refer to the frozen snapshots above. Subsequent text-only
+edits are not part of this comparison.
 
 Both versions used Codex `gpt-6.1-sol`, medium effort, the same fixtures,
 requests, and code checks, with promptfoo result caching disabled and explicit
@@ -80,8 +81,7 @@ candidate, versus four for the baseline. The old command created or advanced
 the review watermark while showing a reminder. Its apparent reminder expiry
 was also affected by that write. The new command preserves the watermark,
 throttles repeated notices, expires the throttle, and respects a recent
-review. Legacy hooks require an authorized replacement; an old timestamp
-cannot reconstruct history that was already skipped.
+review.
 
 ## Verification and corrections
 

@@ -26,9 +26,6 @@ are the ground truth for what is true now. A note is not evidence.
   step 6), or 7 days when there is no run, or the window that the user
   gives. If no transcripts are
   available, check the notes against the code and git only, and say so.
-   If an old reminder writes `dream-last`, its timestamp does not prove a
-   review happened. Find the last completed review in the sessions; if that
-   is unknown, disclose it and use the user's window or the no-run default.
 - **Steering and docs:** the steering files, such as `AGENTS.md` or
   `CLAUDE.md`, the glossary, and the docs of the repository. Read them to
   find duplicates and the owner of a rule.
@@ -135,10 +132,6 @@ of these are true:
 Ask once, in one sentence. Add the reminder only when the user agrees to it
 in this conversation. A delegation of the memory edits is not an agreement.
 If the user declines, write a memory note that says so.
-
-If an existing reminder writes `dream-last`, report the old check. Replace
-that check when reminder changes are authorized; otherwise show the proposed
-replacement. Do not add a second reminder or disturb other hooks.
 
 All hosts use the same check. A review within 7 days suppresses it. Otherwise
 it prints at most once in 7 days and records only `dream-reminded`. The
