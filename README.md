@@ -114,10 +114,11 @@ asks at most three decisions that have no safe default, and lists the
 reversible ones as defaults that the user can reject. It reads the rules of
 the repository before it recommends an option.
 
-The `ste` skill drafts, rewrites, and reviews clear English with
+The `ste` skill drafts, rewrites, and reviews clear technical text in any
+language using transferable
 [ASD-STE100 Simplified Technical English](https://www.asd-ste100.org/)
-principles. It supports strict technical-documentation work and a general
-clarity mode for prompts, tool descriptions, error messages, status reports,
+principles. Strict STE is English-only; clarity mode includes Russian guidance
+for prompts, tool descriptions, error messages, status reports,
 translation-ready text, and agent instructions. The skill is Markdown-only and
 has no runtime dependency.
 
@@ -351,11 +352,15 @@ requests do not authorize implementation.
 
 The `ste` skill selects one of two modes:
 
-- **Strict STE** applies Issue 9 rules to regulated, operational, maintenance,
-  and safety-critical documentation. Exact verification requires the official
-  dictionary and the applicable project glossary.
-- **STE clarity** transfers the same clarity discipline to other technical
-  text without claiming formal ASD-STE100 compliance.
+- **Strict STE** applies Issue 9 rules to English regulated, operational,
+  maintenance, and safety-critical documentation. Exact verification requires
+  the official dictionary and the applicable project glossary.
+- **Clarity mode** (also called **STE clarity**) transfers the clarity discipline
+  to technical text in any language without claiming formal ASD-STE100
+  compliance. It preserves the source language and meaning, uses natural local
+  grammar, and does not impose English vocabulary or word limits on other
+  languages. Russian guidance covers modality, aspect, bureaucratic wording,
+  and UI text. Non-English results are clarity edits, not STE-aligned drafts.
 
 The skill loads its detailed writing rules, review checklist, text-type
 patterns, and before/after examples only when they are relevant to the request.

@@ -172,6 +172,65 @@ export function steKeepsEveryLimit(output, { metadata }) {
   });
 }
 
+// Synthetic STE regression probes: observable safeguards, not a style score.
+export function steRussianMeaning(output, { metadata }) {
+  const doc = read(metadata.workdir, "docs/deploy.md");
+  return result({
+    "Russian retained": /резервн|копи/i.test(doc) && /оператор/i.test(doc),
+    "bureaucratic verbs simplified": !/осуществ/i.test(doc),
+    "check target not invented": !/провер(?:ить|ьте|яйте)\s+(?:её|ее|копию)|проверк[ау]\s+резервной\s+копии/i
+      .test(doc),
+    "commands and order": doc.includes("`deploy --check`")
+      && doc.split("`deploy --env production`").length >= 3
+      && doc.indexOf("`deploy --check`")
+        < doc.lastIndexOf("`deploy --env production`"),
+    "prohibition and approval": /запрещ|нельзя|не должен/i.test(doc)
+      && /согласован|согласи|одобрен|разрешени/i.test(doc)
+      && /администратор/i.test(doc),
+    "uncertain outage": /может|возмож/i.test(doc)
+      && /примерно|около|приблизительно/i.test(doc)
+      && /10\s+секунд/i.test(doc),
+    "lower bound and frequency": /иногда/i.test(doc)
+      && /более\s+2\s+минут|больше\s+2\s+минут/i.test(doc),
+    "repeated action and endpoint": /каждые\s+5\s+минут/i.test(doc)
+      && /до\s+(?:завершения|окончания)\s+восстановления|пока (?:восстановление не завершится|не завершится восстановление)/i
+        .test(doc),
+    "UI literals": doc.includes("«Retry now»")
+      && doc.includes("«Connection lost»"),
+  });
+}
+
+export function steRussianNoInvention(output, { metadata }) {
+  const doc = read(metadata.workdir, "messages.md");
+  return result({
+    "button simplified": /«Сохранить»/.test(doc),
+    "error simplified": !/осуществ|не представляется возможным/i.test(doc)
+      && /файл/i.test(doc) && /не удалось|не уда[её]тся|невозможно/i.test(doc),
+    "unknown cause retained": /причина[^.!?\n]*неизвестна/i.test(doc),
+    "uncertainty retained": /возможно/i.test(doc)
+      && /соединение/i.test(doc) && /потеряно/i.test(doc),
+    "no invented quantities": !/\d/.test(doc),
+    "no invented cause or promise": !/размер|формат|МБ|сервер|гарант|ответим/i
+      .test(doc),
+  });
+}
+
+export function steNonEnglishBoundary(output, { metadata }) {
+  const doc = read(metadata.workdir, "instructions.md");
+  return result({
+    "English-only boundary stated": /ASD-STE100/.test(output)
+      && /английск|English/i.test(output)
+      && /только|лишь|only/i.test(output),
+    "non-applicability explained": /не заявля|не провер|непримен|невозможн|нельзя|не отно|вне области|не примен|без (?:претензии|заявления)|не верификац/i
+      .test(output),
+    "Russian retained": /оператор.*(?:обязан|должен)/i.test(doc)
+      && /запрещён|запрещен/.test(doc),
+    "German retained": /muss/i.test(doc) && /Sicherung/.test(doc)
+      && /prüfen/.test(doc) && /verboten|darf[^.!?\n]*nicht/i.test(doc),
+    "command literals": doc.split("`sync --apply`").length === 3,
+  });
+}
+
 export function visualRecapAscii(output, { metadata }) {
   return result({
     "no Mermaid": !/```mermaid|flowchart (TD|LR)|sequenceDiagram|graph (TD|LR)/

@@ -1,35 +1,46 @@
 ---
 name: ste
-description: Draft or review unambiguous technical English using Simplified Technical English principles. Use for clarity rewrites or ASD-STE100 reviews. Formal verification needs the official dictionary and project glossary.
+description: Draft or review unambiguous technical text in any language using transferable STE clarity principles and language-specific guidance. Use for clarity rewrites or English ASD-STE100 reviews. Formal English verification needs the official dictionary and project glossary.
 ---
 
 # STE
 
-Write English that has one clear meaning and a structure that is easy to parse.
-Preserve technical
-accuracy before you simplify language.
+Write technical text that has one clear meaning and is easy to parse in its
+language. Preserve technical accuracy before you simplify language. Keep the
+source language unless the user requests translation.
 
 ## Select the Operating Mode
 
-Use **strict STE mode** when the user requests ASD-STE100 compliance or works on
-regulated,
-maintenance, operational, or safety-critical documentation.
+Use **strict STE mode** for English when the user requests ASD-STE100 compliance
+or works on regulated, maintenance, operational, or safety-critical
+documentation.
 
 - Apply Issue 9 rules and the applicable project directives.
 - Verify general vocabulary against the official Issue 9 dictionary.
 - Verify technical nouns and verbs against the project glossary.
 - Use `STE-aligned draft` when these lexical checks are not possible.
 
-Use **STE clarity mode** for prompts, tool descriptions, error messages, agent
-instructions,
-status reports, translation-ready text, and other technical or operational
-English.
+ASD-STE100 governs English only. For other languages, use clarity mode and the
+applicable local or project requirements, even for safety-critical text. If the
+user requests STE compliance for non-English text, explain this boundary; do not
+silently translate the text or claim that the revision meets ASD-STE100.
+
+Use **clarity mode** (also called **STE clarity**) for prompts, tool
+descriptions, error messages, agent instructions, status reports,
+translation-ready text, and other technical or operational text in any language.
 
 - Transfer the clarity rules that fit the text.
 - Prefer explicit actors, actions, conditions, inputs, and results.
 - Do not imply formal ASD-STE100 compliance.
 
 ## Load References Selectively
+
+- Read [references/languages.md](references/languages.md) for non-English or
+  mixed-language text. It gives transfer boundaries and Russian guidance.
+- The existing writing rules and checklist describe English STE. For other
+  languages, use only transferable meaning and structure checks, not English
+  grammar, vocabulary, or word-count restrictions. Examples are illustrative,
+  not templates to translate literally.
 
 - Read [references/writing-rules.md](references/writing-rules.md) for strict STE
   work, compliance
@@ -64,8 +75,11 @@ Before rewriting:
    change.
 4. Ask when ambiguity can change safety, responsibility, or task outcome.
 
-Do not invent missing facts. Do not remove precision only to meet a length
-target.
+Do not invent missing facts. An explicit actor or object is helpful only when
+established by the source. If a command's check target is unspecified, keep it
+unspecified and flag the gap; do not infer that it checks a nearby noun such as
+a backup. A disclaimer after the rewrite does not authorize that inference.
+Do not remove precision only to meet a length target.
 Keep a qualitative modifier such as `carefully` when it affects task intent.
 Flag it when the
 project requires a measurable criterion, but do not invent that criterion.
@@ -92,11 +106,11 @@ literal itself.
 |---|---|
 | Vocabulary | Use one familiar word for one meaning. In strict mode, confirm its approved meaning, part of speech, and form. |
 | Terminology | Use one term for one concept. Keep necessary domain terms and define or flag unclear terms. |
-| Verbs | Prefer active voice, simple tenses, and direct action verbs. Avoid noun-heavy and complex auxiliary constructions. In clarity mode, keep a compound tense that carries current relevance or a hedge, and flag it. |
-| Instructions | Use the imperative form. Put one independent action in each sentence. Combine actions only when they occur at the same time. Put prerequisite conditions first. |
+| Verbs | Prefer direct action verbs and an explicit actor when responsibility matters. Use natural grammar in the text's language. For English, prefer active voice and simple tenses; in clarity mode, keep and flag a compound tense that carries current relevance or a hedge. |
+| Instructions | Use the language's natural instruction form, usually the imperative. Put one independent action in each procedural sentence. Combine actions only when they occur at the same time. Put prerequisite conditions first. |
 | Length | In strict mode, apply the 20-word procedure and 25-word description limits under Issue 9 counting rules. In clarity mode, shorten only when meaning and readability improve. |
-| Noun phrases | Keep multi-word nouns to three words when possible. Preserve longer official names and define a clear short form if needed. |
-| Structure | Use complete sentences, one topic per paragraph, and vertical lists for complex sequences or alternatives. |
+| Noun phrases | Untangle dense noun phrases. In English, keep multi-word nouns to three words when possible. Preserve longer official names and define a clear short form if needed. |
+| Structure | Use complete sentences in prose, one topic per paragraph, and vertical lists for complex sequences or alternatives. Keep natural fragments in UI labels and headings. |
 | Safety | Start with the required command or condition, then state the risk or possible result. Never infer the risk level. |
 | Consistency | Reuse the same wording for the same action and context. Do not rotate synonyms for style. |
 
@@ -181,8 +195,11 @@ rule numbers from memory, summaries, or another skill.
 
 Use one of these statuses only when a status is useful:
 
-- `STE-style rewrite` for general-purpose clarity mode.
-- `STE-aligned draft` when Issue 9 or project terminology checks are incomplete.
+- `Clarity edit` (or its equivalent in the user's language) for non-English
+  clarity mode. Never label non-English text as STE-aligned or verified STE.
+- `STE-style rewrite` for English general-purpose clarity mode.
+- `STE-aligned draft` for English when Issue 9 or project terminology checks
+  are incomplete.
 - `Verified against Issue 9 and project terminology` only when those checks
   occurred.
 

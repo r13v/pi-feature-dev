@@ -334,6 +334,41 @@ tests:
       - type: javascript
         value: file://checks.mjs:steKeepsEveryLimit
 
+  # Synthetic probes for multilingual clarity, not measured field incidents.
+  - description: ste Russian preserves modality limits and protected literals
+    vars:
+      case: ste-russian-meaning
+      request: >-
+        Примени скилл ste в режиме ясности к docs/deploy.md. Отредактируй
+        файл на русском, сохрани все условия, ограничения, ответственность
+        и точные строки. Не задавай вопросов.
+    assert:
+      - type: javascript
+        value: file://checks.mjs:steRussianMeaning
+
+  - description: ste Russian UI avoids invented numbers causes and certainty
+    vars:
+      case: ste-russian-no-invention
+      request: >-
+        Используй ste: отредактируй messages.md на ясность. Разрешаю менять
+        сами тексты кнопки, ошибки и статуса в кавычках. Сохрани русский
+        язык и смысл. Не задавай вопросов.
+    assert:
+      - type: javascript
+        value: file://checks.mjs:steRussianNoInvention
+
+  - description: ste non-English safety text does not claim ASD compliance
+    vars:
+      case: ste-non-english-boundary
+      request: >-
+        Используй ste для проверки инструкции по безопасности в
+        instructions.md на соответствие ASD-STE100. Проверь русский
+        и немецкий разделы, при необходимости отредактируй файл.
+        Не переводи. В ответе укажи статус проверки. Не задавай вопросов.
+    assert:
+      - type: javascript
+        value: file://checks.mjs:steNonEnglishBoundary
+
   - description: visual-recap draws ASCII for a terminal
     vars:
       case: visual-recap-ascii
