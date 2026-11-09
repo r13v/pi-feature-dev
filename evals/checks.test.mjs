@@ -44,6 +44,19 @@ for (const name of readdirSync(CASES)) {
   });
 }
 
+test("STE rejects an inferred check target even with a disclaimer", (t) => {
+  const workdir = makeWorkdir("ste-russian-meaning", "working");
+  t.after(() => rmSync(workdir, { recursive: true }));
+  overlay(join(CASES, "ste-russian-meaning", "fixed"), workdir);
+  const file = join(workdir, "docs/deploy.md");
+  const doc = readFileSync(file, "utf8");
+  writeFileSync(file, doc.replace("выполнить проверку:", "проверить её командой"));
+  const r = checks.steRussianMeaning("Объект проверки — моя интерпретация.",
+    { metadata: { workdir } });
+  assert.equal(r.pass, false);
+  assert.match(r.reason, /check target not invented/);
+});
+
 test("a wrapped historical command is not a current instruction", (t) => {
   const workdir = makeWorkdir("dream-keeps-unverified", "working");
   t.after(() => rmSync(workdir, { recursive: true }));
