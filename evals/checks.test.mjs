@@ -3,7 +3,8 @@
 // `fixed-output.txt`: a good result made by hand.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { existsSync, readdirSync, readFileSync, rmSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync, rmSync,
+  writeFileSync } from "node:fs";
 import { join } from "node:path";
 import * as checks from "./checks.mjs";
 import { makeWorkdir, overlay } from "./provider.mjs";
@@ -42,3 +43,22 @@ for (const name of readdirSync(CASES)) {
     assert.equal(r.pass, true, r.reason);
   });
 }
+
+test("a wrapped historical command is not a current instruction", (t) => {
+  const workdir = makeWorkdir("dream-keeps-unverified", "working");
+  t.after(() => rmSync(workdir, { recursive: true }));
+  const file = join(workdir, "memory/test-command.md");
+  writeFileSync(file, "Use `npm test`.\n\nWhy: test:unit is gone.\n\n"
+    + "How to apply: use npm test; do not use the removed\n"
+    + "`test:unit` script.\n");
+  assert.equal(checks.dreamKeepsUnverified("", { metadata: { workdir } })
+    .pass, true);
+  writeFileSync(file, "Run the tests with\n`npm run test:unit`.\n\n"
+    + "The package also has npm test.\n");
+  assert.equal(checks.dreamKeepsUnverified("", { metadata: { workdir } })
+    .pass, false);
+  writeFileSync(file, "Run npm run test:unit.\n"
+    + "Use npm test for the old export helper.\n");
+  assert.equal(checks.dreamKeepsUnverified("", { metadata: { workdir } })
+    .pass, false);
+});

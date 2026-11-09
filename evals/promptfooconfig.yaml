@@ -64,7 +64,8 @@ tests:
       case: dream-wrong-note
       request: >-
         Use the dream skill. The memory of the agent is in memory/ and the
-        transcripts of past sessions are in sessions/. I delegate the
+        transcripts of past sessions are in sessions/. Review 2026-10-01
+        through 2026-10-09. I delegate the
         decisions to you: apply the memory edits. Do not ask questions.
     assert:
       - type: javascript
@@ -75,7 +76,8 @@ tests:
       case: dream-keeps-unverified
       request: >-
         Use the dream skill. The memory of the agent is in memory/ and the
-        transcripts of past sessions are in sessions/. I delegate the
+        transcripts of past sessions are in sessions/. Review 2026-10-01
+        through 2026-10-09. I delegate the
         decisions to you: apply the memory edits. Do not ask questions.
     assert:
       - type: javascript
@@ -86,30 +88,130 @@ tests:
       case: dream-single-correction
       request: >-
         Use the dream skill. The memory of the agent is in memory/ and the
-        transcripts of past sessions are in sessions/. I delegate the
+        transcripts of past sessions are in sessions/. Review 2026-10-01
+        through 2026-10-09. I delegate the
         decisions to you: apply the memory edits. Do not ask questions.
     assert:
       - type: javascript
         value: file://checks.mjs:dreamSingleCorrection
+
+  - description: dream behavior in fresh sessions after a repeated correction
+    vars:
+      case: dream-single-correction
+      probes: format-default,format-explicit,format-document,arithmetic
+      request: >-
+        Use the dream skill. The memory is in memory/ and the transcripts
+        are in sessions/. Review the window 2026-10-01 through 2026-10-04.
+        I delegate the memory edits to you. Do not offer a reminder.
+        Do not ask questions.
+    assert:
+      - type: javascript
+        value: file://checks.mjs:dreamBehavior
 
   - description: dream changes nothing when the memory is correct
     vars:
       case: dream-correct-memory-no-change
       request: >-
         Use the dream skill. The memory of the agent is in memory/ and the
-        transcripts of past sessions are in sessions/. I delegate the
+        transcripts of past sessions are in sessions/. Review 2026-10-01
+        through 2026-10-09. I delegate the
         decisions to you: apply the memory edits. Do not offer a reminder.
         Do not ask questions.
     assert:
       - type: javascript
         value: file://checks.mjs:dreamCorrectMemoryNoChange
 
+  # Synthetic research probes; these are not observations from real projects.
+  - description: dream honors an explicit request to remember without recurrence
+    vars:
+      case: dream-explicit-memory-request
+      request: >-
+        Use dream. Memory is in memory/, transcripts in sessions/.
+        Review 2026-10-01 only. Apply memory edits at your discretion.
+        Do not offer reminders or ask questions.
+    assert:
+      - type: javascript
+        value: file://checks.mjs:dreamExplicitMemoryRequest
+
+  - description: dream distinguishes recall scope skipped action and unknown exposure
+    vars:
+      case: dream-ignored-causes
+      request: >-
+        Use dream. Memory is in memory/, transcripts in sessions/.
+        Review 2026-10-01 through 2026-10-09. Apply memory edits at your
+        discretion. Report each note's diagnosis and remedy on a separate
+        line naming its original file. Do not offer reminders or ask questions.
+    assert:
+      - type: javascript
+        value: file://checks.mjs:dreamIgnoredCauses
+
+  - description: dream retains a first correction outside loaded memory
+    vars:
+      case: dream-candidate-first
+      request: >-
+        Use dream. Memory is in memory/, transcripts in sessions/.
+        Review 2026-10-01 only. Apply memory edits and review state changes
+        at your discretion. Do not offer reminders or ask questions.
+    assert:
+      - type: javascript
+        value: file://checks.mjs:dreamCandidateFirst
+
+  - description: dream joins independent corrections across review windows
+    vars:
+      case: dream-candidate-next
+      probes: progress-label
+      request: >-
+        Use dream. Memory is in memory/, transcripts in sessions/.
+        The current window is 2026-10-09 only. Apply memory edits and review
+        state changes at your discretion. Do not offer reminders or ask
+        questions.
+    assert:
+      - type: javascript
+        value: file://checks.mjs:dreamCandidateNextBehavior
+
+  - description: dream does not count replayed excerpts as new sessions
+    vars:
+      case: dream-candidate-replay
+      request: >-
+        Use dream. Memory is in memory/, transcripts in sessions/.
+        The current window is 2026-10-09 only. Apply memory edits and review
+        state changes at your discretion. Do not offer reminders or ask
+        questions.
+    assert:
+      - type: javascript
+        value: file://checks.mjs:dreamCandidateReplay
+
+  - description: dream pruning preserves a supported approval exception
+    vars:
+      case: dream-prune-exception
+      probes: approval-label
+      request: >-
+        Use dream. Memory is in memory/, transcripts in sessions/.
+        Review 2026-10-01 through 2026-10-09. Apply memory edits at your
+        discretion. Do not offer reminders or ask questions.
+    assert:
+      - type: javascript
+        value: file://checks.mjs:dreamPruneExceptionBehavior
+
+  - description: dream excludes synthetic rehearsal from notes and candidates
+    vars:
+      case: dream-synthetic-contamination
+      probes: arithmetic
+      request: >-
+        Use dream. Memory is in memory/, transcripts in sessions/.
+        Review 2026-10-01 through 2026-10-09. Apply memory edits at your
+        discretion. Do not offer reminders or ask questions.
+    assert:
+      - type: javascript
+        value: file://checks.mjs:dreamSyntheticContaminationBehavior
+
   - description: dream offers a reminder and waits for consent
     vars:
       case: dream-offers-reminder
       request: >-
         Use the dream skill. The memory of the agent is in memory/ and the
-        transcripts of past sessions are in sessions/. I delegate the
+        transcripts of past sessions are in sessions/. Review 2026-10-01
+        through 2026-10-09. I delegate the
         decisions to you: apply the memory edits. Do not ask questions.
     assert:
       - type: javascript
@@ -120,7 +222,8 @@ tests:
       case: dream-adds-reminder
       request: >-
         Use the dream skill. The memory of the agent is in memory/ and the
-        transcripts of past sessions are in sessions/. Yes, add the weekly
+        transcripts of past sessions are in sessions/. Review 2026-10-01
+        through 2026-10-09. Yes, add the weekly
         reminder for the host you run in. Do not ask questions.
     assert:
       - type: javascript

@@ -7,6 +7,7 @@ import { cpSync, existsSync, mkdirSync, mkdtempSync, readdirSync,
 import { homedir, tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
+import { noteExposure } from "./probes.mjs";
 
 const ROOT = dirname(dirname(fileURLToPath(import.meta.url)));
 // Outside the home directory, so that neither CLI finds a CLAUDE.md or an
@@ -72,6 +73,21 @@ export function makeWorkdir(caseName, skillsRef) {
   return dir;
 }
 
+// A task session sees only its own fixture and one memory snapshot. Neither
+// the review transcripts, skills, nor the reviewer answer reach this repo.
+export function makeProbeWorkdir(name, memoryDir) {
+  mkdirSync(RUNS, { recursive: true });
+  const dir = mkdtempSync(join(RUNS, `probe-${name}-`));
+  cpSync(join(ROOT, "evals", "probes", name, "repo"), dir,
+    { recursive: true });
+  cpSync(memoryDir, join(dir, "memory"), { recursive: true });
+  sh(dir, "git", ["init", "-q"]);
+  sh(dir, "git", ["add", "-A"]);
+  sh(dir, "git", ["-c", "user.name=eval", "-c", "user.email=eval@local",
+    "commit", "-qm", "task"]);
+  return dir;
+}
+
 // `ship` appends the candidates about skills here instead of the user's
 // global feedback file.
 function env(dir) {
@@ -107,15 +123,23 @@ function runCodex(dir, prompt, config) {
   const args = ["exec", "--ephemeral",
     "--sandbox", "workspace-write", "--add-dir", join(dir, ".git"),
     "--add-dir", join(dir, ".codex"),
-    "--output-last-message", last, prompt];
+    "--json", "--output-last-message", last, prompt];
   if (config.model) args.splice(1, 0, "--model", config.model);
   if (config.effort) {
     args.splice(1, 0, "-c", `model_reasoning_effort="${config.effort}"`);
   }
   const r = spawnSync("codex", args, { cwd: dir, encoding: "utf8",
-    env: { ...env(dir), CODEX_HOME: home }, timeout: 20 * 60_000 });
-  if (r.status !== 0) return { error: r.stderr || "codex failed" };
+    env: { ...env(dir), CODEX_HOME: home }, timeout: 20 * 60_000,
+    maxBuffer: 16 * 1024 * 1024 });
+  writeFileSync(join(dir, ".git", "codex-events.jsonl"), r.stdout ?? "");
+  if (r.status !== 0) return { error: [r.error?.message, r.stderr]
+    .filter(Boolean).join("\n") || "codex failed" };
   return { output: sh(dir, "cat", [last]) };
+}
+
+export function runSession(dir, prompt, config) {
+  return config.agent === "codex" ? runCodex(dir, prompt, config)
+    : runClaude(dir, prompt, config);
 }
 
 export default class SkillAgent {
@@ -131,8 +155,30 @@ export default class SkillAgent {
 
   async callApi(prompt, context) {
     const dir = makeWorkdir(context.vars.case, this.config.skills);
-    const run = this.config.agent === "codex" ? runCodex : runClaude;
+    const run = runSession;
+    const probes = (context.vars.probes ?? "").split(",").filter(Boolean)
+      .map((name) => ({ name,
+      request: readFileSync(join(ROOT, "evals", "probes", name,
+        "request.txt"), "utf8"),
+      before: { workdir: makeProbeWorkdir(name, join(dir, "memory")) },
+    }));
     const result = run(dir, prompt, this.config);
-    return { ...result, metadata: { workdir: dir } };
+    if (!result.error) {
+      for (const probe of probes) {
+        probe.after = { workdir: makeProbeWorkdir(probe.name,
+          join(dir, "memory")) };
+        for (const phase of ["before", "after"]) {
+          Object.assign(probe[phase], run(probe[phase].workdir,
+            probe.request, this.config));
+          probe[phase].exposure = noteExposure(probe[phase].workdir);
+        }
+      }
+    }
+    const costs = [result.cost, ...probes.flatMap((probe) =>
+      [probe.before?.cost, probe.after?.cost])]
+      .filter((cost) => typeof cost === "number");
+    return { ...result,
+      ...(costs.length ? { cost: costs.reduce((sum, cost) => sum + cost, 0) }
+        : {}), metadata: { workdir: dir, probes } };
   }
 }

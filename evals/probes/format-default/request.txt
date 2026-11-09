@@ -1,0 +1,1 @@
+Compare these storage options for a small notes app: local JSON files (free, one machine), SQLite (free, one machine, queries), and hosted PostgreSQL (paid, shared, queries). Explain cost, sharing, and query support for each option. Choose a suitable presentation and recommend one option for a single-person offline app.

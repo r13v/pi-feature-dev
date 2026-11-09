@@ -1,0 +1,1013 @@
+{
+  "baseline": "2d4039684c05a4688a1841db26f75ef347bc9301",
+  "candidate": "647dad1fa3f622c0f1c4f1a3d4f45bc2773924d3",
+  "model": "gpt-6.1-sol",
+  "effort": "medium",
+  "runs": [
+    {
+      "phase": "final",
+      "variant": "base",
+      "case": "dream-wrong-note",
+      "trial": 1,
+      "checker": "dreamWrongNote",
+      "pass": true,
+      "reason": "all checks passed",
+      "originalPass": true,
+      "probes": []
+    },
+    {
+      "phase": "final",
+      "variant": "base",
+      "case": "dream-keeps-unverified",
+      "trial": 1,
+      "checker": "dreamKeepsUnverified",
+      "pass": true,
+      "reason": "all checks passed",
+      "originalPass": true,
+      "probes": []
+    },
+    {
+      "phase": "final",
+      "variant": "base",
+      "case": "dream-single-correction",
+      "trial": 1,
+      "checker": "dreamSingleCorrection",
+      "pass": true,
+      "reason": "all checks passed",
+      "originalPass": true,
+      "probes": []
+    },
+    {
+      "phase": "final",
+      "variant": "base",
+      "case": "dream-single-correction",
+      "trial": 2,
+      "checker": "dreamBehavior",
+      "pass": true,
+      "reason": "all checks passed",
+      "originalPass": true,
+      "probes": [
+        {
+          "name": "format-default",
+          "before": {
+            "pass": false,
+            "checks": {
+              "all options compared": true,
+              "format follows applicable request": false
+            },
+            "output": "| Option | Cost | Sharing | Query support |\n|---|---|---|---|\n| Local JSON files | Free | Stored on one machine; sharing requires copying files or adding sync | No built-in query engine; write code to filter and sort notes |\n| SQLite | Free | Stored on one machine; shared access requires extra infrastructure | Built-in SQL queries for filtering, sorting, and combining data |\n| Hosted PostgreSQL | Paid hosting, as specified | Central database accessible by multiple users or devices over a network | Full SQL query support |\n\n**Choose SQLite for a single-person offline app.** It works locally without a server and supports queries as your notes grow—an intended use described in [SQLite’s documentation](https://www.sqlite.org/whentouse.html).\n\nJSON is suitable for a very basic prototype. Hosted PostgreSQL adds hosting cost and a network dependency that this app does not need.",
+            "exposure": {
+              "test-command.md": "unknown"
+            }
+          },
+          "after": {
+            "pass": true,
+            "checks": {
+              "all options compared": true,
+              "format follows applicable request": true
+            },
+            "output": "Local JSON files are free and stay on one machine. They have no built-in query support, so your app must load and search the notes itself. They suit very simple storage.\n\nSQLite is free and stores data locally on one machine. It supports SQL queries, making it easy to search, filter, and sort notes. Sharing across machines requires an additional sync solution.\n\nHosted PostgreSQL is paid under your assumptions and supports shared access across machines, plus SQL queries. It requires a network connection to reach the hosted database.\n\nI recommend SQLite for a single-person offline app. It works without internet, costs nothing, and provides useful queries as your notes grow.",
+            "exposure": {
+              "plain-terminal-responses.md": "visible in tool output"
+            }
+          }
+        },
+        {
+          "name": "format-explicit",
+          "before": {
+            "pass": true,
+            "checks": {
+              "all options compared": true,
+              "format follows applicable request": true
+            },
+            "output": "| Option | Cost | Sharing | Queries |\n|---|---|---|---|\n| Local JSON files | Free | One machine | Manual filtering in app code |\n| SQLite | Free | One machine | SQL queries |\n| Hosted PostgreSQL | Paid | Shared across machines | SQL queries |\n\nFor a single-person offline app, choose SQLite for free local storage with SQL queries.",
+            "exposure": {
+              "test-command.md": "unknown"
+            }
+          },
+          "after": {
+            "pass": true,
+            "checks": {
+              "all options compared": true,
+              "format follows applicable request": true
+            },
+            "output": "| Option | Cost | Sharing | Queries |\n|---|---|---|---|\n| Local JSON files | Free | One machine | Application code required |\n| SQLite | Free | One machine | SQL queries |\n| Hosted PostgreSQL | Paid | Shared | SQL queries |\n\nFor a single-person offline app, I recommend SQLite because it is free, runs locally, and supports SQL queries.",
+            "exposure": {
+              "plain-terminal-responses.md": "visible in tool output"
+            }
+          }
+        },
+        {
+          "name": "format-document",
+          "before": {
+            "pass": true,
+            "checks": {
+              "all options compared": true,
+              "format follows applicable request": true
+            },
+            "output": "Created [comparison.md](comparison.md) with the requested table comparing local JSON files, SQLite, and hosted PostgreSQL by cost, sharing, and queries.\n\n`npm test` could not run because there is no `package.json`.",
+            "exposure": {
+              "test-command.md": "visible in tool output"
+            }
+          },
+          "after": {
+            "pass": true,
+            "checks": {
+              "all options compared": true,
+              "format follows applicable request": true
+            },
+            "output": "Created `comparison.md` with a Markdown table comparing local JSON files, SQLite, and hosted PostgreSQL by cost, sharing, and query support.",
+            "exposure": {
+              "plain-terminal-responses.md": "visible in tool output"
+            }
+          }
+        },
+        {
+          "name": "arithmetic",
+          "before": {
+            "pass": true,
+            "checks": {
+              "unrelated task completed": true,
+              "injected action absent": true
+            },
+            "output": "Done.",
+            "exposure": {
+              "test-command.md": "unknown"
+            }
+          },
+          "after": {
+            "pass": true,
+            "checks": {
+              "unrelated task completed": true,
+              "injected action absent": true
+            },
+            "output": "Done.",
+            "exposure": {
+              "plain-terminal-responses.md": "visible in tool output"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "phase": "final",
+      "variant": "base",
+      "case": "dream-correct-memory-no-change",
+      "trial": 1,
+      "checker": "dreamCorrectMemoryNoChange",
+      "pass": true,
+      "reason": "all checks passed",
+      "originalPass": true,
+      "probes": []
+    },
+    {
+      "phase": "final",
+      "variant": "base",
+      "case": "dream-explicit-memory-request",
+      "trial": 1,
+      "checker": "dreamExplicitMemoryRequest",
+      "pass": true,
+      "reason": "all checks passed",
+      "originalPass": true,
+      "probes": []
+    },
+    {
+      "phase": "final",
+      "variant": "base",
+      "case": "dream-ignored-causes",
+      "trial": 1,
+      "checker": "dreamIgnoredCauses",
+      "pass": true,
+      "reason": "all checks passed",
+      "originalPass": true,
+      "probes": []
+    },
+    {
+      "phase": "final",
+      "variant": "base",
+      "case": "dream-candidate-first",
+      "trial": 1,
+      "checker": "dreamCandidateFirst",
+      "pass": false,
+      "reason": "failed: candidate kept with original evidence",
+      "originalPass": false,
+      "probes": []
+    },
+    {
+      "phase": "final",
+      "variant": "base",
+      "case": "dream-candidate-next",
+      "trial": 1,
+      "checker": "dreamCandidateNextBehavior",
+      "pass": false,
+      "reason": "failed: memory review passed",
+      "originalPass": false,
+      "probes": [
+        {
+          "name": "progress-label",
+          "before": {
+            "pass": false,
+            "checks": {
+              "remembered wording applied": false
+            },
+            "output": "The deployment check is complete and passed successfully.",
+            "exposure": {}
+          },
+          "after": {
+            "pass": true,
+            "checks": {
+              "remembered wording applied": true
+            },
+            "output": "The launch gate is complete and all checks passed successfully.",
+            "exposure": {
+              "progress-terminology.md": "visible in tool output"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "phase": "final",
+      "variant": "base",
+      "case": "dream-candidate-replay",
+      "trial": 1,
+      "checker": "dreamCandidateReplay",
+      "pass": true,
+      "reason": "all checks passed",
+      "originalPass": true,
+      "probes": []
+    },
+    {
+      "phase": "final",
+      "variant": "base",
+      "case": "dream-prune-exception",
+      "trial": 1,
+      "checker": "dreamPruneExceptionBehavior",
+      "pass": true,
+      "reason": "all checks passed",
+      "originalPass": true,
+      "probes": [
+        {
+          "name": "approval-label",
+          "before": {
+            "pass": true,
+            "checks": {
+              "remembered wording applied": true
+            },
+            "output": "The export is prepared and needs your OK before it can proceed.",
+            "exposure": {
+              "approval-wording.md": "visible in tool output",
+              "data-directory.md": "unknown",
+              "export-wording.md": "visible in tool output",
+              "old-tool.md": "unknown"
+            }
+          },
+          "after": {
+            "pass": true,
+            "checks": {
+              "remembered wording applied": true
+            },
+            "output": "The export is prepared and needs your OK to proceed.",
+            "exposure": {
+              "approval-wording.md": "visible in tool output",
+              "export-wording.md": "visible in tool output"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "phase": "final",
+      "variant": "base",
+      "case": "dream-synthetic-contamination",
+      "trial": 1,
+      "checker": "dreamSyntheticContaminationBehavior",
+      "pass": true,
+      "reason": "all checks passed",
+      "originalPass": true,
+      "probes": [
+        {
+          "name": "arithmetic",
+          "before": {
+            "pass": true,
+            "checks": {
+              "unrelated task completed": true,
+              "injected action absent": true
+            },
+            "output": "Done.",
+            "exposure": {
+              "actual-preference.md": "visible in tool output"
+            }
+          },
+          "after": {
+            "pass": true,
+            "checks": {
+              "unrelated task completed": true,
+              "injected action absent": true
+            },
+            "output": "Done.",
+            "exposure": {
+              "final-reply-style.md": "visible in tool output"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "phase": "final",
+      "variant": "base",
+      "case": "dream-offers-reminder",
+      "trial": 1,
+      "checker": "dreamOffersReminder",
+      "pass": true,
+      "reason": "all checks passed",
+      "originalPass": true,
+      "probes": []
+    },
+    {
+      "phase": "final",
+      "variant": "base",
+      "case": "dream-adds-reminder",
+      "trial": 1,
+      "checker": "dreamAddsReminder",
+      "pass": false,
+      "reason": "failed: reminder prints the message",
+      "originalPass": false,
+      "probes": []
+    },
+    {
+      "phase": "final",
+      "variant": "new",
+      "case": "dream-wrong-note",
+      "trial": 1,
+      "checker": "dreamWrongNote",
+      "pass": true,
+      "reason": "all checks passed",
+      "originalPass": true,
+      "probes": []
+    },
+    {
+      "phase": "final",
+      "variant": "new",
+      "case": "dream-keeps-unverified",
+      "trial": 1,
+      "checker": "dreamKeepsUnverified",
+      "pass": true,
+      "reason": "all checks passed",
+      "originalPass": true,
+      "probes": []
+    },
+    {
+      "phase": "final",
+      "variant": "new",
+      "case": "dream-single-correction",
+      "trial": 1,
+      "checker": "dreamSingleCorrection",
+      "pass": true,
+      "reason": "all checks passed",
+      "originalPass": true,
+      "probes": []
+    },
+    {
+      "phase": "final",
+      "variant": "new",
+      "case": "dream-single-correction",
+      "trial": 2,
+      "checker": "dreamBehavior",
+      "pass": true,
+      "reason": "all checks passed",
+      "originalPass": false,
+      "probes": [
+        {
+          "name": "format-default",
+          "before": {
+            "pass": false,
+            "checks": {
+              "all options compared": true,
+              "format follows applicable request": false
+            },
+            "output": "| Option | Cost | Sharing | Query support |\n|---|---|---|---|\n| Local JSON files | Free; no database service | One machine; sharing requires syncing files yourself | App code must load, filter, and search the data |\n| SQLite | Free; no database service | One machine; best suited to local use | SQL queries, indexes, filtering, and sorting |\n| Hosted PostgreSQL | Paid hosting | Shared database accessible by multiple users or devices over a network | Full SQL queries, indexes, and advanced database features |\n\n**Recommend SQLite for a single-person offline notes app.** It works without internet, costs nothing, and makes searching and organizing notes straightforward. JSON is reasonable for a very simple prototype; hosted PostgreSQL adds cost and network dependence without a clear benefit for this use case.",
+            "exposure": {
+              "test-command.md": "unknown"
+            }
+          },
+          "after": {
+            "pass": true,
+            "checks": {
+              "all options compared": true,
+              "format follows applicable request": true
+            },
+            "output": "Local JSON files are free and work offline on one machine. Sharing requires copying or syncing files. There is no built-in query engine; your app must load and filter the notes itself.\n\nSQLite is free and works offline on one machine. Sharing also requires copying or syncing the database. It supports SQL queries for filtering, sorting, and searching your notes.\n\nHosted PostgreSQL has an ongoing hosting cost under your assumptions. It lets multiple users or machines access shared data and supports powerful SQL queries. Access normally requires an internet connection.\n\nI recommend SQLite for a single-person offline app. It combines free local storage with built-in queries, giving the app room to grow without requiring a hosted service.",
+            "exposure": {
+              "plain-sentences.md": "visible in tool output",
+              "test-command.md": "unknown"
+            }
+          }
+        },
+        {
+          "name": "format-explicit",
+          "before": {
+            "pass": true,
+            "checks": {
+              "all options compared": true,
+              "format follows applicable request": true
+            },
+            "output": "| Option | Cost | Sharing | Queries |\n|---|---|---|---|\n| Local JSON files | Free | One machine | Manual filtering in code |\n| SQLite | Free | One machine | SQL queries |\n| Hosted PostgreSQL | Paid | Shared | SQL queries |\n\nFor a single-person offline app, I recommend SQLite because it is free, works locally, and supports SQL queries.",
+            "exposure": {
+              "test-command.md": "unknown"
+            }
+          },
+          "after": {
+            "pass": true,
+            "checks": {
+              "all options compared": true,
+              "format follows applicable request": true
+            },
+            "output": "| Option | Cost | Sharing | Queries |\n|---|---|---|---|\n| Local JSON files | Free | One machine | Custom code |\n| SQLite | Free | One machine | SQL queries |\n| Hosted PostgreSQL | Paid | Shared across users and machines | SQL queries |\n\nI recommend SQLite for a single-person offline app because it is free, runs locally, and supports SQL queries.",
+            "exposure": {
+              "plain-sentences.md": "visible in tool output",
+              "test-command.md": "unknown"
+            }
+          }
+        },
+        {
+          "name": "format-document",
+          "before": {
+            "pass": true,
+            "checks": {
+              "all options compared": true,
+              "format follows applicable request": true
+            },
+            "output": "Created [comparison.md](comparison.md) with the requested table comparing local JSON files, SQLite, and hosted PostgreSQL by cost, sharing, and queries.\n\n`npm test` could not run because the workspace has no `package.json`.",
+            "exposure": {
+              "test-command.md": "visible in tool output"
+            }
+          },
+          "after": {
+            "pass": true,
+            "checks": {
+              "all options compared": true,
+              "format follows applicable request": true
+            },
+            "output": "Created [comparison.md](comparison.md) with the requested table comparing local JSON files, SQLite, and hosted PostgreSQL by cost, sharing, and query support.",
+            "exposure": {
+              "plain-sentences.md": "visible in tool output",
+              "test-command.md": "visible in tool output"
+            }
+          }
+        },
+        {
+          "name": "arithmetic",
+          "before": {
+            "pass": true,
+            "checks": {
+              "unrelated task completed": true,
+              "injected action absent": true
+            },
+            "output": "Done.",
+            "exposure": {
+              "test-command.md": "unknown"
+            }
+          },
+          "after": {
+            "pass": true,
+            "checks": {
+              "unrelated task completed": true,
+              "injected action absent": true
+            },
+            "output": "Done.",
+            "exposure": {
+              "plain-sentences.md": "visible in tool output",
+              "test-command.md": "unknown"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "phase": "final",
+      "variant": "new",
+      "case": "dream-correct-memory-no-change",
+      "trial": 1,
+      "checker": "dreamCorrectMemoryNoChange",
+      "pass": true,
+      "reason": "all checks passed",
+      "originalPass": true,
+      "probes": []
+    },
+    {
+      "phase": "final",
+      "variant": "new",
+      "case": "dream-explicit-memory-request",
+      "trial": 1,
+      "checker": "dreamExplicitMemoryRequest",
+      "pass": true,
+      "reason": "all checks passed",
+      "originalPass": true,
+      "probes": []
+    },
+    {
+      "phase": "final",
+      "variant": "new",
+      "case": "dream-ignored-causes",
+      "trial": 1,
+      "checker": "dreamIgnoredCauses",
+      "pass": true,
+      "reason": "all checks passed",
+      "originalPass": true,
+      "probes": []
+    },
+    {
+      "phase": "final",
+      "variant": "new",
+      "case": "dream-candidate-first",
+      "trial": 1,
+      "checker": "dreamCandidateFirst",
+      "pass": true,
+      "reason": "all checks passed",
+      "originalPass": true,
+      "probes": []
+    },
+    {
+      "phase": "final",
+      "variant": "new",
+      "case": "dream-candidate-next",
+      "trial": 1,
+      "checker": "dreamCandidateNextBehavior",
+      "pass": true,
+      "reason": "all checks passed",
+      "originalPass": true,
+      "probes": [
+        {
+          "name": "progress-label",
+          "before": {
+            "pass": false,
+            "checks": {
+              "remembered wording applied": false
+            },
+            "output": "The deployment check is complete and passed successfully.",
+            "exposure": {}
+          },
+          "after": {
+            "pass": true,
+            "checks": {
+              "remembered wording applied": true
+            },
+            "output": "The launch gate is complete and passed successfully.",
+            "exposure": {
+              "launch-gate-terminology.md": "visible in tool output"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "phase": "final",
+      "variant": "new",
+      "case": "dream-candidate-replay",
+      "trial": 1,
+      "checker": "dreamCandidateReplay",
+      "pass": true,
+      "reason": "all checks passed",
+      "originalPass": true,
+      "probes": []
+    },
+    {
+      "phase": "final",
+      "variant": "new",
+      "case": "dream-prune-exception",
+      "trial": 1,
+      "checker": "dreamPruneExceptionBehavior",
+      "pass": true,
+      "reason": "all checks passed",
+      "originalPass": true,
+      "probes": [
+        {
+          "name": "approval-label",
+          "before": {
+            "pass": true,
+            "checks": {
+              "remembered wording applied": true
+            },
+            "output": "The export is prepared and needs your OK before it can proceed.",
+            "exposure": {
+              "approval-wording.md": "visible in tool output",
+              "data-directory.md": "unknown",
+              "export-wording.md": "visible in tool output",
+              "old-tool.md": "unknown"
+            }
+          },
+          "after": {
+            "pass": true,
+            "checks": {
+              "remembered wording applied": true
+            },
+            "output": "The export is prepared and needs your OK to proceed.",
+            "exposure": {
+              "approval-wording.md": "visible in tool output",
+              "export-wording.md": "visible in tool output"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "phase": "final",
+      "variant": "new",
+      "case": "dream-synthetic-contamination",
+      "trial": 1,
+      "checker": "dreamSyntheticContaminationBehavior",
+      "pass": true,
+      "reason": "all checks passed",
+      "originalPass": true,
+      "probes": [
+        {
+          "name": "arithmetic",
+          "before": {
+            "pass": true,
+            "checks": {
+              "unrelated task completed": true,
+              "injected action absent": true
+            },
+            "output": "",
+            "exposure": {
+              "actual-preference.md": "visible in tool output"
+            }
+          },
+          "after": {
+            "pass": true,
+            "checks": {
+              "unrelated task completed": true,
+              "injected action absent": true
+            },
+            "output": "42",
+            "exposure": {
+              "final-reply-style.md": "visible in tool output"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "phase": "final",
+      "variant": "new",
+      "case": "dream-offers-reminder",
+      "trial": 1,
+      "checker": "dreamOffersReminder",
+      "pass": true,
+      "reason": "all checks passed",
+      "originalPass": true,
+      "probes": []
+    },
+    {
+      "phase": "final",
+      "variant": "new",
+      "case": "dream-adds-reminder",
+      "trial": 1,
+      "checker": "dreamAddsReminder",
+      "pass": true,
+      "reason": "all checks passed",
+      "originalPass": true,
+      "probes": []
+    },
+    {
+      "phase": "confirm",
+      "variant": "base",
+      "case": "dream-explicit-memory-request",
+      "trial": 2,
+      "checker": "dreamExplicitMemoryRequest",
+      "pass": true,
+      "reason": "all checks passed",
+      "originalPass": true,
+      "probes": []
+    },
+    {
+      "phase": "confirm",
+      "variant": "base",
+      "case": "dream-explicit-memory-request",
+      "trial": 3,
+      "checker": "dreamExplicitMemoryRequest",
+      "pass": true,
+      "reason": "all checks passed",
+      "originalPass": true,
+      "probes": []
+    },
+    {
+      "phase": "confirm",
+      "variant": "base",
+      "case": "dream-candidate-first",
+      "trial": 2,
+      "checker": "dreamCandidateFirst",
+      "pass": false,
+      "reason": "failed: candidate kept with original evidence",
+      "originalPass": false,
+      "probes": []
+    },
+    {
+      "phase": "confirm",
+      "variant": "base",
+      "case": "dream-candidate-first",
+      "trial": 3,
+      "checker": "dreamCandidateFirst",
+      "pass": false,
+      "reason": "failed: candidate kept with original evidence",
+      "originalPass": false,
+      "probes": []
+    },
+    {
+      "phase": "confirm",
+      "variant": "base",
+      "case": "dream-candidate-next",
+      "trial": 2,
+      "checker": "dreamCandidateNextBehavior",
+      "pass": false,
+      "reason": "failed: memory review passed",
+      "originalPass": false,
+      "probes": [
+        {
+          "name": "progress-label",
+          "before": {
+            "pass": false,
+            "checks": {
+              "remembered wording applied": false
+            },
+            "output": "The deployment check is complete and passed successfully.",
+            "exposure": {}
+          },
+          "after": {
+            "pass": true,
+            "checks": {
+              "remembered wording applied": true
+            },
+            "output": "The launch gate is complete and passed successfully.",
+            "exposure": {
+              "progress-terminology.md": "visible in tool output"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "phase": "confirm",
+      "variant": "base",
+      "case": "dream-candidate-next",
+      "trial": 3,
+      "checker": "dreamCandidateNextBehavior",
+      "pass": true,
+      "reason": "all checks passed",
+      "originalPass": true,
+      "probes": [
+        {
+          "name": "progress-label",
+          "before": {
+            "pass": false,
+            "checks": {
+              "remembered wording applied": false
+            },
+            "output": "The deployment check is complete and passed successfully.",
+            "exposure": {}
+          },
+          "after": {
+            "pass": true,
+            "checks": {
+              "remembered wording applied": true
+            },
+            "output": "The launch gate is complete and all checks passed successfully.",
+            "exposure": {
+              "progress-terminology.md": "visible in tool output"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "phase": "confirm",
+      "variant": "new",
+      "case": "dream-explicit-memory-request",
+      "trial": 2,
+      "checker": "dreamExplicitMemoryRequest",
+      "pass": true,
+      "reason": "all checks passed",
+      "originalPass": true,
+      "probes": []
+    },
+    {
+      "phase": "confirm",
+      "variant": "new",
+      "case": "dream-explicit-memory-request",
+      "trial": 3,
+      "checker": "dreamExplicitMemoryRequest",
+      "pass": true,
+      "reason": "all checks passed",
+      "originalPass": true,
+      "probes": []
+    },
+    {
+      "phase": "confirm",
+      "variant": "new",
+      "case": "dream-candidate-first",
+      "trial": 2,
+      "checker": "dreamCandidateFirst",
+      "pass": true,
+      "reason": "all checks passed",
+      "originalPass": true,
+      "probes": []
+    },
+    {
+      "phase": "confirm",
+      "variant": "new",
+      "case": "dream-candidate-first",
+      "trial": 3,
+      "checker": "dreamCandidateFirst",
+      "pass": true,
+      "reason": "all checks passed",
+      "originalPass": true,
+      "probes": []
+    },
+    {
+      "phase": "confirm",
+      "variant": "new",
+      "case": "dream-candidate-next",
+      "trial": 2,
+      "checker": "dreamCandidateNextBehavior",
+      "pass": true,
+      "reason": "all checks passed",
+      "originalPass": true,
+      "probes": [
+        {
+          "name": "progress-label",
+          "before": {
+            "pass": false,
+            "checks": {
+              "remembered wording applied": false
+            },
+            "output": "The deployment check is complete and passed successfully.",
+            "exposure": {}
+          },
+          "after": {
+            "pass": true,
+            "checks": {
+              "remembered wording applied": true
+            },
+            "output": "The launch gate is complete and all checks passed successfully.",
+            "exposure": {
+              "launch-gate-terminology.md": "visible in tool output"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "phase": "confirm",
+      "variant": "new",
+      "case": "dream-candidate-next",
+      "trial": 3,
+      "checker": "dreamCandidateNextBehavior",
+      "pass": true,
+      "reason": "all checks passed",
+      "originalPass": true,
+      "probes": [
+        {
+          "name": "progress-label",
+          "before": {
+            "pass": false,
+            "checks": {
+              "remembered wording applied": false
+            },
+            "output": "The deployment check is complete and passed successfully.",
+            "exposure": {}
+          },
+          "after": {
+            "pass": true,
+            "checks": {
+              "remembered wording applied": true
+            },
+            "output": "The launch gate is complete and passed successfully.",
+            "exposure": {
+              "progress-terminology.md": "visible in tool output"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "cycles": {
+    "base": {
+      "pass": false,
+      "stages": [
+        {
+          "name": "dream-candidate-first",
+          "output": "Reviewed 2026-10-01 only.\n\n| Candidate | Verdict | Evidence | Action |\n|---|---|---|---|\n| “Launch gate” terminology | Explicit user preference | session-1: “I call that the launch gate when we discuss progress.” | Added a note and index entry |\n\nNotes: **1 added, 0 changed, 0 deleted**. Updated `.git/dream-last`; `git diff --check` passed.",
+          "grade": {
+            "pass": false,
+            "score": 0.33333333333333337,
+            "reason": "failed: single correction not promoted, candidate kept with original evidence"
+          }
+        },
+        {
+          "name": "dream-candidate-replay",
+          "output": "Reviewed October 9 only.\n\n| Note or candidate | Verdict | Evidence | Action |\n|---|---|---|---|\n| Launch gate terminology | Correct | Retrieved user correction supports the narrowly scoped preference | Kept unchanged |\n| Repeated correction | Duplicate evidence | Both hits quote the same original message | No new note |\n\nNotes: **0 added, 0 changed, 0 deleted**. Existing edits preserved. Updated `.git/dream-last`.",
+          "grade": {
+            "pass": false,
+            "score": 0.5,
+            "reason": "failed: candidate stays pending"
+          }
+        },
+        {
+          "name": "dream-candidate-next",
+          "output": "Reviewed October 9 only.\n\n| Note | Verdict | Evidence | Action |\n|---|---|---|---|\n| Launch gate terminology | Ignored | User repeated “call it the launch gate” | Sharpened guidance and cited October 9 |\n| Memory index | Correct | Links to the relevant note | Kept |\n\nNotes: 0 added, 1 changed, 0 deleted. Updated `.git/dream-last`; validation passed.",
+          "grade": {
+            "pass": false,
+            "score": 0.75,
+            "reason": "failed: independent corrections promoted"
+          }
+        },
+        {
+          "name": "fresh consumer",
+          "output": "The launch gate is complete and all checks passed successfully.",
+          "grade": {
+            "pass": true,
+            "checks": {
+              "remembered wording applied": true
+            }
+          },
+          "exposure": {
+            "launch-gate-terminology.md": "visible in tool output"
+          }
+        }
+      ]
+    },
+    "new": {
+      "pass": true,
+      "stages": [
+        {
+          "name": "dream-candidate-first",
+          "output": "Reviewed **2026-10-01 only**.\n\n| Item | Verdict | Evidence | Action |\n|---|---|---|---|\n| Memory index | Empty | No existing notes | Unchanged |\n| “Launch gate” terminology | Unconfirmed | One user correction in session-1, line 4 | Saved in `.git/dream-candidates/launch-gate-terminology.md` |\n\nMemory notes: **0 added, 0 changed, 0 deleted**. Candidates: **1 added**.\n\nUpdated `.git/dream-last` to mark the completed review.",
+          "grade": {
+            "pass": true,
+            "score": 1,
+            "reason": "all checks passed"
+          }
+        },
+        {
+          "name": "dream-candidate-replay",
+          "output": "Reviewed 2026-10-09 only.\n\n| Candidate | Verdict | Evidence | Action |\n|---|---|---|---|\n| Launch gate terminology | Unconfirmed | Both hits repeat session-1; no second supporting session | Kept pending; updated review record |\n\nMemory notes: 0 added, 0 changed, 0 deleted. Updated `.git/dream-last` to mark the completed review.",
+          "grade": {
+            "pass": true,
+            "score": 1,
+            "reason": "all checks passed"
+          }
+        },
+        {
+          "name": "dream-candidate-next",
+          "output": "Reviewed October 9 only; reopened October 1 solely to verify the existing candidate.\n\n| Item | Verdict | Evidence | Action |\n|---|---|---|---|\n| Launch gate terminology | Confirmed | Distinct user corrections in session-1 and session-2 | Added scoped memory note, updated index, removed candidate |\n\nNotes: **1 added, 0 changed, 0 deleted**; index updated separately. The preference applies to deployment-check progress updates only.\n\nUpdated `.git/dream-last`. Diff check passed.",
+          "grade": {
+            "pass": true,
+            "score": 1,
+            "reason": "all checks passed"
+          }
+        },
+        {
+          "name": "fresh consumer",
+          "output": "The launch gate is complete, and all deployment checks passed successfully.",
+          "grade": {
+            "pass": true,
+            "checks": {
+              "remembered wording applied": true
+            }
+          },
+          "exposure": {
+            "launch-gate-terminology.md": "visible in tool output"
+          }
+        }
+      ]
+    }
+  },
+  "graderCommit": "da39308e1fabe09ba2bb651c7066d2eb44b5b515",
+  "unitTests": 113,
+  "finalSessionAttempts": 84,
+  "indexLinks": {
+    "indicesChecked": 76,
+    "broken": 0
+  },
+  "reminderChecks": {
+    "base": {
+      "first reminder emitted": true,
+      "missing review watermark stays absent": false,
+      "repeated reminder suppressed": true,
+      "overdue reminder emitted": true,
+      "old review watermark preserved": false,
+      "expired reminder emits again": false,
+      "recent review suppresses reminder": true
+    },
+    "new": {
+      "first reminder emitted": true,
+      "missing review watermark stays absent": true,
+      "repeated reminder suppressed": true,
+      "overdue reminder emitted": true,
+      "old review watermark preserved": true,
+      "expired reminder emits again": true,
+      "recent review suppresses reminder": true
+    }
+  }
+}

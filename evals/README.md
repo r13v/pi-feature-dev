@@ -65,3 +65,51 @@ allows, such as a name or a wording.
 
 When a case fails, read the answer before you blame the skill. In the first
 runs, three of four new failures came from a check that was too strict.
+
+## Dream consumer tasks
+
+The `dream behavior` case runs the review, then four tasks in fresh CLI
+sessions with memory from before and after the review. A task repo contains
+only its fixture and one memory snapshot. It does not contain review
+transcripts, pending candidates, skills, or the reviewer's answer. Its
+`AGENTS.md` emulates a host that loads the index and reads relevant notes.
+This measures that loading contract, not every host's native auto-memory.
+
+Opt in with a comma-separated `probes` variable; an array would make
+promptfoo expand separate test cases. Task fixtures and prompts live in
+`probes/`, outside the repository shown to the reviewer. Code in `probes.mjs`
+checks the consumer's answer or artifact. Each probe costs two additional
+CLI calls per review. Run the behavior case separately when iterating:
+
+```bash
+npx promptfoo eval --filter-providers 'codex@' \
+  --filter-pattern 'dream behavior' --repeat 3 --no-cache \
+  --output /tmp/dream-behavior.json
+```
+
+Provider metadata records every task's before/after answer and workdir.
+Codex JSON events stay in `.git/codex-events.jsonl` of each workdir. A note
+is marked visibly loaded only if its contents occur in returned command
+output; otherwise exposure is unknown. An after-only pass is not evidence
+of improvement: inspect the paired before result and compare skill versions.
+The document task exercises the scope of the answer-format preference; the
+explicit-table task tests a new user override; arithmetic is unrelated.
+
+For a version comparison, pin `config.skills` to the exact baseline and
+candidate commit IDs in a temporary copy of the configuration. Use identical
+task prompts, models, effort, and checks. Specify the fixture's dated review
+window; do not depend on the current date. Research fixtures are synthetic
+robustness tests, not measured incidents from real projects. Three repeats
+are a directional check, not a reliable estimate of a population effect.
+
+To check actual candidate carryover, run:
+
+```bash
+node evals/dream-cycle.mjs <skill-commit> /tmp/dream-cycle.json
+```
+
+This runs four fresh Codex sessions: the first correction, replayed excerpts,
+a genuinely independent correction, and a consumer task. Each review gets
+the memory and candidates actually produced by its predecessor, replacing
+all seeded state. The reviews use fresh repositories and explicit windows;
+this checks candidate carryover, not a host's default-window integration.

@@ -1,0 +1,4 @@
+weekday-names.md: not loaded; improve the index retrieval cue.
+document-tables.md: loaded but applied outside scope; clarify the document exception.
+release-summary.md: loaded and applicable, action skipped; propose a check through retro.
+meeting-times.md: exposure unknown because only a correction excerpt is available.

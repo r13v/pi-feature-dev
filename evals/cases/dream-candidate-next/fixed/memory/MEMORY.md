@@ -1,0 +1,1 @@
+- [Progress wording](progress-wording.md) — deployment check updates
