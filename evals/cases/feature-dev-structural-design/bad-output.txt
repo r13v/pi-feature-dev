@@ -1,0 +1,1 @@
+A: pass conn everywhere. B: use a helper. Recommend A because it is fewer lines.

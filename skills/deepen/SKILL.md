@@ -45,7 +45,12 @@ expert; persona framing changes the tone without improving the work.
    data, a benchmark. Never let your own judgment be the only check. When the
    task allows it, aim for a result that is new to an expert, such as a model,
    a simulation, or an early warning signal, and validate it on data it did not
-   see. Do not turn a routine fix into a research project.
+   see. Match the claim to the check's coverage. For a small finite set,
+   check the whole set before claiming complete preservation. For statistical
+   claims, cover the material input regimes and separate calibration from
+   validation. A quick sample can guide a direction, but cannot prove a
+   universal claim. State what was checked and what remains unverified.
+   Do not turn a routine fix into a research project.
 
 ## Rewrite the request
 

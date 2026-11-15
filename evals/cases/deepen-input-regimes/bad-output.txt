@@ -1,0 +1,1 @@
+Calibrate on daytime windows and apply the threshold to all inputs.

@@ -1,0 +1,1 @@
+A reviewer suggests suppressing errors whenever signal.aborted is true. Fix outcome(signal, error). Cancellation is ok; expiry is a failure, even though both abort the same signal. Expiry always fails, even if error is null. Non-aborted jobs with no error stay ok; other errors fail. Implement and validate; decisions are delegated.

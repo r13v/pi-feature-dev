@@ -22,7 +22,9 @@ function read(dir, file) {
 }
 
 function testsPass(dir) {
-  return spawnSync("node", ["--test"], { cwd: dir }).status === 0;
+  const env = { ...process.env };
+  delete env.NODE_TEST_CONTEXT;
+  return spawnSync("node", ["--test"], { cwd: dir, env }).status === 0;
 }
 
 function fileUnchanged(dir, file) {
@@ -42,6 +44,125 @@ function unchanged(dir) {
   const r = spawnSync("git", ["status", "--porcelain"], { cwd: dir,
     encoding: "utf8" });
   return r.stdout.trim() === "";
+}
+
+// Feedback regression cases: inspect artifacts where possible; analysis-only
+// cases check the decision, not the exact wording or question layout.
+export function grillOptionPremises(output, { metadata }) {
+  return result({
+    "API premise checked": /api\.d\.ts/.test(output)
+      && /Space/i.test(output) && /support|invalid|not allow/i.test(output),
+    "workflow premise checked": /checked/.test(output)
+      && /nobody|no one|unused|not maintain|unmaintained|does not|don't/i.test(output),
+    "no files changed": unchanged(metadata.workdir),
+  });
+}
+
+export function grillScopeBoundary(output, { metadata }) {
+  return result({
+    "run vs product clarified": /run|phase|iteration/i.test(output)
+      && /product|forever|never|permanent/i.test(output) && /\?/.test(output),
+    "no files changed": unchanged(metadata.workdir),
+  });
+}
+
+export function deepenFiniteCoverage(output, { metadata }) {
+  return result({
+    "whole finite set": /(?:all|every|full)[^.!?\n]{0,45}(?:12|tool)|12[^.!?\n]{0,45}(?:all|every|full)/i.test(output),
+    "lossy field checked": /exclusiveMinimum/.test(output),
+    "sample limitation": /cannot|can't|not prove|does not|insufficient|unverified|only if|only when|not covered/i.test(output),
+    "no files changed": unchanged(metadata.workdir),
+  });
+}
+
+export function deepenInputRegimes(output, { metadata }) {
+  return result({
+    "material regimes": ["day", "evening", "night", "multi-day"]
+      .every((word) => output.toLowerCase().includes(word)),
+    "calibration separated from validation": /calibrat/i.test(output)
+      && /held.out|hold.out|out.of.sample|leave.one|rolling.origin|separate[^.!?\n]*validat/i.test(output),
+    "coverage explicit": /cover|unverified|unchecked|limitation|per.regime|every regime/i.test(output),
+    "no files changed": unchanged(metadata.workdir),
+  });
+}
+
+export function featureDevStructuralDesign(output, { metadata }) {
+  return result({
+    "structural guarantee compared": /caller|discipline/i.test(output)
+      && /type|port|bound|encapsulat|database|SQL/i.test(output)
+      && /enforc|prevent|impossible|guarantee/i.test(output),
+    "next extension impact": /refund|next|extend|extension|ledger|audit/i.test(output)
+      && /accounts|caller|component|plumbing|SQL|transaction/i.test(output),
+    "no implementation": unchanged(metadata.workdir),
+  });
+}
+
+export function featureDevGuardSensitivity(output, { metadata }) {
+  const dir = metadata.workdir;
+  const log = join(dir, ".git/test-runs.jsonl");
+  const runs = existsSync(log) ? readFileSync(log, "utf8").trim().split("\n")
+    .filter(Boolean).map((line) => JSON.parse(line)) : [];
+  const probe = spawnSync("node", ["--input-type=module", "-e",
+    "import { render } from './src/render.js';"
+    + "try { render({label:'A'}); process.exit(1); } catch {}"], { cwd: dir });
+  return result({
+    "missing ID rejected": probe.status === 0,
+    "test failed with protection removed": runs.some((r) =>
+      r.protectedMissing === false && r.status !== 0 && r.status !== null),
+    "protection restored and tests pass": runs.at(-1)?.protectedMissing === true
+      && runs.at(-1)?.status === 0 && testsPass(dir),
+    "test recorder unchanged": fileUnchanged(dir, "record-tests.mjs"),
+  });
+}
+
+export function featureDevCheckStatus(output, { metadata }) {
+  return result({
+    "failure acknowledged": /fail|blocked|not (?:clean|pass|success)/i.test(output),
+    "exit status reported": /(?:exit|status|code)[^\n]{0,30}\b[17]\b/i.test(output),
+    "no files changed": unchanged(metadata.workdir),
+  });
+}
+
+export function featureDevSharedSignal(output, { metadata }) {
+  const probe = spawnSync("node", ["--input-type=module", "-e",
+    "import assert from 'node:assert/strict';"
+    + "import { outcome } from './src/poll.js';"
+    + "import { cancel, expire } from './src/runtime.js';"
+    + "assert.equal(outcome(cancel(), Error()), 'ok');"
+    + "assert.equal(outcome(expire(), Error()), 'failed');"
+    + "assert.equal(outcome(expire(), null), 'failed');"
+    + "assert.equal(outcome({aborted:false}, Error()), 'failed');"
+    + "assert.equal(outcome({aborted:false}, null), 'ok');"],
+  { cwd: metadata.workdir });
+  return result({
+    "all signal causes handled": probe.status === 0,
+    "runtime contract unchanged": fileUnchanged(metadata.workdir, "src/runtime.js"),
+    "tests pass": testsPass(metadata.workdir),
+  });
+}
+
+export function shipDelegatedSpec(output, { metadata }) {
+  const progress = progressFile(metadata.workdir);
+  return result({
+    "grill skipped with reason": /(?:^|\n)\s*[-*]?\s*grill:\s*skipped\b/i.test(progress),
+    "specification and authority recorded": /docs\/spec\.md/.test(progress)
+      && /delegat/i.test(progress) && /Grill Result/i.test(progress),
+    // A resume question is allowed at the user's explicit implementation stop.
+    "no repeated design approval": !output.split("\n").some((line) =>
+      /\?/.test(line) && /approve|confirm (?:the |this )?(?:spec|design)|which approach/i.test(line)),
+    "application unchanged at requested stop": fileUnchanged(metadata.workdir,
+      "src/index.js"),
+  });
+}
+
+export function shipSpecNeedsAuthority(output, { metadata }) {
+  return result({
+    "confirmation requested": /\?|❓|next action[^\n]*approv|until you approve|waiting on you/i.test(output)
+      && /confirm|approv|choose|decision/i.test(output),
+    "no unapproved grill skip": !/(?:^|\n)\s*[-*]?\s*grill:\s*skipped\b/i
+      .test(progressFile(metadata.workdir)),
+    "application unchanged": fileUnchanged(metadata.workdir, "src/index.js"),
+  });
 }
 
 export function deslopTaskBloat(output, { metadata }) {

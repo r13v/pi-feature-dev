@@ -1,0 +1,1 @@
+Grill skipped: settled specification and delegated decisions. Using docs/spec.md as the Grill Result. Next: implement the selected design without another approval.

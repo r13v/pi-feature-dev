@@ -69,7 +69,10 @@ Then give two or three approaches that differ in structure, not in naming. Use
 these lenses as prompts, not a quota: minimal change with maximum reuse, clean
 boundaries for maintainability, and a pragmatic balance. For each approach, give
 the files and components it touches, its trade-offs and risks, and how it would
-be validated.
+be validated. When invariants or extensibility distinguish the approaches,
+explain what types or a shared boundary enforce, what depends on caller
+discipline, and which components the next typical extension would change.
+Do not estimate future line counts or add abstractions without a concrete gain.
 
 When delegation is available and permitted, and the user has not chosen an
 approach, get the approaches from two or three read-only workers in fresh
@@ -99,8 +102,9 @@ in the file: a replace that matched nothing reports no error.
 Reuse existing code and match project conventions. Add or update tests when they
 protect a changed requirement or regression risk. Reuse adequate existing checks
 for mechanical or low-impact edits. Update documentation when the feature
-changes
-what a reader needs to know.
+changes what a reader needs to know. For a new critical guard or a regression
+fix, verify that its test fails without the guard or fix, then restore it and
+rerun the test. Do not mutate every condition as a routine quota.
 
 If evidence invalidates the approach, revise it within scope. Ask only when the
 revision needs a material user decision or authority not already granted.
@@ -115,11 +119,17 @@ review-worker quota.
 
 Verify findings against the code. Keep only findings caused by the change that
 break behavior or a stated project rule, each with file:line, impact, and a fix;
-drop speculation and style points no rule covers. Fix confirmed issues within
-the authorized scope. Report unrelated issues separately without expanding
-the task or asking permission to fix ordinary defects in the requested work.
+drop speculation and style points no rule covers. Before changing failure
+handling based on a shared flag or status, identify its distinct causes and
+check the changed behavior against each affected outcome. Fix confirmed issues
+within the authorized scope. Report unrelated issues separately without
+expanding the task or asking permission to fix ordinary defects in the requested
+work.
 
-Run the relevant project checks and any required final checks. A new linter
+Run the relevant project checks and any required final checks. Determine
+success from the check's exit status, not from empty or truncated output.
+When piping output, preserve the check's failure status, such as with
+`pipefail`; the last command's success is not the check's success. A new linter
 or type warning in a changed file is a failure, unless the user accepts it.
 After a failure, fix its in-scope cause and rerun affected checks. Broaden or
 repeat validation only for new changes, failures, or an unresolved risk. If

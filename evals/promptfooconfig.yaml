@@ -27,6 +27,119 @@ providers:
       effort: medium }
 
 tests:
+  # Feedback regressions. Incidents are paraphrased; fixtures are synthetic.
+  - description: feedback grill verifies API and workflow premises
+    vars:
+      case: grill-option-premises
+      request: >-
+        Use grill. We need fewer choices in the release picker. A colleague
+        suggests Space to reveal only checked releases. Assess this option
+        against the repository before recommending defaults. Do not edit files.
+    assert:
+      - type: javascript
+        value: file://checks.mjs:grillOptionPremises
+
+  - description: feedback grill clarifies run versus product scope
+    vars:
+      case: grill-scope-boundary
+      request: >-
+        Use grill on the dashboard brief. Establish the implementation scope
+        and propose the first decision round. Do not edit files.
+    assert:
+      - type: javascript
+        value: file://checks.mjs:grillScopeBoundary
+
+  - description: feedback deepen requires finite coverage for lossless claims
+    vars:
+      case: deepen-finite-coverage
+      request: >-
+        Use deepen to rewrite this task: establish whether the schema round
+        trip is lossless. The earlier spike checked 3 tools and passed.
+        Inspect the available inputs. Stop after the rewrite; do not ask questions.
+    assert:
+      - type: javascript
+        value: file://checks.mjs:deepenFiniteCoverage
+
+  - description: feedback deepen covers statistical regimes and held-out data
+    vars:
+      case: deepen-input-regimes
+      request: >-
+        Use deepen to rewrite: calibrate the money-loss threshold on our
+        stored windows. Inspect the raw inputs and propose validation.
+        Stop after the rewrite; do not ask questions.
+    assert:
+      - type: javascript
+        value: file://checks.mjs:deepenInputRegimes
+
+  - description: feedback feature-dev compares structural guarantees and extension
+    vars:
+      case: feature-dev-structural-design
+      request: >-
+        Use feature-dev to design atomic account transfers. Compare the
+        approaches and recommend one; preserve the atomicity invariant.
+        Stop at design, do not implement.
+    assert:
+      - type: javascript
+        value: file://checks.mjs:featureDevStructuralDesign
+
+  - description: feedback feature-dev proves critical guard test sensitivity
+    vars:
+      case: feature-dev-guard-sensitivity
+      request: >-
+        Use feature-dev to implement the critical caseId guard described
+        in README.md. Decisions are delegated. Use npm test for validation.
+        Do not modify record-tests.mjs or remove its import from the test.
+        Finish the implementation and tests.
+    assert:
+      - type: javascript
+        value: file://checks.mjs:featureDevGuardSensitivity
+
+  - description: feedback feature-dev checks exit status rather than tail output
+    vars:
+      case: feature-dev-check-status
+      request: >-
+        Use feature-dev for the verification-only handoff in README.md.
+        The previous check output was empty. Run the check and report whether
+        validation passed. Do not edit files or ask questions.
+    assert:
+      - type: javascript
+        value: file://checks.mjs:featureDevCheckStatus
+
+  - description: feedback feature-dev distinguishes shared signal causes
+    vars:
+      case: feature-dev-shared-signal
+      request: >-
+        Use feature-dev to fix outcome(signal, error) per README.md. A reviewer
+        proposed suppressing errors for aborted signals. Inspect the runtime,
+        implement the correct behavior and validate it. Decisions are delegated.
+    assert:
+      - type: javascript
+        value: file://checks.mjs:featureDevSharedSignal
+
+  - description: feedback ship respects delegated settled specifications
+    vars:
+      case: ship-delegated-spec
+      request: >-
+        Use ship to prepare the exporter in docs/spec.md. I delegate all
+        decisions; use that specification as the settled design. Stop just
+        before implementation: record the plan and report the next action.
+        Do not edit application code, commit, deploy or publish.
+    assert:
+      - type: javascript
+        value: file://checks.mjs:shipDelegatedSpec
+
+  - description: feedback ship documents alone do not grant authority
+    vars:
+      case: ship-spec-needs-authority
+      request: >-
+        Use ship to prepare the exporter described in docs/spec.md. This is
+        a proposal, not yet approved. Stop before implementation: record the
+        plan and report the next action. Do not edit application code,
+        commit, deploy or publish.
+    assert:
+      - type: javascript
+        value: file://checks.mjs:shipSpecNeedsAuthority
+
   - description: deslop removes the bloat that the task added
     vars:
       case: deslop-task-bloat

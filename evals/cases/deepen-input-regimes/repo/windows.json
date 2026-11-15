@@ -1,0 +1,34 @@
+[
+  {
+    "regime": "day",
+    "values": [
+      1,
+      4,
+      2
+    ]
+  },
+  {
+    "regime": "evening",
+    "values": [
+      9,
+      2,
+      5
+    ]
+  },
+  {
+    "regime": "night",
+    "values": [
+      2,
+      8,
+      1
+    ]
+  },
+  {
+    "regime": "multi-day",
+    "values": [
+      8,
+      9,
+      4
+    ]
+  }
+]
