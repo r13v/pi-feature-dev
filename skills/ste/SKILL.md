@@ -36,7 +36,8 @@ translation-ready text, and other technical or operational text in any language.
 ## Load References Selectively
 
 - Read [references/languages.md](references/languages.md) for non-English or
-  mixed-language text. It gives transfer boundaries and Russian guidance.
+  mixed-language text. It gives transfer boundaries and Russian guidance,
+  including УТР techniques and the scope of ГОСТ Р 58049—2017.
 - The existing writing rules and checklist describe English STE. For other
   languages, use only transferable meaning and structure checks, not English
   grammar, vocabulary, or word-count restrictions. Examples are illustrative,
@@ -86,6 +87,8 @@ project requires a measurable criterion, but do not invent that criterion.
 Keep the strength of each modal verb and hedge. Do not change `may have failed`
 to `failed`, and
 do not add a cause, frequency, or certainty that the source does not state.
+A prerequisite is not a duty to bring it about. Keep «после согласования» as
+a condition; do not turn it into an unconditional «владелец должен согласовать».
 
 ## Protect Untouchable Text
 

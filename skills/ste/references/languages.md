@@ -53,6 +53,43 @@ Flag language uncertainty that can affect technical meaning.
 - Use natural imperative instructions. Do not force an explicit «вы» into every
   sentence. Retain exact UI labels rather than declining or translating them.
 
+### Simplified Technical Russian (УТР)
+
+УТР has Russian-specific guidance; it is not Russian ASD-STE100. Use it within
+clarity mode, not as a third mode or a claim of formal compliance.
+
+- Prefer a direct actor–verb–object order when it clarifies responsibility.
+  Keep prerequisite conditions before the actions they govern.
+- Keep procedural steps grammatically parallel and numbered in execution
+  order. Use plural imperatives such as «Откройте», «Выберите», «Нажмите».
+  Separate independent actions; retain simultaneous actions together.
+- Replace empty introductions with a short purpose or heading. Simplify
+  participial clauses only when their qualifying information survives.
+- Reuse the approved term. Do not assume «права» and «привилегии» mean the
+  same thing in a project's access model. Use shortened official terms only
+  when their meaning is clear and the project approves them.
+- An incomplete step such as «В окне опция „Доступ к системе“» does not say
+  whether to select, enable, or inspect the option. Flag the missing action;
+  do not complete it by guessing.
+
+Published before/after examples are not proof of equivalent meaning. In
+particular, do not copy these losses:
+
+- «Пользователю, который не имеет прав доступа» → «пользователю» drops the
+  eligibility condition. «Пользователю без прав доступа» preserves it.
+- «2–3 минуты; в зависимости от конфигурации может потребоваться больше»
+  → «не более 3–4 минут» invents an upper bound and removes the exception.
+
+For an explicit ГОСТ Р 58049—2017 review, check the applicable requirements
+and project terminology. Its primary scope is translation of aviation
+operational documentation; it also permits use for other documentation.
+Sections 8.2.5.1 and 8.2.6.1 recommend a maximum of 20 words for instructions
+and descriptions, with special counting conventions in 8.2.5.1. This is a
+Russian source requirement, not the English STE 20/25 rule. Apply it when
+that profile is requested, not as a universal Russian clarity threshold.
+A review of selected writing rules is not verification against the whole
+standard. Report the checked scope and any unverified requirements.
+
 ### Match the Text Type
 
 A Russian button can use an infinitive («Сохранить»), and a field label can be a

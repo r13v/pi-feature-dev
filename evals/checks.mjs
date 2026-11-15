@@ -336,6 +336,65 @@ export function steRussianNoInvention(output, { metadata }) {
   });
 }
 
+// Synthetic adaptations of the two ProText articles supplied in the task.
+export function steRussianUtrProcedure(output, { metadata }) {
+  const doc = read(metadata.workdir, "access.md");
+  const steps = [...doc.matchAll(/^\s*\d+[.)]\s+(.+)$/gm)]
+    .map((match) => match[1]);
+  return result({
+    "direct verbs": !/осуществ|выполнить нажатие|включают в себя/i.test(doc),
+    "three ordered actions": steps.length === 3
+      && /откройте/i.test(steps[0]) && /выберите/i.test(steps[1])
+      && /нажмите/i.test(steps[2]),
+    "actor and approval retained": /администратор/i.test(doc)
+      && /только после|только при|лишь после/i.test(doc)
+      && /соглас/i.test(doc) && /владел[еь]ц/i.test(doc),
+    "prohibition retained": /запрещ|нельзя|не назначайте/i.test(doc),
+    "UI literals retained": ["«Права доступа»", "«Доступ к системе»", "«ОК»"]
+      .every((label) => doc.includes(label)),
+    "permissions retained": /просмотр отч[её]тов/i.test(doc)
+      && /выгрузк[ау] отч[её]тов/i.test(doc),
+  });
+}
+
+export function steRussianUtrFidelity(output, { metadata }) {
+  if (!existsSync(join(metadata.workdir, "revised.md"))) {
+    return result({ "revision created": false });
+  }
+  const doc = read(metadata.workdir, "revised.md");
+  return result({
+    "source unchanged": fileUnchanged(metadata.workdir, "notes.md"),
+    "eligible user condition retained": /без прав доступа|не име[юе]т прав доступа|не имеющ[а-яё]* прав доступа|пользователю, у которого их нет/i
+      .test(doc),
+    "duration range retained": /2\s*[–—-]\s*3\s+минут/i.test(doc),
+    "configuration exception retained": /конфигураци/i.test(doc)
+      && /может[^.!?\n]*больше|больше[^.!?\n]*может/i.test(doc),
+    "no invented upper bound": !/не (?:более|больше)|максимум|3\s*[–—-]\s*4/i
+      .test(doc),
+    "only administrator": /только администратор|лишь администратор|только[^.!?\n]*администратором/i
+      .test(doc),
+    "approval actor and timing retained": /владел[еь]ц/i.test(doc)
+      && /соглас/i.test(doc) && /заявк/i.test(doc)
+      && /после|сначала/i.test(doc),
+    "prerequisite not made an unconditional duty": !/(?:^|[.!?]\s+)Владелец системы (?:должен|обязан)\s+(?:сначала )?соглас/i
+      .test(doc),
+  });
+}
+
+export function steRussianUtrAmbiguity(output, { metadata }) {
+  const doc = read(metadata.workdir, "instructions.md");
+  return result({
+    "missing action not invented": doc.includes("В окне опция «Доступ к системе»")
+      && !/выберите|включите|отключите|установите|отметьте/i.test(doc),
+    "gap flagged": /не указан|неясн|неоднознач|уточн|отсутствует|неизвест|непонят|не определ[её]н|нет глагола/i
+      .test(output) && /действи|сделать|делать/i.test(output),
+    "clear actions edited": /1[.)] Откройте/.test(doc)
+      && /[23][.)] Нажмите «ОК»/.test(doc),
+    "source literals retained": ["«Права доступа»", "«Доступ к системе»", "«ОК»"]
+      .every((label) => doc.includes(label)),
+  });
+}
+
 export function steNonEnglishBoundary(output, { metadata }) {
   const doc = read(metadata.workdir, "instructions.md");
   return result({
