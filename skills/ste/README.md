@@ -1,7 +1,8 @@
 # STE Skill
 
 This project skill applies transferable clarity principles to technical text in
-any language, with specific guidance for Russian. Strict ASD-STE100 verification
+any language, with specific guidance for Russian, including УТР techniques.
+Strict ASD-STE100 verification
 is available for English only. It supports:
 
 - regulated and safety-critical technical documentation.
@@ -61,6 +62,40 @@ direct verbs,
 less bureaucratic wording, and text-type-aware UI writing. This skill does not
 adopt its mandatory numbers, mechanical modality deletion, output quotas, or
 marketing scores: preserving evidence and technical meaning takes precedence.
+
+### Simplified Technical Russian (УТР)
+
+Russian guidance also draws on:
+
+- Владислав Москалёнок,
+  [«Лаконичность без
+  примитивизма»](https://protext.su/pro/lakonichnost-bez-primitivizma/),
+  2015, and its grammar, syntax, and vocabulary table.
+- Инна Якименко,
+  [«Как писать кратко и
+  понятно»](https://protext.su/pro/kak-pisat-kratko-i-ponyatno/),
+  2014, a practitioner's working rules rather than a normative specification.
+- ГОСТ Р 58049—2017:
+  [official catalogue
+  entry](https://protect.gost.ru/gost/details/4183a5cf-a3af-4e95-97bd-c7bb4bb27063)
+  and [section 8 text via ГАРАНТ](https://base.garant.ru/73850744/).
+  Its primary scope is translation of aviation operational documentation;
+  section 1 also permits use for other documentation. Sections 8.1.3–8.1.8
+  address project terminology resources; section 8.2 gives writing guidance.
+
+Adopted: direct word order, parallel imperative steps, concise introductions,
+consistent terminology, and simpler clauses when all qualifications survive.
+The articles' examples are not adopted mechanically: removing a user's lack
+of access rights loses an eligibility condition; replacing «2–3 minutes,
+possibly longer» with «no more than 3–4 minutes» invents a bound. The table's
+incomplete option step does not establish which action to perform.
+
+The ГОСТ recommends 20 words for both instructions and descriptions, not
+English STE's 20/25 split. Its counting conventions apply when that profile
+is requested. They are not a default limit for Russian UI or agent prompts.
+These selected techniques do not establish whole-standard compliance or
+require DITA, CAT software, or a new runtime dependency. Sources checked
+2026-11-15.
 
 This project keeps its own conservative verification boundary. External
 checklists and examples

@@ -470,6 +470,41 @@ tests:
       - type: javascript
         value: file://checks.mjs:steRussianNoInvention
 
+  # Research probes from ProText examples; not observed production failures.
+  - description: ste Russian UTR direct verbs ordered steps and terminology
+    vars:
+      case: ste-russian-utr-procedure
+      request: >-
+        Используй ste: отредактируй access.md на ясность по принципам
+        упрощённого технического русского. Исправь файл на месте.
+        Сохрани все условия и точные названия элементов интерфейса.
+    assert:
+      - type: javascript
+        value: file://checks.mjs:steRussianUtrProcedure
+
+  - description: ste Russian UTR does not copy lossy source examples
+    vars:
+      case: ste-russian-utr-fidelity
+      request: >-
+        Используй ste и принципы упрощённого технического русского:
+        перепиши notes.md в revised.md. Исходный файл не меняй.
+        Убери лишние слова, но сохрани все факты, ограничения и условия.
+    assert:
+      - type: javascript
+        value: file://checks.mjs:steRussianUtrFidelity
+
+  - description: ste Russian UTR does not invent an action for an incomplete step
+    vars:
+      case: ste-russian-utr-ambiguity
+      request: >-
+        Используй ste: отредактируй instructions.md по принципам
+        упрощённого технического русского. Исправь нумерацию и явные
+        языковые проблемы на месте. Неоднозначный фрагмент оставь
+        без изменения и отдельно укажи, что требует уточнения.
+    assert:
+      - type: javascript
+        value: file://checks.mjs:steRussianUtrAmbiguity
+
   - description: ste non-English safety text does not claim ASD compliance
     vars:
       case: ste-non-english-boundary

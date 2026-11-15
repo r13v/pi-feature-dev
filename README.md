@@ -130,8 +130,8 @@ It clarifies ambiguous scope boundaries when they change the recommendation.
 The `ste` skill drafts, rewrites, and reviews clear technical text in any
 language using transferable
 [ASD-STE100 Simplified Technical English](https://www.asd-ste100.org/)
-principles. Strict STE is English-only; clarity mode includes Russian guidance
-for prompts, tool descriptions, error messages, status reports,
+principles. Strict STE is English-only; clarity mode includes Russian and УТР
+guidance for prompts, tool descriptions, error messages, status reports,
 translation-ready text, and agent instructions. The skill is Markdown-only and
 has no runtime dependency.
 
@@ -373,7 +373,9 @@ The `ste` skill selects one of two modes:
   compliance. It preserves the source language and meaning, uses natural local
   grammar, and does not impose English vocabulary or word limits on other
   languages. Russian guidance covers modality, aspect, bureaucratic wording,
-  and UI text. Non-English results are clarity edits, not STE-aligned drafts.
+  UI text, and УТР techniques. It distinguishes selected ГОСТ Р 58049—2017
+  requirements from general clarity advice and rejects lossy source examples.
+  Non-English results are clarity edits, not STE-aligned drafts.
 
 The skill loads its detailed writing rules, review checklist, text-type
 patterns, and before/after examples only when they are relevant to the request.
