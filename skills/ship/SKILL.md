@@ -153,7 +153,17 @@ progress file. Read the current changes from git when a stage needs them.
 
 ## Choose the stages
 
-Always run `grill`, `feature-dev`, and `deslop`. Select `elevate` and
+Run `grill`, `feature-dev`, and `deslop` by default. If the user delegated
+the decisions and current specifications settle the material questions, skip
+the grill interview and design approval. First verify those specifications
+against the task and code. Record the delegated authority, specification paths,
+and accepted objective, decisions, constraints, and acceptance checks in the
+progress file as the `Grill Result`; mark grill `skipped: settled specification
+and delegated decisions`. Use that result in later stages. Documentation alone
+does not grant authority. If material questions remain, resolve only those
+within the delegated scope, asking about decisions outside it.
+
+Select `elevate` and
 `final-check` before the first stage starts. Select `deepen` after grill,
 when the acceptance criteria are known. Select `retro` after final-check, or
 after deslop when final-check is skipped. If the user includes or skips a
@@ -204,8 +214,9 @@ points of each stage stay in effect. A ship request does not approve them.
 
 1. **Elevate.** The rewritten request changes the scope. Wait for the user to
    approve it. If the user declines, continue with the original request.
-2. **Grill.** Run the interview rounds and the final confirmation as the grill
-   skill describes. Use the confirmed `Grill Result` as the input for all
+2. **Grill.** Unless skipped under the delegated-specification rule, run the
+   interview rounds and the final confirmation as the grill skill describes.
+   Use the confirmed `Grill Result` as the input for all
    later stages. Glossary and ADR updates from grill are changes of this
    task. If grill changes the goal, tell the user and ask whether to continue
    with the new goal. Do not run elevate again without telling the user. If
@@ -224,9 +235,10 @@ points of each stage stay in effect. A ship request does not approve them.
 4. **Feature-dev.** Implement the confirmed scope. When a design trigger of
    feature-dev applies, present the architecture approaches with a
    recommendation, as feature-dev describes. If the Grill Result already
-   selected an approach, recommend that approach. Wait for the user's choice.
-   A ship request is not a request to proceed without design approval. Skip
-   the wait only if the user explicitly asked to skip design approval.
+   selected an approach, use it without asking the same decision again.
+   Otherwise wait for the user's choice, unless that choice was delegated or
+   the user explicitly waived design approval. A ship request alone does not
+   delegate design decisions.
    Validate against the success criteria in the Grill Result and against the
    deepen validation, if there is one. Feature-dev ends when each acceptance
    criterion is met, or is not met with evidence and a blocker that

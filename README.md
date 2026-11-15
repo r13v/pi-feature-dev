@@ -12,6 +12,12 @@ feature work:
 - review the diff from multiple perspectives
 - validate and summarize results
 
+Design comparisons distinguish structural guarantees from caller discipline
+and name what the next typical extension would change. Validation checks that
+critical guard and regression tests fail without the protection, verifies the
+causes behind shared failure signals, and uses the check's exit status rather
+than truncated output to determine success.
+
 It does not require specific task-tracking, question, delegation, or review tools. If the current environment provides equivalent capabilities, use them; otherwise follow the same workflow directly in chat and with normal code tools.
 
 The `deslop` skill audits or applies evidence-backed subtractive cleanup for
@@ -28,7 +34,10 @@ names what a top professional would do that the request omits, the raw material
 they would start from, their methods and tools, and the external check that
 would prove the result right. It tests the beliefs in the request against raw
 data and borrows methods from adjacent fields, but keeps the goal and the
-deliverable. Then it rewrites the request to ask for exactly that.
+deliverable. It matches claims to validation coverage: complete preservation
+needs the whole small finite set, statistical checks need material input
+regimes and separate validation, and a quick sample supports only a directional
+conclusion. Then it rewrites the request to ask for exactly that.
 
 The `elevate` skill aims a task at the outcome it serves instead of the
 artifact it names. It asks what should happen next, picks the strongest lever
@@ -38,9 +47,12 @@ proposes the new scope and waits for approval before doing more work.
 
 The `ship` skill runs the whole recommended flow in one skill, from choosing
 the target to the final check. It picks the optional stages, passes each
-stage's result to the next, and keeps every stage's own approval points. It
-keeps its state in a progress file under `.git/`, so it does not skip stages
-and can continue after the context is compacted or in a new session. It records
+stage's result to the next, and keeps every stage's own approval points within
+the user's authorization. When the user delegates decisions and verified
+current specifications settle the material questions, it records those sources
+and the accepted result instead of repeating the interview and design approval.
+Documents alone do not authorize this shortcut. It keeps its state in a
+progress file under `.git/`, so it does not skip stages and can continue after the context is compacted or in a new session. It records
 the start commit, and treats all changes after it as the task's changes. It
 runs the diff review and `final-check` in a subagent with a fresh context when
 the host can. It fixes a finding about wrong behavior only after a test or a
@@ -112,7 +124,8 @@ exhausts the current decision frontier round by round, sharpens domain language,
 and records agreed terminology and durable architectural decisions. A round
 asks at most three decisions that have no safe default, and lists the
 reversible ones as defaults that the user can reject. It reads the rules of
-the repository before it recommends an option.
+the repository and checks an option's factual premises before recommending it.
+It clarifies ambiguous scope boundaries when they change the recommendation.
 
 The `ste` skill drafts, rewrites, and reviews clear technical text in any
 language using transferable

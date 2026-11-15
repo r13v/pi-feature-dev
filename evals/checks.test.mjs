@@ -6,6 +6,7 @@ import assert from "node:assert/strict";
 import { existsSync, readdirSync, readFileSync, rmSync,
   writeFileSync } from "node:fs";
 import { join } from "node:path";
+import { spawnSync } from "node:child_process";
 import * as checks from "./checks.mjs";
 import { makeWorkdir, overlay } from "./provider.mjs";
 
@@ -43,6 +44,40 @@ for (const name of readdirSync(CASES)) {
     assert.equal(r.pass, true, r.reason);
   });
 }
+
+test("guard evidence records direct node runs and requires a failing mutation", (t) => {
+  const workdir = makeWorkdir("feature-dev-guard-sensitivity", "working");
+  t.after(() => rmSync(workdir, { recursive: true }));
+  overlay(join(CASES, "feature-dev-guard-sensitivity", "fixed"), workdir);
+  rmSync(join(workdir, ".git/test-runs.jsonl"));
+  const env = { ...process.env };
+  delete env.NODE_TEST_CONTEXT;
+  const run = () => spawnSync("node", ["--test", "test/render.test.js"],
+    { cwd: workdir, env, encoding: "utf8" });
+  assert.equal(run().status, 0);
+  const context = { metadata: { workdir } };
+  assert.equal(checks.featureDevGuardSensitivity("", context).pass, false);
+  const file = join(workdir, "src/render.js");
+  const source = readFileSync(file, "utf8");
+  writeFileSync(file, source.replace(
+    '  if (!item.caseId) throw new Error("caseId required");\n', ""));
+  assert.equal(run().status, 1);
+  writeFileSync(file, source);
+  assert.equal(run().status, 0);
+  const result = checks.featureDevGuardSensitivity("", context);
+  assert.equal(result.pass, true, result.reason);
+});
+
+test("ship stop permits a resume question but not repeated design approval", (t) => {
+  const workdir = makeWorkdir("ship-delegated-spec", "working");
+  t.after(() => rmSync(workdir, { recursive: true }));
+  overlay(join(CASES, "ship-delegated-spec", "fixed"), workdir);
+  const context = { metadata: { workdir } };
+  assert.equal(checks.shipDelegatedSpec("Should I proceed with implementation?",
+    context).pass, true);
+  assert.equal(checks.shipDelegatedSpec("Do you approve this design?",
+    context).pass, false);
+});
 
 test("STE rejects an inferred check target even with a disclaimer", (t) => {
   const workdir = makeWorkdir("ste-russian-meaning", "working");

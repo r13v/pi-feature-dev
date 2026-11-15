@@ -1,0 +1,1 @@
+Cover day, evening, night and multi-day regimes. Separate calibration from held-out validation and report coverage; do not claim all windows are covered from daytime alone.

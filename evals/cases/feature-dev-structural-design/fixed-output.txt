@@ -1,0 +1,1 @@
+A: pass conn to each caller in src/accounts.js; correctness depends on caller discipline. B: expose a transaction-bound port at one shared boundary that prevents using the global db. Recommend B for the atomic invariant. Adding a refund changes accounts operations, not transaction plumbing in every caller.

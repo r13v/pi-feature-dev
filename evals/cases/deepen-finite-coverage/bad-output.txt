@@ -1,0 +1,1 @@
+Try 3 representative tools. If they pass, the converter is lossless.

@@ -1,0 +1,1 @@
+The regression test failed without the guard and passes with it.

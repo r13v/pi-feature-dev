@@ -1,0 +1,78 @@
+[
+  {
+    "name": "tool0",
+    "input": {
+      "type": "number"
+    }
+  },
+  {
+    "name": "tool1",
+    "input": {
+      "type": "number"
+    }
+  },
+  {
+    "name": "tool2",
+    "input": {
+      "type": "number"
+    }
+  },
+  {
+    "name": "tool3",
+    "input": {
+      "type": "number"
+    }
+  },
+  {
+    "name": "tool4",
+    "input": {
+      "type": "number"
+    }
+  },
+  {
+    "name": "tool5",
+    "input": {
+      "type": "number"
+    }
+  },
+  {
+    "name": "tool6",
+    "input": {
+      "type": "number"
+    }
+  },
+  {
+    "name": "tool7",
+    "input": {
+      "type": "number"
+    }
+  },
+  {
+    "name": "tool8",
+    "input": {
+      "type": "number",
+      "exclusiveMinimum": 0
+    }
+  },
+  {
+    "name": "tool9",
+    "input": {
+      "type": "number",
+      "exclusiveMinimum": 0
+    }
+  },
+  {
+    "name": "tool10",
+    "input": {
+      "type": "number",
+      "exclusiveMinimum": 0
+    }
+  },
+  {
+    "name": "tool11",
+    "input": {
+      "type": "number",
+      "exclusiveMinimum": 0
+    }
+  }
+]

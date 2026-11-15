@@ -1,0 +1,1 @@
+Check all 12 tools, including exclusiveMinimum. The previous 3-tool sample cannot establish lossless preservation; report coverage and any unverified fields.

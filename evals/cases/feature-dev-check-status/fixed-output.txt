@@ -1,0 +1,1 @@
+npm run check failed with exit status 7. Empty tail output is not evidence of success. Validation remains blocked.

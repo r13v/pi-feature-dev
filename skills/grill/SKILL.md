@@ -71,6 +71,12 @@ result as an unsettled prerequisite: defer only the dependent questions and
 continue with the rest of the frontier. If delegation is unavailable, research
 directly.
 
+Before recommending an option, verify the premises that make it viable,
+such as API support or whether people use the workflow step it relies on.
+If an ambiguous scope boundary would change the recommendation, ask whether
+it excludes work from this run or from the product; do not infer one from
+the other.
+
 When code, documentation, and the user's statement disagree, surface the
 conflict with concrete evidence. Do not average contradictory models. Ask which
 model is authoritative and identify the losing model as cleanup or migration
