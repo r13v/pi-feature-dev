@@ -1,8 +1,8 @@
-// Builds the model input for one turn of the duty agent.
-export function buildTurn(thread, report, notes) {
+// Builds the model input for one turn of the support assistant.
+export function buildTurn(conversation, summary, notes) {
   return [
-    { role: "system", content: "You keep the incident report current." },
-    ...thread.messages, // every message since the incident started
-    { role: "user", content: `Report:\n${report}\n\nNotes:\n${notes}` },
+    { role: "system", content: "You keep the ticket summary current." },
+    ...conversation.messages, // every message since the conversation started
+    { role: "user", content: `Summary:\n${summary}\n\nNotes:\n${notes}` },
   ];
 }

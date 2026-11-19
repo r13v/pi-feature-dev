@@ -68,7 +68,9 @@ after the run ends. When there are entries, it runs `retro` before that batch,
 and sends the candidates about skills to a skill feedback file outside the
 repository. It loads the skill of each stage when the stage starts, and
 records the diff review as its own entry, so that the review is not skipped.
-It can also start from a backlog item. It is for non-trivial implementation.
+It can also start from a backlog item, a file or a ticket. When the
+instructions of the project require a ticket for each change, it finds or
+creates one before the first edit, after the user agrees. It is for non-trivial implementation.
 It does not commit, push, or deploy, but at the end it asks whether to commit
 and open a pull request.
 
@@ -109,8 +111,10 @@ conditions and exceptions when merging notes, distinguishes missing recall
 from misapplied scope when the transcripts show the cause, and treats
 synthetic rehearsals as tests rather than evidence of user preferences.
 
-The `backlog` skill keeps deferred work as one Markdown file per item under
-`docs/backlog/`. An item is an `idea`, value that does not exist yet, or
+The `backlog` skill keeps deferred work as tickets in the issue tracker that
+the instructions of the project name, or else as one Markdown file per item
+under `docs/backlog/`. It asks before it creates, changes, or closes a
+ticket. An item is an `idea`, value that does not exist yet, or
 `debt`, a known shortcut in the existing code with its place and its
 interest: what it breaks or slows now. Debt without a concrete interest is
 fixed now or dropped, and the list warns when no debt was paid in 4 weeks. Each item records why it matters, its evidence, the task that

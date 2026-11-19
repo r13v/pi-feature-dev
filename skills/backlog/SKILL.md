@@ -1,6 +1,6 @@
 ---
 name: backlog
-description: Keep deferred ideas and technical debt as files under `docs/backlog/` and bring them back with their context. List, add, brief, or walk the items. Use when the user asks to defer an idea, to add to the backlog, or to check or clean up the backlog, or when a task found real ideas outside its scope; skip nits that can be fixed now and work that belongs to the current task.
+description: Keep deferred ideas and technical debt in the issue tracker of the project or as files under `docs/backlog/`, and bring them back with their context. List, add, brief, or walk the items. Use when the user asks to defer an idea, to add to the backlog, or to check or clean up the backlog, or when a task found real ideas outside its scope; skip nits that can be fixed now and work that belongs to the current task.
 ---
 
 # Backlog
@@ -18,16 +18,33 @@ If the work makes something that already exists safer, faster, or simpler,
 it is `debt`. If it adds what nobody can do today, it is an `idea`.
 
 Reading the backlog does not give permission to work an item. Do not
-commit, push, or post items to a pull request or an issue unless the user
-asks.
+commit, push, or post items to a pull request unless the user asks.
 
-The backlog needs a git repository, because git history keeps the items that
-were done or dropped. Outside a git repository, tell the user and stop.
+## Storage
+
+The host instructions of the project, such as `AGENTS.md`, choose where the
+items live:
+
+- When they name an issue tracker and a project for the backlog, an item is
+  a ticket there. Mark `debt` as the instructions say, such as with a tag or
+  a type. Use the access to the tracker that the host gives, such as a tool,
+  a CLI, or an API. If you cannot reach the tracker, tell the user and stop.
+  Do not write files instead.
+- Otherwise, an item is a file under `docs/backlog/`. This needs a git
+  repository, because git history keeps the items that were done or
+  dropped. Outside a git repository, tell the user and stop.
+
+A ticket posts to a service outside the repository. Ask the user before you
+create, change, or close a ticket, also when another skill passes decisions
+that the user delegated to it.
 
 ## Item format
 
 Keep one file for each item: `docs/backlog/<slug>.md` at the repository root.
 The slug names the idea, not a file, such as `export-ignores-time-zone.md`.
+A ticket has the same title and body. Put the fields of the front matter
+where the instructions say, or else at the top of the body. A ticket has no
+`added`, because the tracker keeps the date.
 
 ```markdown
 ---
@@ -73,9 +90,10 @@ ignores the time zone", not "Convert dates to the account time zone".
 
 Write the body for a reader who does not know the source task.
 
-A file that exists is an open item. When the idea is done, delete the file in
-the change that does it. When the idea is dropped, delete the file. Do not add
-a status field, an archive, or an index file.
+A file that exists, or an open ticket, is an open item. When the idea is
+done, delete the file in the change that does it, or close the ticket. When
+the idea is dropped, delete the file, or close the ticket with the reason. Do
+not add a status field, an archive, or an index file.
 
 An item is stale when the claim in its evidence is no longer true in the
 current code. A moved line does not make an item stale. Update its `where`.
@@ -105,11 +123,10 @@ File a `debt` only when all of these are true:
   that the evidence shows now;
 - it is worth a separate change.
 
-An interest that is only a guess fails the bar. Debt with no interest is
-not debt. Fix it now or drop it. Wrong behavior that
-nobody chose is a bug, not debt: fix it in scope, or file it as an `idea`.
-Fix a nit, such as a typo, a name, or a style point, in the current scope, or
-drop it. Do not file it.
+An interest that is only a guess fails the bar. Debt with no interest is not
+debt. Fix it now or drop it. Wrong behavior that nobody chose is a bug, not
+debt: fix it in scope, or file it as an `idea`. Fix a nit, such as a typo, a
+name, or a style point, in the current scope, or drop it. Do not file it.
 
 ## Modes
 
@@ -134,9 +151,10 @@ Show the `debt` items first, then the `idea` items. In each kind, sort by
 each item: the slug, `worth`, the age, and the title. Mark each `later` item
 older than 90 days with "decide: keep or drop".
 
-Then check that the debt is paid. Find the `debt` items deleted in the last
-28 days with `git log --since=28.days --diff-filter=D -- docs/backlog/`. If
-none were deleted and an open `debt` item is older than 28 days, say "no debt
+Then check that the debt is paid. Find the `debt` items closed in the last
+28 days: the tickets closed in that time, or the files that `git log
+--since=28.days --diff-filter=D -- docs/backlog/` shows as deleted. If
+none were closed and an open `debt` item is older than 28 days, say "no debt
 paid in 4 weeks", and propose to fix or drop each `debt` item.
 
 Then offer to brief an item, to walk all items, or to add an idea.
@@ -168,11 +186,11 @@ Use this mode for one or more ideas from the user or from another skill.
 
 1. Classify each idea as `idea` or `debt`, then apply the filing bar of its
    kind. Name each idea that fails it, and give the reason.
-2. Find repeats. Search `docs/backlog/` by the slug, the `where` path, and
-   the claim of the idea. A shared `where` path alone does not make a
-   repeat: compare the claims. Skip the item that the calling task works on.
-   If an item already covers the idea, propose to add the new evidence to
-   that item. Do not create a second file.
+2. Find repeats. Search the items by the slug or the title, the `where` path,
+   and the claim of the idea. A shared `where` path alone does not make a
+   repeat: compare the claims. Skip the item that the calling task works on. If
+   an item already covers the idea, propose to add the new evidence to that
+   item. Do not create a second item.
 3. Show all remaining ideas in one batch. For each idea, give the title, the
    `kind`, the proposed `worth`, and one line about why it matters, or the
    interest for `debt`. For a repeat, name the existing item. Ask the user
@@ -182,7 +200,7 @@ Use this mode for one or more ideas from the user or from another skill.
    with that option back to the calling skill. Write only what the user
    approved. When the calling skill passes decisions that
    the user delegated to it, apply them without asking.
-4. Choose where to write:
+4. For files, choose where to write:
    - When another skill, such as `ship`, calls this mode, write in the
      current working tree. The items become changes of that task.
    - Otherwise, find the default branch from `git symbolic-ref
@@ -191,4 +209,4 @@ Use this mode for one or more ideas from the user or from another skill.
      branch is not the default branch, ask the user before you write: write
      on this branch, or stop so that the user can switch.
    - Do not create a branch or a worktree.
-5. Report the files that you created or changed.
+5. Report the files or the tickets that you created or changed.

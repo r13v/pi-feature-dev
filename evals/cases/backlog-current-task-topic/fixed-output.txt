@@ -1,3 +1,4 @@
 You raised this in the current task, so I don't defer it.
-It changes how the agent builds a turn: send the report, the last notes and
-the new messages instead of the whole thread. Do it in this task, or drop it?
+It changes how the assistant builds a turn: send the summary, the last notes
+and the new messages instead of the whole conversation. Do it in this task,
+or drop it?
