@@ -29,17 +29,17 @@ analysis, do not run the pipeline. Name the shorter path that fits, such as a
 direct edit or one skill, and stop. If the host started ship without the user
 asking for it, propose ship and wait.
 
-If the request is the path of a backlog item under `docs/backlog/`, read the
-item as the `backlog` skill describes. Check its `where` and its evidence
-against the current code. Measure the claim of the evidence again before you
-call the item stale. If only its `where` is out of date, update it and
-continue. If the item is stale or the idea is already done,
-offer to drop it as the `backlog` skill describes, and then stop. If its `worth`
-is `no`, give the
-reason from the item and ask whether to continue. Otherwise, use the item as
-the original request. It is an idea to grill, not a settled specification.
-Write the path of the item in the progress file. Delete the item file during
-feature-dev, as a change of this task.
+If the request is a backlog item, the path of a file or the key of a ticket,
+read the item as the `backlog` skill describes. Check its `where` and its
+evidence against the current code. Measure the claim of the evidence again
+before you call the item stale. If only its `where` is out of date, update it
+and continue. If the item is stale or the idea is already done, offer to drop
+it as the `backlog` skill describes, and then stop. If its `worth` is `no`,
+give the reason from the item and ask whether to continue. Otherwise, use the
+item as the original request. It is an idea to grill, not a settled
+specification. Write the path or the key of the item in the progress file.
+Delete an item file during feature-dev, as a change of this task. A ticket item
+is the ticket of this task.
 
 If the host instructions require a ticket for each change, find the ticket
 of the task, or create one before the first edit. The title names the

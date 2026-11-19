@@ -1,4 +1,4 @@
 # Current task
 
-New messages of an incident thread reach an analysis that is already
-running, instead of waiting for the next analysis.
+New customer messages reach a reply that the assistant is already drafting,
+instead of waiting for the next reply.
