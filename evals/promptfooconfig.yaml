@@ -436,6 +436,20 @@ tests:
       - type: javascript
         value: file://checks.mjs:backlogFilesNotedIdea
 
+  - description: backlog does not defer the topic of the current task
+    vars:
+      case: backlog-current-task-topic
+      source: "Нет, делать будем здесь. И ничего не добавляй в бэклок"
+      request: >-
+        We work on the task in TASK.md. While we measured it, I said: "I
+        don't think we need to send the whole thread to the model every
+        time." Your design: src/turn.js sends only the report, the last notes
+        and the new messages. It changes the architecture of the agent. What
+        do you propose to do with this design now?
+    assert:
+      - type: javascript
+        value: file://checks.mjs:backlogCurrentTaskTopic
+
   - description: ste keeps every instruction and limit
     vars:
       case: ste-keeps-every-limit

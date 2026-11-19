@@ -508,9 +508,24 @@ export function shipBacklogMovedLine(output, { metadata }) {
   return result({
     "item kept": existsSync(join(metadata.workdir,
       "docs/backlog/export-ignores-time-zone.md")),
-    "not called stale": !saysWithoutNegation(output,
+    // A stale `where` or line is allowed: only the item may not be stale.
+    "not called stale": !saysWithoutNegation(output.split(/(?<=[.!?])\s+/)
+      .filter((sentence) => !/\bwhere\b|\bline\b/i.test(sentence))
+      .join("\n"),
       /\bstale\b|already (done|fixed)|устарел|уже (сделан|исправлен)/i),
     "run started": progressFile(metadata.workdir) !== "",
+  });
+}
+
+export function backlogCurrentTaskTopic(output, { metadata }) {
+  const items = readdirSync(join(metadata.workdir, "docs/backlog"));
+  const defers = output.split("\n").some((line) =>
+    /backlog|бэклог|\bdefer|\bfile (it|this)\b|separate (ship|run|task|change)|follow-up/i
+      .test(line)
+    && !/\b(not|no|never|instead|without)\b|n't\b|не /i.test(line));
+  return result({
+    "no item filed": items.length === 1,
+    "not deferred": !defers,
   });
 }
 

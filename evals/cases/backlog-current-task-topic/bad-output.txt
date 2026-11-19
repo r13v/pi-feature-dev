@@ -1,0 +1,2 @@
+The design changes the architecture of the agent, so it needs its own ship
+run after this task. I propose to file it as a backlog item for now.

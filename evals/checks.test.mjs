@@ -110,3 +110,13 @@ test("a wrapped historical command is not a current instruction", (t) => {
   assert.equal(checks.dreamKeepsUnverified("", { metadata: { workdir } })
     .pass, false);
 });
+
+test("ship moved line allows a stale where but not a stale item", (t) => {
+  const workdir = makeWorkdir("ship-backlog-moved-line", "working");
+  t.after(() => rmSync(workdir, { recursive: true }));
+  const context = { metadata: { workdir } };
+  const check = (output) => checks.shipBacklogMovedLine(output, context)
+    .reason.includes("not called stale");
+  assert.equal(check("I fixed the stale `where`. It now reads :13."), false);
+  assert.equal(check("The item is stale."), true);
+});

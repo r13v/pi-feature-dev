@@ -41,6 +41,12 @@ the original request. It is an idea to grill, not a settled specification.
 Write the path of the item in the progress file. Delete the item file during
 feature-dev, as a change of this task.
 
+If the host instructions require a ticket for each change, find the ticket
+of the task, or create one before the first edit. The title names the
+problem, not the fix. A new ticket posts to a service outside the
+repository, so ask the user before you create it, also when the decisions
+are delegated. Write the key of the ticket in the progress file.
+
 ## Keep a progress file
 
 Keep the state of the pipeline in a progress file, not only in the
@@ -274,6 +280,13 @@ points of each stage stay in effect. A ship request does not approve them.
 
 ## Defer ideas
 
+A finding in the code that this task changes, a step that the result of the
+task needs, or the topic that the user discusses now is part of the task,
+unless it is a confirmed non-goal. A request that does not name the work
+does not make it a non-goal. Do it in the current stage. If it needs a
+decision, such as a change of the architecture, ask the user now: do it in
+this run, or drop it. Do not defer it, and do not offer to defer it.
+
 When a stage finds an idea outside the confirmed scope, do not do it. Add one
 line to the `Deferred ideas` section of the progress file: the idea, its
 evidence, and the stage that found it. Do not ask the user about each idea
@@ -299,10 +312,10 @@ guess that the user is away. If the user does not answer, leave the
 
 If the user delegated the decisions in this run, such as "do everything" or
 "decide yourself", do not ask. Decide each idea yourself: "do now" for a small
-idea that passes the "do now" conditions, file an idea that is worth its own
-change, and drop the rest. Give these decisions to the `add` mode as
-delegated decisions, so that it writes them without asking. Report each
-decision with its reason in the output.
+idea that passes the "do now" conditions, file an idea or debt that passes
+the filing bar of its kind, and drop the rest. Give these decisions to the
+`add` mode as delegated decisions, so that it writes them without asking.
+Report each decision with its reason in the output.
 
 Do not give the `retro-skill:` ideas to the `backlog` skill, because the
 skill lives in another repository. Append each of them to the skill feedback
