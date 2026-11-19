@@ -109,8 +109,11 @@ conditions and exceptions when merging notes, distinguishes missing recall
 from misapplied scope when the transcripts show the cause, and treats
 synthetic rehearsals as tests rather than evidence of user preferences.
 
-The `backlog` skill keeps deferred ideas as one Markdown file per item under
-`docs/backlog/`. Each item records why it matters, its evidence, the task that
+The `backlog` skill keeps deferred work as one Markdown file per item under
+`docs/backlog/`. An item is an `idea`, value that does not exist yet, or
+`debt`, a known shortcut in the existing code with its place and its
+interest: what it breaks or slows now. Debt without a concrete interest is
+fixed now or dropped, and the list warns when no debt was paid in 4 weeks. Each item records why it matters, its evidence, the task that
 found it, and why that task deferred it. An item is an option to return to,
 not a commitment. A file that exists is an open item, and the change that does
 or drops the idea deletes the file, so git history keeps the record. The skill

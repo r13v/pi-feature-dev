@@ -1,14 +1,25 @@
 ---
 name: backlog
-description: Keep deferred ideas as files under `docs/backlog/` and bring them back with their context. List, add, brief, or walk the items. Use when the user asks to defer an idea, to add to the backlog, or to check or clean up the backlog, or when a task found real ideas outside its scope; skip nits that can be fixed now.
+description: Keep deferred ideas and technical debt as files under `docs/backlog/` and bring them back with their context. List, add, brief, or walk the items. Use when the user asks to defer an idea, to add to the backlog, or to check or clean up the backlog, or when a task found real ideas outside its scope; skip nits that can be fixed now and work that belongs to the current task.
 ---
 
 # Backlog
 
-A backlog item is a deferred idea with its reason and evidence. It is an
-option to return to, not a commitment to do the work. Reading the backlog does
-not give permission to work an item. Do not commit, push, or post items to a
-pull request or an issue unless the user asks.
+A backlog item is deferred work with its reason and evidence. It is an
+option to return to, not a commitment to do the work. An item is one of two
+kinds. Do not mix them:
+
+- `idea`: value that does not exist yet, such as a feature, an improvement,
+  or an experiment.
+- `debt`: a known shortcut in the existing code. It has a place in the code
+  and an interest: what it breaks or slows now.
+
+If the work makes something that already exists safer, faster, or simpler,
+it is `debt`. If it adds what nobody can do today, it is an `idea`.
+
+Reading the backlog does not give permission to work an item. Do not
+commit, push, or post items to a pull request or an issue unless the user
+asks.
 
 The backlog needs a git repository, because git history keeps the items that
 were done or dropped. Outside a git repository, tell the user and stop.
@@ -20,6 +31,7 @@ The slug names the idea, not a file, such as `export-ignores-time-zone.md`.
 
 ```markdown
 ---
+kind: idea
 worth: later
 where: src/export/csv.ts:42
 added: 2026-10-23
@@ -38,12 +50,24 @@ source: ship 20261023-1500-add-export, f/export @ 01c9a47
 still unknown.
 ```
 
+A `debt` item adds this section after **Why it matters**:
+
+```markdown
+**Interest.** What the shortcut breaks or slows now, for whom, and how
+often, with the evidence.
+```
+
+The title names the problem or the missing value, not the fix: "Export
+ignores the time zone", not "Convert dates to the account time zone".
+
+- `kind`: `idea` or `debt`. An item without `kind` is an `idea`.
 - `worth`:
   - `yes`: the value is agreed. This does not set a schedule.
   - `later`: the value is not clear yet. The body names the unknown.
   - `no`: a decision not to do it, with the reason in the body. Keep it so
     that the same idea is not argued again.
-- `where`: optional `path:line`. It is a hint, because lines move.
+- `where`: `path` or `path:line`, required for `debt`, optional for `idea`.
+  It is a hint, because lines move.
 - `added`: the date when the item was added. Do not change it.
 - `source`: the task that found the idea, the branch, and the short commit.
 
@@ -57,15 +81,33 @@ An item is stale when the claim in its evidence is no longer true in the
 current code. A moved line does not make an item stale. Update its `where`.
 
 Change an existing item only to add evidence, to update `where`, to change
-`worth`, or to delete it. Do not rewrite other text in it.
+`worth` or `kind`, or to delete it. Do not rewrite other text in it.
 
 ## Filing bar
 
-File an idea only when both of these are true:
+Do not file work that belongs to the current task: a problem in the code that
+the task changes, a step that its result needs, or the topic that the user
+discusses now. Do it in the task. If it needs a decision, such as a change of
+the architecture, ask now: do it in this task, or drop it. Do not offer to
+defer it as a third option. A large size or a new design is not a reason to
+defer. Defer only what the user excluded in words. A task description that
+does not name the work does not exclude it.
+
+File an `idea` only when both of these are true:
 
 - it is worth its own `ship` run or a separate change;
 - it has concrete evidence: a place in the code, a command, or an observation.
 
+File a `debt` only when all of these are true:
+
+- the code exists, and `where` points to the shortcut;
+- the interest is concrete: a failure, a slowdown, a manual step, or a risk
+  that the evidence shows now;
+- it is worth a separate change.
+
+An interest that is only a guess fails the bar. Debt with no interest is
+not debt. Fix it now or drop it. Wrong behavior that
+nobody chose is a bug, not debt: fix it in scope, or file it as an `idea`.
 Fix a nit, such as a typo, a name, or a style point, in the current scope, or
 drop it. Do not file it.
 
@@ -87,9 +129,16 @@ Use this mode when there is no argument. Read all items. For each item with
 `where`, check that the place exists and still shows what the item claims.
 Report a stale item as stale, not as work.
 
-Sort the items by `worth`: `yes`, `later`, `no`. Put the oldest first in each
-group. Show one line for each item: the slug, `worth`, the age, and the
-title. Mark each `later` item older than 90 days with "decide: keep or drop".
+Show the `debt` items first, then the `idea` items. In each kind, sort by
+`worth`: `yes`, `later`, `no`, and put the oldest first. Show one line for
+each item: the slug, `worth`, the age, and the title. Mark each `later` item
+older than 90 days with "decide: keep or drop".
+
+Then check that the debt is paid. Find the `debt` items deleted in the last
+28 days with `git log --since=28.days --diff-filter=D -- docs/backlog/`. If
+none were deleted and an open `debt` item is older than 28 days, say "no debt
+paid in 4 weeks", and propose to fix or drop each `debt` item.
+
 Then offer to brief an item, to walk all items, or to add an idea.
 
 ### Brief
@@ -117,19 +166,21 @@ and say "item N of M". Read the item again before you act on an answer.
 
 Use this mode for one or more ideas from the user or from another skill.
 
-1. Apply the filing bar. Name each idea that fails it, and give the reason.
+1. Classify each idea as `idea` or `debt`, then apply the filing bar of its
+   kind. Name each idea that fails it, and give the reason.
 2. Find repeats. Search `docs/backlog/` by the slug, the `where` path, and
    the claim of the idea. A shared `where` path alone does not make a
    repeat: compare the claims. Skip the item that the calling task works on.
    If an item already covers the idea, propose to add the new evidence to
    that item. Do not create a second file.
 3. Show all remaining ideas in one batch. For each idea, give the title, the
-   proposed `worth`, and one line about why it matters. For a repeat, name
-   the existing item. Ask the user to choose for each idea: file it, or add
-   the evidence to the existing item, or drop it. The user can also change
-   `worth`. A calling skill can add its own option, such as "do now" in
-   `ship`. Give the ideas with that option back to the calling skill. Write
-   only what the user approved. When the calling skill passes decisions that
+   `kind`, the proposed `worth`, and one line about why it matters, or the
+   interest for `debt`. For a repeat, name the existing item. Ask the user
+   to choose for each idea: file it, or add the evidence to the existing
+   item, or drop it. The user can also change `kind` or `worth`. A calling
+   skill can add its own option, such as "do now" in `ship`. Give the ideas
+   with that option back to the calling skill. Write only what the user
+   approved. When the calling skill passes decisions that
    the user delegated to it, apply them without asking.
 4. Choose where to write:
    - When another skill, such as `ship`, calls this mode, write in the
