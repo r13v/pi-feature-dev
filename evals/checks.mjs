@@ -493,6 +493,27 @@ export function shipReviewBeforeDeslop(output, { metadata }) {
   });
 }
 
+export function shipQuickMode(output, { metadata }) {
+  const progress = progressFile(metadata.workdir);
+  const stage = (name, value) => new RegExp(
+    `(?:^|\\n)\\s*[-*]?\\s*${name}:\\s*${value}\\b`, "i").test(progress);
+  const r = spawnSync("node", ["--input-type=module", "-e",
+    "import { slugify } from './src/text.js';"
+    + "process.exit(slugify('  Hello, World! ') === 'hello-world' ? 0 : 1)",
+  ], { cwd: metadata.workdir });
+  return result({
+    "quick run finished": /mode: quick/.test(progress)
+      && /status: finished/.test(progress),
+    "interview and retro skipped": stage("grill", "skipped")
+      && stage("retro", "skipped"),
+    "checks done": stage("feature-dev review", "done")
+      && stage("deslop", "done") && stage("final-check", "done"),
+    "no backlog items": !existsSync(join(metadata.workdir, "docs/backlog")),
+    "slugify works": r.status === 0,
+    "tests pass": testsPass(metadata.workdir),
+  });
+}
+
 export function finalCheckRenamedDocs(output, { metadata }) {
   const docs = read(metadata.workdir, "README.md")
     + read(metadata.workdir, "docs/api.md");
