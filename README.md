@@ -74,7 +74,7 @@ instructions of the project require a ticket for each change, it finds or
 creates one before the first edit, after the user agrees. It is for non-trivial implementation.
 It does not commit, push, or deploy, but at the end it asks whether to commit
 and open a pull request. In the quick mode, for a request that already states
-what to build, it runs only `feature-dev`, `deslop`, and `final-check`, with
+what to build, it runs only `feature-dev`, `final-check`, and `deslop`, with
 the same fresh-context checks. It keeps the design approval, skips the
 interview and `retro`, and lists the ideas outside the scope in the output
 instead of offering them to `backlog`.
@@ -316,7 +316,7 @@ The skills chain from choosing the target to cleaning up the result. Steps in
 brackets are optional:
 
 ```text
-[elevate] → grill → [deepen] → feature-dev → deslop → [final-check] → [retro]
+[elevate] → grill → [deepen] → feature-dev → [final-check] → deslop → [retro]
 ```
 
 - `elevate` comes first because it decides what to do. `grill` then settles
@@ -326,6 +326,8 @@ brackets are optional:
 - `deepen` comes before `feature-dev` so that its external check, such as a
   test, a reproduction, or a reconciliation against source data, becomes the
   validation criterion for the implementation.
+- `deslop` comes after `final-check` so that it runs once and also cleans
+  up the fixes of `final-check`.
 - `retro` comes last because it reviews how the run went, not the result.
   Skip it when the run was smooth.
 

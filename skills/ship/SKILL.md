@@ -1,6 +1,6 @@
 ---
 name: ship
-description: Take a non-trivial feature from a raw request to validated, cleaned-up changes in one run. Settle the right target and the decisions with the user, implement with design approval, remove the bloat the work added, check for missed requirements, learn from the friction of the run, and defer the ideas outside the scope to the backlog. Use when the user asks to ship a feature end to end, to run the whole pipeline, or to start from a backlog item; in the quick mode, it runs only feature-dev, deslop, and final-check. Skip mechanical edits, small fixes, and work with no implementation.
+description: Take a non-trivial feature from a raw request to validated, cleaned-up changes in one run. Settle the right target and the decisions with the user, implement with design approval, remove the bloat the work added, check for missed requirements, learn from the friction of the run, and defer the ideas outside the scope to the backlog. Use when the user asks to ship a feature end to end, to run the whole pipeline, or to start from a backlog item; in the quick mode, it runs only feature-dev, final-check, and deslop. Skip mechanical edits, small fixes, and work with no implementation.
 ---
 
 # Ship
@@ -8,7 +8,7 @@ description: Take a non-trivial feature from a raw request to validated, cleaned
 Take one non-trivial implementation request through the full pipeline:
 
 ```text
-[elevate] → grill → [deepen] → feature-dev → deslop → [final-check] → [retro]
+[elevate] → grill → [deepen] → feature-dev → [final-check] → deslop → [retro]
 ```
 
 When the user asks for the quick mode, run the shorter pipeline that the
@@ -68,8 +68,8 @@ file. Do not continue without a progress file.
 Before the first stage, look for a progress file with `status: active` on the
 current branch. If it matches this task, read it and continue from the first
 stage that has no result. If the file has no `Friction` section or no retro
-entry, add an empty section and `retro: selection pending after final-check or
-deslop`. If you cannot tell whether it matches, ask the user. When the
+entry, add an empty section and `retro: selection pending after deslop`. If
+you cannot tell whether it matches, ask the user. When the
 branch is `detached`, a file of another worktree can also match, so ask the
 user before you resume. Do not resume a file with `status: finished`.
 
@@ -99,7 +99,7 @@ In the body, write:
 - the original request;
 - one entry for each stage: `selected`, `skipped: <reason>`, or, for deepen,
   `selection pending after grill`, and for retro, `selection pending after
-  final-check or deslop`;
+  deslop`;
 - an entry `feature-dev review: pending`, after the feature-dev entry;
 - an entry `deferred ideas: pending`;
 - an empty `Friction` section;
@@ -108,9 +108,12 @@ In the body, write:
 Before a stage starts, read the file. Do not start a stage until each earlier
 stage has an entry with `done` or `skipped: <reason>`. An entry with
 `selection pending` does not count. The `feature-dev review` entry counts as
-an earlier stage of deslop. If a file has no `feature-dev review` entry and
-deslop has no result, add `feature-dev review: pending`. If the entry is
-missing and deslop has a result, the review counts as done. If feature-dev is
+an earlier stage of final-check. If a file has no `feature-dev review` entry
+and neither final-check nor deslop has a result, add `feature-dev review:
+pending`. If the entry is missing and one of them has a result, the review
+counts as done. A file of an older run can have a result for deslop and
+none for final-check: then run final-check, and run deslop on the files that
+its fixes changed. If feature-dev is
 skipped, set it to `skipped: feature-dev skipped`. When a stage ends,
 write its
 status and its result: the approved elevated request, the Grill Result, the
@@ -177,8 +180,8 @@ within the delegated scope, asking about decisions outside it.
 
 Select `elevate` and
 `final-check` before the first stage starts. Select `deepen` after grill,
-when the acceptance criteria are known. Select `retro` after final-check, or
-after deslop when final-check is skipped. If the user includes or skips a
+when the acceptance criteria are known. Select `retro` after deslop. If the
+user includes or skips a
 stage, do what the user says.
 
 - **`elevate`:** Run it when one of these is true:
@@ -228,7 +231,7 @@ question about the goal or the scope remains, ask it once, or offer the
 full pipeline.
 
 ```text
-feature-dev → deslop → final-check
+feature-dev → final-check → deslop
 ```
 
 - Set elevate, grill, deepen, and retro to `skipped: quick mode`, and set
@@ -238,9 +241,9 @@ feature-dev → deslop → final-check
   first edit, write the expected behavior, the non-goals, and the
   acceptance criteria to the progress file. They replace the Grill Result
   in the later stages.
-- Run feature-dev, its diff review, deslop, and final-check in this order,
-  as the section "Run the stages" describes. Final-check checks the result
-  of deslop, so do not combine it with the diff review. When the host can
+- Run feature-dev, its diff review, final-check, and deslop in this order,
+  as the section "Run the stages" describes. Do not combine the diff review
+  with final-check. When the host can
   run subagents, run each check in its own subagent, as the section "Run
   checks in a fresh context" describes, and write the runner in each
   entry. These checks are the reason for the quick mode: do not skip one
@@ -291,19 +294,17 @@ points of each stage stay in effect. A ship request does not approve them.
    `feature-dev review` entry to `done (<runner>): <N> findings` or
    `skipped: <reason>`.
    When the user asks for a commit after each group of changes, review the
-   whole range once before deslop.
-5. **Deslop.** A ship request approves cleanup of the changes of this task
-   only. Give deslop that scope explicitly: the hunks in `git diff
-   <start_commit>` and the untracked files that are not ignored. After
-   cleanup, run the affected checks again. When the changes of the task are
-   large, such as more than about 500 changed lines, offer the `deep` mode of
-   deslop for those files.
-6. **Final-check.** Compare the result with the original request, the Grill
+   whole range once before final-check.
+5. **Final-check.** Compare the result with the original request, the Grill
    Result, and the acceptance criteria. Report each deepen target as met, not
-   met, or not measured. Fix the confirmed gaps in scope. Then run deslop on
-   the files that these fixes changed, and run the affected checks again.
-   Skip this when deslop was skipped. Set final-check to `done (<runner>)`
-   only after this deslop.
+   met, or not measured. Fix the confirmed gaps in scope, and run the
+   affected checks again. Set final-check to `done (<runner>)`.
+6. **Deslop.** A ship request approves cleanup of the changes of this task
+   only. Give deslop that scope explicitly: the hunks in `git diff
+   <start_commit>` and the untracked files that are not ignored, including
+   the fixes of final-check. After cleanup, run the affected checks again.
+   When the changes of the task are large, such as more than about 500
+   changed lines, offer the `deep` mode of deslop for those files.
 
    When the result has a user interface or behavior that the user can try,
    start it in a clean state before the output: no test stubs, patches, or
@@ -364,9 +365,10 @@ skill, the idea, and the moment. Write `sent to feedback file` next to each
 idea as its decision. If you cannot write the file, show the ideas in the
 output, and write `shown in output` as the decision.
 
-Implement each "do now" idea in this run. Then run deslop on the new hunks,
-and run final-check again for them, or the feature-dev validation if the user
-skipped final-check. Run a slow check, such as an end-to-end suite, once
+Implement each "do now" idea in this run. Then run final-check again for
+the new hunks, or the feature-dev validation if the user skipped
+final-check, and then run deslop on them. Run a slow check, such as an
+end-to-end suite, once
 after this pass, not before it and again after it. Mark each step next to the
 idea when it ends. Give the ideas that this second pass finds to the `add`
 mode without the "do now" option. Record the friction of the second pass, but

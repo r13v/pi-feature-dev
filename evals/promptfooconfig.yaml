@@ -601,7 +601,7 @@ tests:
       - type: javascript
         value: file://checks.mjs:shipReviewBeforeDeslop
 
-  - description: ship quick mode runs only feature-dev, deslop, and final-check
+  - description: ship quick mode runs only feature-dev, final-check, and deslop
     vars:
       case: ship-quick-mode
       source: "когда я запускаю feature-dev, то потом всегда запускаю final-check и затем deslop apply"
