@@ -55,7 +55,8 @@ Documents alone do not authorize this shortcut. It keeps its state in a
 progress file under `.git/`, so it does not skip stages and can continue after the context is compacted or in a new session. It records
 the start commit, and treats all changes after it as the task's changes. It
 runs the diff review and `final-check` in a subagent with a fresh context when
-the host can. It fixes a finding about wrong behavior only after a test or a
+the host can. It writes who ran each of these checks in its entry, `subagent`
+or `self`. It fixes a finding about wrong behavior only after a test or a
 command reproduces it. Before the fixes, it saves the state in which all
 checks pass, and restores it when a fix breaks a check or a finding comes
 back. It writes documentation changes with `ste` and applies
@@ -72,7 +73,11 @@ It can also start from a backlog item, a file or a ticket. When the
 instructions of the project require a ticket for each change, it finds or
 creates one before the first edit, after the user agrees. It is for non-trivial implementation.
 It does not commit, push, or deploy, but at the end it asks whether to commit
-and open a pull request.
+and open a pull request. In the quick mode, for a request that already states
+what to build, it runs only `feature-dev`, `final-check`, and `deslop`, with
+the same fresh-context checks. It keeps the design approval, skips the
+interview and `retro`, and lists the ideas outside the scope in the output
+instead of offering them to `backlog`.
 
 The `retro` skill looks back on a session or a `ship` run and proposes changes
 to the environment of the agent, so that the next run does not struggle in the
@@ -254,6 +259,12 @@ Run the whole pipeline for one feature:
 /skill:ship Add usage-based billing to the invoices service.
 ```
 
+Run only implementation, cleanup, and the final check:
+
+```text
+/skill:ship quick Add a CSV export to the reports page.
+```
+
 Start the pipeline from a deferred idea:
 
 ```text
@@ -305,7 +316,7 @@ The skills chain from choosing the target to cleaning up the result. Steps in
 brackets are optional:
 
 ```text
-[elevate] → grill → [deepen] → feature-dev → deslop → [final-check] → [retro]
+[elevate] → grill → [deepen] → feature-dev → [final-check] → deslop → [retro]
 ```
 
 - `elevate` comes first because it decides what to do. `grill` then settles
@@ -315,6 +326,8 @@ brackets are optional:
 - `deepen` comes before `feature-dev` so that its external check, such as a
   test, a reproduction, or a reconciliation against source data, becomes the
   validation criterion for the implementation.
+- `deslop` comes after `final-check` so that it runs once and also cleans
+  up the fixes of `final-check`.
 - `retro` comes last because it reviews how the run went, not the result.
   Skip it when the run was smooth.
 

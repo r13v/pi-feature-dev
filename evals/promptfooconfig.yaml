@@ -601,6 +601,20 @@ tests:
       - type: javascript
         value: file://checks.mjs:shipReviewBeforeDeslop
 
+  - description: ship quick mode runs only feature-dev, final-check, and deslop
+    vars:
+      case: ship-quick-mode
+      source: "когда я запускаю feature-dev, то потом всегда запускаю final-check и затем deslop apply"
+      request: >-
+        Use the ship skill in the quick mode: add `slugify(text)` to
+        src/text.js. It lowercases the text and joins the runs of Latin
+        letters and digits with single hyphens. I chose the approach: a plain
+        function next to `truncate`, with a test. Do not ask questions. Do
+        not commit.
+    assert:
+      - type: javascript
+        value: file://checks.mjs:shipQuickMode
+
   - description: final-check finds the old name in the docs after a rename
     vars:
       case: final-check-renamed-docs
