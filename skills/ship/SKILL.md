@@ -1,6 +1,6 @@
 ---
 name: ship
-description: Take a non-trivial feature from a raw request to validated, cleaned-up changes in one run. Settle the right target and the decisions with the user, implement with design approval, remove the bloat the work added, check for missed requirements, learn from the friction of the run, and defer the ideas outside the scope to the backlog. Use when the user asks to ship a feature end to end, to run the whole pipeline, or to start from a backlog item; skip mechanical edits, small fixes, and work with no implementation.
+description: Take a non-trivial feature from a raw request to validated, cleaned-up changes in one run. Settle the right target and the decisions with the user, implement with design approval, remove the bloat the work added, check for missed requirements, learn from the friction of the run, and defer the ideas outside the scope to the backlog. Use when the user asks to ship a feature end to end, to run the whole pipeline, or to start from a backlog item; in the quick mode, it runs only feature-dev, deslop, and final-check. Skip mechanical edits, small fixes, and work with no implementation.
 ---
 
 # Ship
@@ -10,6 +10,9 @@ Take one non-trivial implementation request through the full pipeline:
 ```text
 [elevate] → grill → [deepen] → feature-dev → deslop → [final-check] → [retro]
 ```
+
+When the user asks for the quick mode, run the shorter pipeline that the
+section "Quick mode" describes.
 
 This skill only orchestrates. Each stage follows its own skill. This skill
 selects the stages, passes each result to the next stage, and keeps the
@@ -79,6 +82,7 @@ choose another run ID. Start the file with YAML frontmatter:
 ```yaml
 ---
 status: active
+mode: full
 run_id: 20261022-1530-add-export
 branch: f/export
 start_commit: 14da9c8
@@ -86,9 +90,11 @@ started: 2026-10-22T15:30
 ---
 ```
 
-Use `git branch --show-current` for `branch`, or `detached` if it prints
-nothing. Use `git rev-parse --short HEAD` for `start_commit`, or `none` on a
-branch with no commits. In the body, write:
+Use `quick` for `mode` in the quick mode, and `full` otherwise. A file
+with no `mode` is a `full` run. Use `git branch --show-current` for
+`branch`, or `detached` if it prints nothing. Use `git rev-parse --short
+HEAD` for `start_commit`, or `none` on a branch with no commits.
+In the body, write:
 
 - the original request;
 - one entry for each stage: `selected`, `skipped: <reason>`, or, for deepen,
@@ -213,6 +219,31 @@ check costs more than the budget, ask.
 
 State the selected stages in one line. Give a reason for each skipped stage.
 
+## Quick mode
+
+Use the quick mode when the user asks for it, such as "ship quick", or
+asks for feature-dev with the checks and the cleanup but without the
+interview. The request must already state what to build. If a material
+question about the goal or the scope remains, ask it once, or offer the
+full pipeline.
+
+```text
+feature-dev → deslop → final-check
+```
+
+- Set elevate, grill, deepen, and retro to `skipped: quick mode`, and set
+  the `deferred ideas` entry to `skipped: quick mode`. If the user includes
+  one of these stages, run it as in the full pipeline.
+- Feature-dev keeps its design approval. After discovery, and before the
+  first edit, write the expected behavior, the non-goals, and the
+  acceptance criteria to the progress file. They replace the Grill Result
+  in the later stages.
+- Run feature-dev, its diff review, deslop, and final-check as the section
+  "Run the stages" describes, with the checks in a fresh context.
+- Record friction as usual. A later retro reads it.
+- Add the ideas outside the scope to the `Deferred ideas` section, and list
+  them in the output. Do not call the `backlog` skill unless the user asks.
+
 ## Run the stages
 
 Each stage takes the result of the previous stage as its request. The approval
@@ -299,7 +330,8 @@ when it appears. Ideas come from:
 - retro: changes to the environment of the agent, in lines that start with
   `retro:`, and changes to skills, in lines that start with `retro-skill:`.
 
-When the retro entry is `done` or `skipped: <reason>`, give the ideas of the
+In the quick mode, do not do the rest of this section. Otherwise, when the
+retro entry is `done` or `skipped: <reason>`, give the ideas of the
 section to the `add` mode of the `backlog` skill. It asks the user about the
 ideas in one batch. Ask it to add the option "do now" only for an idea that
 does not change the accepted objective and is not a confirmed non-goal. Do
@@ -413,7 +445,8 @@ clarity mode.
 ## Output
 
 - Each stage that ran or was skipped, with the reason.
-- The accepted objective from the Grill Result.
+- The accepted objective from the Grill Result, or, in the quick mode,
+  the acceptance criteria from feature-dev.
 - The changes, the files touched, and the key decisions.
 - The validation that ran, and the items that remain unverified.
 - The path of the progress file.

@@ -72,7 +72,11 @@ It can also start from a backlog item, a file or a ticket. When the
 instructions of the project require a ticket for each change, it finds or
 creates one before the first edit, after the user agrees. It is for non-trivial implementation.
 It does not commit, push, or deploy, but at the end it asks whether to commit
-and open a pull request.
+and open a pull request. In the quick mode, for a request that already states
+what to build, it runs only `feature-dev`, `deslop`, and `final-check`, with
+the same fresh-context checks. It keeps the design approval, skips the
+interview and `retro`, and lists the ideas outside the scope in the output
+instead of offering them to `backlog`.
 
 The `retro` skill looks back on a session or a `ship` run and proposes changes
 to the environment of the agent, so that the next run does not struggle in the
@@ -252,6 +256,12 @@ Run the whole pipeline for one feature:
 
 ```text
 /skill:ship Add usage-based billing to the invoices service.
+```
+
+Run only implementation, cleanup, and the final check:
+
+```text
+/skill:ship quick Add a CSV export to the reports page.
 ```
 
 Start the pipeline from a deferred idea:
