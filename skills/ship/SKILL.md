@@ -238,8 +238,13 @@ feature-dev → deslop → final-check
   first edit, write the expected behavior, the non-goals, and the
   acceptance criteria to the progress file. They replace the Grill Result
   in the later stages.
-- Run feature-dev, its diff review, deslop, and final-check as the section
-  "Run the stages" describes, with the checks in a fresh context.
+- Run feature-dev, its diff review, deslop, and final-check in this order,
+  as the section "Run the stages" describes. Final-check checks the result
+  of deslop, so do not combine it with the diff review. When the host can
+  run subagents, run each check in its own subagent, as the section "Run
+  checks in a fresh context" describes, and write the runner in each
+  entry. These checks are the reason for the quick mode: do not skip one
+  because the change is small.
 - Record friction as usual. A later retro reads it.
 - Add the ideas outside the scope to the `Deferred ideas` section, and list
   them in the output. Do not call the `backlog` skill unless the user asks.
@@ -283,7 +288,8 @@ points of each stage stay in effect. A ship request does not approve them.
    deferred ideas. Ask whether to extend the scope only when the accepted
    objective cannot be met without it. Then run
    the diff review in a fresh context, as described below, and set the
-   `feature-dev review` entry to `done: <N> findings` or `skipped: <reason>`.
+   `feature-dev review` entry to `done (<runner>): <N> findings` or
+   `skipped: <reason>`.
    When the user asks for a commit after each group of changes, review the
    whole range once before deslop.
 5. **Deslop.** A ship request approves cleanup of the changes of this task
@@ -296,8 +302,8 @@ points of each stage stay in effect. A ship request does not approve them.
    Result, and the acceptance criteria. Report each deepen target as met, not
    met, or not measured. Fix the confirmed gaps in scope. Then run deslop on
    the files that these fixes changed, and run the affected checks again.
-   Skip this when deslop was skipped. Set final-check to `done` only after
-   this deslop.
+   Skip this when deslop was skipped. Set final-check to `done (<runner>)`
+   only after this deslop.
 
    When the result has a user interface or behavior that the user can try,
    start it in a clean state before the output: no test stubs, patches, or
@@ -389,6 +395,10 @@ If the host cannot run subagents, run the checks yourself, and read the
 standards document first. When the host can run subagents, a diff review or
 a final-check that the writing agent ran itself is not done. If the subagent
 fails, set the entry to `skipped: <reason>`.
+
+In the `done` entry of each of these checks, write who ran it as
+`<runner>`: `subagent`, or `self` when the host cannot run subagents. An
+entry `done` with no runner, from an older run, counts as done.
 
 Before you fix a finding, open the code that it cites and confirm it. Confirm
 a finding about wrong behavior with a test or a command that fails before the

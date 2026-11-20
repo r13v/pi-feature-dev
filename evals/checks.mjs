@@ -496,7 +496,7 @@ export function shipReviewBeforeDeslop(output, { metadata }) {
 export function shipQuickMode(output, { metadata }) {
   const progress = progressFile(metadata.workdir);
   const stage = (name, value) => new RegExp(
-    `(?:^|\\n)\\s*[-*]?\\s*${name}:\\s*${value}\\b`, "i").test(progress);
+    `(?:^|\\n)\\s*[-*]?\\s*${name}:\\s*${value}(?!\\w)`, "i").test(progress);
   const r = spawnSync("node", ["--input-type=module", "-e",
     "import { slugify } from './src/text.js';"
     + "process.exit(slugify('  Hello, World! ') === 'hello-world' ? 0 : 1)",
@@ -506,8 +506,9 @@ export function shipQuickMode(output, { metadata }) {
       && /status: finished/.test(progress),
     "interview and retro skipped": stage("grill", "skipped")
       && stage("retro", "skipped"),
-    "checks done": stage("feature-dev review", "done")
-      && stage("deslop", "done") && stage("final-check", "done"),
+    "checks done": stage("deslop", "done")
+      && stage("feature-dev review", "done \\(subagent\\)")
+      && stage("final-check", "done \\(subagent\\)"),
     "no backlog items": !existsSync(join(metadata.workdir, "docs/backlog")),
     "slugify works": r.status === 0,
     "tests pass": testsPass(metadata.workdir),

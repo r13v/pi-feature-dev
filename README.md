@@ -55,7 +55,8 @@ Documents alone do not authorize this shortcut. It keeps its state in a
 progress file under `.git/`, so it does not skip stages and can continue after the context is compacted or in a new session. It records
 the start commit, and treats all changes after it as the task's changes. It
 runs the diff review and `final-check` in a subagent with a fresh context when
-the host can. It fixes a finding about wrong behavior only after a test or a
+the host can. It writes who ran each of these checks in its entry, `subagent`
+or `self`. It fixes a finding about wrong behavior only after a test or a
 command reproduces it. Before the fixes, it saves the state in which all
 checks pass, and restores it when a fix breaks a check or a finding comes
 back. It writes documentation changes with `ste` and applies
