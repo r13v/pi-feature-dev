@@ -15,12 +15,11 @@ prove that something good happens eventually.
 
 ## Run
 
-Work in a scratch folder outside the repository. Copy `scripts/check.mjs` from
-this skill into it, then run:
+Write the model in a scratch folder outside the repository. The checker needs
+only Node 18 or later, with no packages to install:
 
 ```sh
-npm init -y >/dev/null && npm install xstate@5 @xstate/graph@3
-node check.mjs model.mjs out
+node <skill dir>/scripts/check.mjs model.mjs out
 ```
 
 The checker writes `out/report.md` and `out/chart.mmd`, and prints the report.

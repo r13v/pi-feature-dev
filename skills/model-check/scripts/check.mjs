@@ -6,8 +6,6 @@
 import { writeFileSync, mkdirSync } from "node:fs";
 import { resolve } from "node:path";
 import { pathToFileURL } from "node:url";
-import { fromTransition } from "xstate";
-import { TestModel } from "@xstate/graph";
 
 const args = process.argv.slice(2);
 const limitAt = args.indexOf("--limit");
@@ -29,40 +27,34 @@ const done = m.done ?? (() => false);
 const arrow = m.arrow ?? ((e) => e.type);
 
 const key = (s) => JSON.stringify(s);
-const model = new TestModel(
-  fromTransition((s, e) => m.step(s, e), m.initial),
-  {
-    events: typeof m.events === "function"
-      ? (snap) => m.events(snap.context)
-      : m.events,
-    serializeState: (snap) => key(snap.context),
-    limit,
-  },
-);
+const eventsIn = typeof m.events === "function" ? m.events : () => m.events;
 
-let adjacency;
-try {
-  adjacency = model.getAdjacencyMap();
-} catch (error) {
-  if (!String(error.message).includes("limit")) throw error;
-  console.error(`More than ${limit} states. Make the model smaller.`);
-  process.exit(2);
+// Breadth-first search. The map keeps the order in which states are found,
+// and the first path to each state is a shortest one.
+const seen = new Map([[key(m.initial), { state: m.initial, from: null }]]);
+const states = [];
+for (const [k, { state }] of seen) {
+  const next = [];
+  for (const event of eventsIn(state)) {
+    const to = m.step(state, event);
+    const toKey = key(to);
+    if (toKey === k) continue;
+    next.push({ event, to });
+    if (!seen.has(toKey)) seen.set(toKey, { state: to, from: k, event });
+  }
+  states.push({ state, next });
+  if (seen.size > limit) {
+    console.error(`More than ${limit} states. Make the model smaller.`);
+    process.exit(2);
+  }
 }
 
-const states = Object.values(adjacency).map((node) => ({
-  state: node.state.context,
-  next: Object.values(node.transitions)
-    .map((t) => ({ event: t.event, to: t.state.context }))
-    .filter((t) => key(t.to) !== key(node.state.context)),
-}));
-
 function shortestPath(isBad) {
-  const paths = model.getShortestPaths({ toState: (snap) => isBad(snap.context) });
-  if (!paths.length) return null;
-  const path = paths.sort((a, b) => a.steps.length - b.steps.length)[0];
-  return path.steps
-    .filter((s) => !s.event.type.startsWith("xstate."))
-    .map((s) => s.event);
+  const hit = [...seen.values()].find((n) => isBad(n.state));
+  if (!hit) return null;
+  const path = [];
+  for (let n = hit; n.from !== null; n = seen.get(n.from)) path.unshift(n.event);
+  return path;
 }
 
 const exits = new Map(states.map((n) => [key(n.state), n.next.length]));

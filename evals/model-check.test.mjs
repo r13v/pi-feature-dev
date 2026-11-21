@@ -60,3 +60,13 @@ export const done = () => false;
   assert.equal(status, 1, stdout);
   assert.match(stdout, /BREAKS: Each state that is not an end state/);
 });
+
+test("the checker stops at the state limit", () => {
+  const out = mkdtempSync(join(tmpdir(), "model-check-limit-"));
+  const run = spawnSync(process.execPath,
+    [checker, fileURLToPath(example), out, "--limit", "5"],
+    { encoding: "utf8" });
+  rmSync(out, { recursive: true, force: true });
+  assert.equal(run.status, 2, run.stdout);
+  assert.match(run.stderr, /More than 5 states/);
+});
