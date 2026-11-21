@@ -109,6 +109,14 @@ Match the visual to the review question:
 Skip the diagram when one obvious relationship or a short table explains the
 change better.
 
+In a state or flow diagram, label each node with what the reviewer can see or
+cares about, such as "Paying" or "Lease held, write pending", not with a
+variable, function, or class name. Label each arrow with the event as the user
+sees it happen, such as "the payment fails". Aim for about 20 arrows or fewer.
+First merge states that act the same, then leave out steps that the review
+question does not need, such as a reset that every state has. Keep each state
+of a risk path. Under the diagram, name the steps that it leaves out.
+
 Use Mermaid as the default portable diagram format. It is an output
 representation, not a required tool. Let the current **Host Agent** render it
 with its native interface. Use a richer interactive surface only when it saves

@@ -13,7 +13,10 @@ feature work:
 - validate and summarize results
 
 Design comparisons distinguish structural guarantees from caller discipline
-and name what the next typical extension would change. Validation checks that
+and name what the next typical extension would change. For a lifecycle,
+protocol, or concurrent change, the design lists the invariants and plans a test
+that replays the shortest event sequence that could break each one. Validation
+checks that
 critical guard and regression tests fail without the protection, verifies the
 causes behind shared failure signals, and uses the check's exit status rather
 than truncated output to determine success.
@@ -156,6 +159,8 @@ The `visual-recap` skill turns a plan or completed non-trivial change into an
 evidence-backed visual review aid. It helps a reviewer see the outcome, affected
 system parts, risk, and the best place to inspect first. It adapts to the current
 host agent, uses Mermaid for portable diagrams, and keeps an inline fallback.
+State and flow diagrams use the reviewer's words for states and events, stay
+near 20 arrows, and name the steps they leave out.
 
 ## Install
 
