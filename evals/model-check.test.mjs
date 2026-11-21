@@ -70,3 +70,16 @@ test("the checker stops at the state limit", () => {
   assert.equal(run.status, 2, run.stdout);
   assert.match(run.stderr, /More than 5 states/);
 });
+
+test("an error in the model exits with 2, not as a broken rule", () => {
+  const dir = mkdtempSync(join(tmpdir(), "model-check-error-"));
+  const model = join(dir, "error.mjs");
+  writeFileSync(model, `export * from ${JSON.stringify(example.href)};
+export const rules = { boom: () => { throw new Error("bad rule"); } };
+`);
+  const run = spawnSync(process.execPath, [checker, model, dir],
+    { encoding: "utf8" });
+  rmSync(dir, { recursive: true, force: true });
+  assert.equal(run.status, 2, run.stderr);
+  assert.match(run.stderr, /bad rule/);
+});

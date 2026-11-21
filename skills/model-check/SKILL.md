@@ -76,7 +76,9 @@ look the same.
 
 Aim for about 20 arrows or fewer. First merge states that act the same, then
 hide arrows that the reader does not need, such as a reset that every state
-has. Keep each state of a bug path. Do not merge two states that break
+has. Keep each state of a bug path. Keep each chart state reachable by arrows
+from the start, and keep at least one arrow out of each state that has a step
+out. Do not merge two states that break
 different rules. When a chart state has `mayBreak`, only some of the model
 states behind it break a rule; split its label when the reader must see where.
 

@@ -7,6 +7,12 @@ import { writeFileSync, mkdirSync } from "node:fs";
 import { resolve } from "node:path";
 import { pathToFileURL } from "node:url";
 
+// An error in the model is not a broken rule, so it must not exit with 1.
+process.on("uncaughtException", (error) => {
+  console.error(error);
+  process.exit(2);
+});
+
 const args = process.argv.slice(2);
 const limitAt = args.indexOf("--limit");
 const limit = limitAt === -1 ? 5000 : Number(args.splice(limitAt, 2)[1]);
