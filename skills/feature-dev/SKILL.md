@@ -58,6 +58,12 @@ organized batch; assume and state the rest.
 Describe the intended implementation and validation briefly before editing; for
 multi-file changes, name the files to change and the build order.
 
+When the change adds or changes a lifecycle, a protocol, or concurrent access
+to shared state, list its states and the invariants that must hold, in the
+user's words. For each invariant, find the shortest sequence of events that
+could break it, such as a retry during a cancel. Plan a test that replays that
+sequence step by step against the real code.
+
 Present alternatives when the change does any of these:
 
 - changes a public contract: API, CLI, configuration, file format, or event;
