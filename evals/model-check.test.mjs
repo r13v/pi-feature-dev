@@ -61,6 +61,29 @@ export const done = () => false;
   assert.match(stdout, /BREAKS: Each state that is not an end state/);
 });
 
+test("the checker reports a loop with no way to an end state", () => {
+  const dir = mkdtempSync(join(tmpdir(), "model-check-loop-"));
+  const model = join(dir, "loop.mjs");
+  writeFileSync(model, `export const initial = { phase: "start" };
+export const events = [{ type: "try" }, { type: "fail" }, { type: "finish" }];
+export function step(s, e) {
+  if (s.phase === "start" && e.type === "try") return { phase: "trying" };
+  if (s.phase === "start" && e.type === "finish") return { phase: "end" };
+  if (s.phase === "trying" && e.type === "fail") return { phase: "retry" };
+  if (s.phase === "retry" && e.type === "try") return { phase: "trying" };
+  return s;
+}
+export const rules = {};
+export const label = (s) => s.phase;
+export const done = (s) => s.phase === "end";
+`);
+  const { status, stdout } = check(model);
+  rmSync(dir, { recursive: true, force: true });
+  assert.equal(status, 1, stdout);
+  assert.match(stdout, /Holds: Each state that is not an end state/);
+  assert.match(stdout, /BREAKS: An end state can be reached[\s\S]*1\. try -> trying/);
+});
+
 test("the checker stops at the state limit", () => {
   const out = mkdtempSync(join(tmpdir(), "model-check-limit-"));
   const run = spawnSync(process.execPath,

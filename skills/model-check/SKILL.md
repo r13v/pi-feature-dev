@@ -10,8 +10,10 @@ tries each order of events, finds each state that breaks a rule, and gives the
 shortest path to it. The chart shows the states in the words of the reader, who
 decides whether the behavior is right.
 
-The checker finds safety bugs only: a state that must never occur. It does not
-prove that something good happens eventually.
+The checker finds safety bugs: a state that must never occur. When the model
+exports `done`, it also finds each state from which no end state can be
+reached, such as a retry loop with no way out. It does not prove that a fair
+run ends: a loop that also has an exit passes.
 
 ## Run
 
@@ -23,10 +25,10 @@ node <skill dir>/scripts/check.mjs model.mjs out
 ```
 
 The checker writes `out/report.md` and `out/chart.mmd`, and prints the report.
-Exit status 0 means that each rule holds and no state is stuck. Exit status 1
-means that a rule breaks or a state is stuck. Exit status 2 means a usage or
-model error, or more states than the limit. The limit is 5000 states; change
-it with `--limit N`.
+Exit status 0 means that each rule holds and no state is stuck or cut off
+from an end. Exit status 1 means that one of these checks fails. Exit status 2
+means a usage or model error, or more states than the limit. The limit is
+5000 states; change it with `--limit N`.
 
 `references/example-model.mjs` is a complete model of a lost update.
 
@@ -40,15 +42,21 @@ The model is an ES module with these exports:
   `{ type: "write", w: 1 }`, so that the checker tries each interleaving.
 - `step(state, event)`: returns the next state. Return the same state when
   the event cannot occur. Do not change the given state. Two states are the
-  same when their JSON is the same.
+  same when their JSON is the same. Give one result for one event: when an
+  action can end two ways, such as a call that succeeds or fails, give each
+  way its own event, such as `{ type: "call ok" }` and
+  `{ type: "call fails" }`.
 - `rules`: an object from a sentence that the reader agrees to, such as
   "A paid order is never refunded twice", to a function that returns true
   when the state obeys it.
 - `label(state)`: the words for a chart state.
 - `done(state)`, optional: true for a correct end state. Each other state
-  with no step out is stuck.
+  with no step out is stuck, and each state must have a path to an end state.
 - `arrow(event, from, to)`, optional: the words for an arrow, or `null` to
   hide it.
+
+`step`, `label`, and `arrow` must depend only on their arguments, with no
+random values or clock.
 - `title`, optional: the chart title.
 
 Model what can make a rule break: each actor, each retry, each failure, each
@@ -62,13 +70,19 @@ of refunds. Never weaken a rule to make it hold.
 When the model describes existing code, write each event from the code, and
 cite the file and line that each event stands for.
 
+When each rule holds, break the model on purpose, such as by removing a guard
+or reordering two steps, and confirm that the checker reports the rule. A rule
+that you have never seen break proves nothing. Also check that the state count
+in the report is about what you expect.
+
 ## Pick the chart
 
 Label each state with what the reader can see or cares about, such as
 "Paying" or "Lease held, write pending". Keep variable names out of labels.
 Write each arrow as the user sees it happen, such as "the payment fails".
 The chart merges the states that get one label, and the arrows that get one
-text between the same two states.
+text between the same two states. It does not draw a step that stays in one
+chart state; split the label when the reader must see such a step.
 
 When a value that no label shows decides where a step goes, name the result
 in the arrow, such as "worker 2 writes 1". Otherwise two arrows from one state

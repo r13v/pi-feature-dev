@@ -70,5 +70,5 @@ Stop and ask which recommendations to apply.
 ## Apply approved changes
 
 Apply only the approved items. Keep each skill's existing style and structure.
-Update `README.md` and `CONTEXT.md` when a change affects what they describe.
+Update `README.md` and `GLOSSARY.md` when a change affects what they describe.
 Run `npm test` and report the result.

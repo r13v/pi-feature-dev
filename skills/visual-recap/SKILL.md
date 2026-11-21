@@ -34,9 +34,9 @@ review.
 Use the smallest sufficient set of project evidence:
 
 1. Follow the instructions and context that the **Host Agent** already supplied.
-2. Look for project-local `CONTEXT-MAP.md` and `CONTEXT.md` files. Use
-   `CONTEXT-MAP.md` for bounded-context locations and relationships. Use the
-   relevant `CONTEXT.md` files for canonical domain terms. Link to each file
+2. Look for project-local `GLOSSARY-MAP.md` and `GLOSSARY.md` files. Use
+   `GLOSSARY-MAP.md` for bounded-context locations and relationships. Use the
+   relevant `GLOSSARY.md` files for canonical domain terms. Link to each file
    that informed the recap.
 3. Use existing architecture documents, diagrams, ownership maps, and decision
    records when they cover the affected area.
@@ -48,7 +48,7 @@ Use the smallest sufficient set of project evidence:
    a source-control comparison when available, but do not require one
    version-control system.
 
-A `CONTEXT.md` glossary supplies language, not architecture or path ownership.
+A `GLOSSARY.md` supplies language, not architecture or path ownership.
 Do not create or update context files for this recap.
 
 Use session memory to find evidence, not to prove a claim. Label facts when the
@@ -92,7 +92,9 @@ attention the change needs.
 | **High** | The change affects security, privacy, persisted data, public compatibility, critical invariants, concurrency, or broad cross-system behavior. Also use High when a large blast radius has weak evidence. |
 
 State why the overall risk has that level. A new unit is not automatically high
-risk. A small authentication or data edit is not automatically low risk.
+risk. A small authentication or data edit is not automatically low risk. Name
+each invariant that the change touches, at every risk level. A health check or
+a login smoke test does not validate a behavior change.
 
 ## Choose the Smallest Useful Visual
 
@@ -115,13 +117,15 @@ variable, function, or class name. Label each arrow with the event as the user
 sees it happen, such as "the payment fails". Aim for about 20 arrows or fewer.
 First merge states that act the same, then leave out steps that the review
 question does not need, such as a reset that every state has. Keep each state
-of a risk path. Under the diagram, name the steps that it leaves out.
+of a risk path. Under the diagram, name the steps that it leaves out. In a
+sequence diagram, label each message with what the change does there.
 
 Use Mermaid as the default portable diagram format. It is an output
 representation, not a required tool. Let the current **Host Agent** render it
 with its native interface. Use a richer interactive surface only when it saves
 review effort. Quote Mermaid node labels that contain spaces or special
-characters.
+characters. Keep `;` out of sequence diagram messages and notes; Mermaid reads
+it as a line end.
 
 If the current interface does not render Mermaid, use a compact ASCII-art
 diagram as the first fallback. Use a Markdown table and short relationship list

@@ -1,6 +1,6 @@
 ---
 name: grill
-description: Stress-test an idea or domain model through evidence-backed interview rounds when the user asks to be challenged or grilled. Record agreed terminology and durable decisions. Also use to create or edit the domain glossary (`CONTEXT.md`) or an ADR.
+description: Stress-test an idea or domain model through evidence-backed interview rounds when the user asks to be challenged or grilled. Record agreed terminology and durable decisions. Also use to create or edit the domain glossary (`GLOSSARY.md`) or an ADR.
 ---
 
 # Grill
@@ -66,10 +66,11 @@ external sources before questioning the user. Distinguish direct evidence,
 reasonable inference, and remaining unknowns.
 
 Use read-only tools or isolated research workers when the host provides them and
-current instructions permit them. If research runs asynchronously, treat its
-result as an unsettled prerequisite: defer only the dependent questions and
-continue with the rest of the frontier. If delegation is unavailable, research
-directly.
+current instructions permit them. Start each worker with a fresh context, not
+a fork of this conversation, so it checks facts without the interview's
+framing. If research runs asynchronously, treat its result as an unsettled
+prerequisite: defer only the dependent questions and continue with the rest of
+the frontier. If delegation is unavailable, research directly.
 
 Before recommending an option, verify the premises that make it viable,
 such as API support or whether people use the workflow step it relies on.
@@ -84,19 +85,19 @@ work when relevant.
 
 ### 3. Load and challenge the domain language
 
-Merely reading `CONTEXT.md` to use its vocabulary is not this skill; any task
+Merely reading `GLOSSARY.md` to use its vocabulary is not this skill; any task
 can do that. This step is for challenging and changing the domain model.
 
-Look for `CONTEXT-MAP.md` and the relevant `CONTEXT.md` before inventing
+Look for `GLOSSARY-MAP.md` and the relevant `GLOSSARY.md` before inventing
 terminology:
 
-- If the repository already uses `GLOSSARY.md` or `GLOSSARY-MAP.md` for the
-  same purpose, use them in place of `CONTEXT.md` and `CONTEXT-MAP.md`. Do
+- If the repository already uses `CONTEXT.md` or `CONTEXT-MAP.md` for the
+  same purpose, use them in place of `GLOSSARY.md` and `GLOSSARY-MAP.md`. Do
   not create a second glossary.
-- If `CONTEXT-MAP.md` exists, use it to locate the applicable bounded context
+- If `GLOSSARY-MAP.md` exists, use it to locate the applicable bounded context
   and its ADR directory.
-- If only a root `CONTEXT.md` exists, treat the repository as a single context.
-- If neither exists, create a root `CONTEXT.md` after the first domain term is
+- If only a root `GLOSSARY.md` exists, treat the repository as a single context.
+- If neither exists, create a root `GLOSSARY.md` after the first domain term is
   resolved by the user or within an explicitly delegated terminology choice.
 
 Call out glossary conflicts immediately. Replace fuzzy or overloaded words with
@@ -218,11 +219,11 @@ decision and its impact.
 ## Record decisions during the grill
 
 When a project term is resolved by the user or within delegated authority,
-update the applicable `CONTEXT.md` if documentation is in scope. Update it
+update the applicable `GLOSSARY.md` if documentation is in scope. Update it
 inline as each term resolves; do not batch glossary changes until the end.
-Resolve [CONTEXT-FORMAT.md](./CONTEXT-FORMAT.md) from the selected
+Resolve [GLOSSARY-FORMAT.md](./GLOSSARY-FORMAT.md) from the selected
 `grill/SKILL.md` directory, then read and follow it before the first update.
-Keep `CONTEXT.md` a glossary only: no implementation details, requirements,
+Keep `GLOSSARY.md` a glossary only: no implementation details, requirements,
 scratch notes, or architectural decisions.
 
 Offer an ADR only when all three conditions hold:

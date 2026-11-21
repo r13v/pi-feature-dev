@@ -18,7 +18,9 @@ If the work makes something that already exists safer, faster, or simpler,
 it is `debt`. If it adds what nobody can do today, it is an `idea`.
 
 Reading the backlog does not give permission to work an item. Do not
-commit, push, or post items to a pull request unless the user asks.
+commit, push, or post items to a pull request unless the user asks. When the
+user asks to commit items outside a `ship` run, commit only the item files.
+If other changes are already staged, report them and do not commit.
 
 ## Storage
 
@@ -142,8 +144,10 @@ mistyped slug, not an idea. Say so and list the items. Do not add it.
 
 ### List
 
-Use this mode when there is no argument. Read all items. For each item with
-`where`, check that the place exists and still shows what the item claims.
+Use this mode when there is no argument. Read all items. When the items are
+files and `docs/backlog/` does not exist, say so and do not create it. For each
+item with `where`, check that the place exists and still shows what the item
+claims.
 Report a stale item as stale, not as work.
 
 Show the `debt` items first, then the `idea` items. In each kind, sort by
@@ -178,7 +182,8 @@ Use this mode for `--all`. First find the links between items: an item that
 blocks another, and items that repeat each other. Ask about these first. For
 a blocker outside the backlog, recommend to keep the item and name the
 blocker. Do not record the links in the items. Then brief one item at a time
-and say "item N of M". Read the item again before you act on an answer.
+and say "item N of M". Read the item again before you act on an answer. If an
+earlier answer changed it, brief it again and ask again.
 
 ### Add
 
@@ -207,6 +212,7 @@ Use this mode for one or more ideas from the user or from another skill.
      refs/remotes/origin/HEAD`, or use `origin/main` or `origin/master`
      before a local branch of the same name. If the current
      branch is not the default branch, ask the user before you write: write
-     on this branch, or stop so that the user can switch.
+     on this branch, or stop so that the user can switch. If no default
+     branch is found, or HEAD is detached, ask the user before you write.
    - Do not create a branch or a worktree.
 5. Report the files or the tickets that you created or changed.
