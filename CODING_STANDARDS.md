@@ -20,6 +20,6 @@ writes must be a value that the other skills accept.
 
 ## README and skill files
 
-The README paragraph about a skill must agree with the rules in its
+The README line about a skill must agree with the rules in its
 `SKILL.md`. When a change adds, removes, or narrows a rule in a skill, read
-the README paragraph about that skill and correct it in the same change.
+the README line about that skill and correct it in the same change.

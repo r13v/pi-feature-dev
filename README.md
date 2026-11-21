@@ -1,200 +1,70 @@
 # pi-feature-dev
 
-Portable agent workflows and writing skills, packaged as Pi skills.
+Portable agent workflows and writing skills, packaged as Pi skills. Each
+`skills/*/SKILL.md` is plain Markdown and works in other agent environments.
+No skill needs a specific tool; if the host has an equivalent one, the skill
+uses it.
 
-The `feature-dev` skill describes a tool-agnostic process for non-trivial
-feature work:
+## Skills
 
-- clarify requirements before coding
-- explore the existing codebase before design
-- resolve material design decisions within the user's authorization
-- implement with one writer
-- review the diff from multiple perspectives
-- validate and summarize results
-
-Design comparisons distinguish structural guarantees from caller discipline
-and name what the next typical extension would change. Validation checks that
-critical guard and regression tests fail without the protection, verifies the
-causes behind shared failure signals, and uses the check's exit status rather
-than truncated output to determine success.
-
-It does not require specific task-tracking, question, delegation, or review tools. If the current environment provides equivalent capabilities, use them; otherwise follow the same workflow directly in chat and with normal code tools.
-
-The `deslop` skill audits or applies evidence-backed subtractive cleanup for
-accumulated test bloat, circular verification, defensive or fallback machinery,
-and comment noise. It checks every comment in scope in each run, also when
-tests or fallbacks take most of the work. Audit mode is read-only. An explicit cleanup request authorizes edits
-within its scope; the literal `apply` command is optional.
-
-The `final-check` skill asks: “What else have we missed? Is there anything we
-need to check or fix?”
-
-The `deepen` skill asks for a deeper version of a task, not a bigger one. It
-names what a top professional would do that the request omits, the raw material
-they would start from, their methods and tools, and the external check that
-would prove the result right. It tests the beliefs in the request against raw
-data and borrows methods from adjacent fields, but keeps the goal and the
-deliverable. It matches claims to validation coverage: complete preservation
-needs the whole small finite set, statistical checks need material input
-regimes and separate validation, and a quick sample supports only a directional
-conclusion. Then it rewrites the request to ask for exactly that.
-
-The `elevate` skill aims a task at the outcome it serves instead of the
-artifact it names. It asks what should happen next, picks the strongest lever
-for that outcome, from a better decision up to a durable process tested against
-history, and names the workflow changes the model needs. The rewritten request
-proposes the new scope and waits for approval before doing more work.
-
-The `ship` skill runs the whole recommended flow in one skill, from choosing
-the target to the final check. It picks the optional stages, passes each
-stage's result to the next, and keeps every stage's own approval points within
-the user's authorization. When the user delegates decisions and verified
-current specifications settle the material questions, it records those sources
-and the accepted result instead of repeating the interview and design approval.
-Documents alone do not authorize this shortcut. It keeps its state in a
-progress file under `.git/`, so it does not skip stages and can continue after the context is compacted or in a new session. It records
-the start commit, and treats all changes after it as the task's changes. It
-runs the diff review and `final-check` in a subagent with a fresh context when
-the host can. It writes who ran each of these checks in its entry, `subagent`
-or `self`. It fixes a finding about wrong behavior only after a test or a
-command reproduces it. Before the fixes, it saves the state in which all
-checks pass, and restores it when a fix breaks a check or a finding comes
-back. It writes documentation changes with `ste` and applies
-`creator-vibe` as a lens when the work has a human experience to carry. It
-collects the ideas outside the scope during the run, and at the end offers
-them to `backlog` in one batch, or decides them itself when the user
-delegated the decisions. It records each moment where the run struggled as a
-friction entry, including the corrections and manual steps of the user, also
-after the run ends. When there are entries, it runs `retro` before that batch,
-and sends the candidates about skills to a skill feedback file outside the
-repository. It loads the skill of each stage when the stage starts, and
-records the diff review as its own entry, so that the review is not skipped.
-It can also start from a backlog item, a file or a ticket. When the
-instructions of the project require a ticket for each change, it finds or
-creates one before the first edit, after the user agrees. It is for non-trivial implementation.
-It does not commit, push, or deploy, but at the end it asks whether to commit
-and open a pull request. In the quick mode, for a request that already states
-what to build, it runs only `feature-dev`, `final-check`, and `deslop`, with
-the same fresh-context checks. It keeps the design approval, skips the
-interview and `retro`, and lists the ideas outside the scope in the output
-instead of offering them to `backlog`.
-
-The `retro` skill looks back on a session or a `ship` run and proposes changes
-to the environment of the agent, so that the next run does not struggle in the
-same place. Each candidate must point to a moment of the session or of a
-past `ship` run, such as a friction entry, a failed check, or a correction
-from the user. A mechanical
-mistake gets an automated check, a judgement call gets a rule in the standards
-document that the reviewer reads, and a long search gets a pointer. It reads
-the last `ship` runs to find friction that repeats. Candidates about a skill
-go to a separate list with the path of the skill file, not to the backlog of
-the current repository; `ship` sends them to the skill feedback file
-(`SKILL_FEEDBACK_FILE` or `~/.agents/skill-feedback.md`). In the source
-repository of a skill, retro reads that file, counts the repeats, and
-removes the lines that a done or dropped candidate covers. Under
-`ship` it only adds candidates to the deferred ideas; on request, it does the
-candidates that the user chooses.
-
-The `dream` skill reviews the memory of the agent offline. It treats the
-past sessions as the ground truth for what happened, and the code and git as
-the ground truth for what is true now. It checks each memory note against
-them, corrects a wrong note with the evidence, deletes a stale or duplicate
-note, and records a correction that the user gave two or more times. It
-keeps the index file to one line for each note. It reads the sessions with a
-session search tool when the host has one, and otherwise reads the
-transcripts on disk. It gives rules for all agents to `retro` instead of
-changing repository files, and asks before it removes sessions
-from the index of the search tool. At the end of a run it offers a weekly
-reminder at the start of a session, and adds it only when the user agrees:
-one shell check, put in the local project layer of Claude Code, Codex, or
-pi, and kept out of git. The review watermark and reminder throttle use
-separate timestamps, so showing a reminder cannot skip review history.
-Dream keeps a durable first correction as an unconfirmed candidate in the
-git common directory, outside loaded memory. It reopens the original sources
-before combining corrections from distinct sessions. It preserves supported
-conditions and exceptions when merging notes, distinguishes missing recall
-from misapplied scope when the transcripts show the cause, and treats
-synthetic rehearsals as tests rather than evidence of user preferences.
-
-The `backlog` skill keeps deferred work as tickets in the issue tracker that
-the instructions of the project name, or else as one Markdown file per item
-under `docs/backlog/`. It asks before it creates, changes, or closes a
-ticket. An item is an `idea`, value that does not exist yet, or
-`debt`, a known shortcut in the existing code with its place and its
-interest: what it breaks or slows now. Debt without a concrete interest is
-fixed now or dropped, and the list warns when no debt was paid in 4 weeks. Each item records why it matters, its evidence, the task that
-found it, and why that task deferred it. An item is an option to return to,
-not a commitment. A file that exists is an open item, and the change that does
-or drops the idea deletes the file, so git history keeps the record. The skill
-files only ideas that are worth a separate change and have concrete evidence,
-adds new evidence to an existing item instead of creating a repeat, and asks
-the user about each idea. It lists, briefs, and walks the items, and marks
-undecided items that are older than 90 days. It does not commit or push.
-
-The `grill` skill runs a dependency-aware interview that researches facts,
-exhausts the current decision frontier round by round, sharpens domain language,
-and records agreed terminology and durable architectural decisions. A round
-asks at most three decisions that have no safe default, and lists the
-reversible ones as defaults that the user can reject. It reads the rules of
-the repository and checks an option's factual premises before recommending it.
-It clarifies ambiguous scope boundaries when they change the recommendation.
-
-The `ste` skill drafts, rewrites, and reviews clear technical text in any
-language using transferable
-[ASD-STE100 Simplified Technical English](https://www.asd-ste100.org/)
-principles. Strict STE is English-only; clarity mode includes Russian and УТР
-guidance for prompts, tool descriptions, error messages, status reports,
-translation-ready text, and agent instructions. The skill is Markdown-only and
-has no runtime dependency.
-
-The `creator-vibe` skill turns incomplete creative briefs and implicit intent
-into concrete work without losing the creator's taste, feeling, or human focus.
-It applies to creative technical and everyday work, while staying out of
-factual, mechanical, exact, or fully specified tasks.
-
-The `visual-recap` skill turns a plan or completed non-trivial change into an
-evidence-backed visual review aid. It helps a reviewer see the outcome, affected
-system parts, risk, and the best place to inspect first. It adapts to the current
-host agent, uses Mermaid for portable diagrams, and keeps an inline fallback.
+| Skill | What it does |
+|---|---|
+| `feature-dev` | Develops a non-trivial feature: clarify, explore, design, implement with one writer, review, validate. |
+| `ship` | Runs the whole flow below for one feature, with progress kept under `.git/`. `ship quick` runs only `feature-dev`, `final-check`, and `deslop`. Does not commit or push. |
+| `grill` | Interviews the user round by round to settle decisions. Records terms in `CONTEXT.md` and decisions as ADRs. |
+| `elevate` | Rewrites a task around the outcome it serves, not the artifact it names. |
+| `deepen` | Rewrites a task into the version a top professional would do, with the same goal and deliverable. |
+| `final-check` | Asks what we missed, and what to check or fix. |
+| `deslop` | Audits or removes test, verification, fallback, and comment bloat. |
+| `retro` | Proposes changes to the agent's environment from the friction of a session or a `ship` run. |
+| `dream` | Reviews the agent's memory against past sessions, code, and git. |
+| `backlog` | Keeps deferred ideas and debt as tickets or as files under `docs/backlog/`. |
+| `ste` | Writes clear technical text: strict ASD-STE100 for English, clarity mode for any language. |
+| `creator-vibe` | Keeps the intended feeling and voice of an incomplete creative brief. |
+| `visual-recap` | Makes an evidence-backed visual review aid for a plan or a change. |
 
 ## Install
 
-```
+```bash
 npx skills add https://github.com/r13v/pi-feature-dev
+pi install npm:pi-feature-dev          # from npm
+pi install ~/Projects/pi-feature-dev   # from a local clone
+pi install -l ~/Projects/pi-feature-dev  # for one project
+pi -e ~/Projects/pi-feature-dev        # for one run only
 ```
 
-From npm:
+## Usage
 
-```bash
-pi install npm:pi-feature-dev
+```text
+/skill:feature-dev Add OAuth login with Google and GitHub
+/skill:ship Add usage-based billing to the invoices service.
+/skill:ship quick Add a CSV export to the reports page.
+/skill:ship docs/backlog/export-ignores-time-zone.md
+/skill:deslop audit the current branch for test, verification, and fallback bloat.
+/skill:backlog Add: the CSV export ignores the account time zone.
+/skill:ste Rewrite this error message so another agent can parse it reliably.
 ```
 
-From this local repo:
+The package has only skills, no prompt templates.
 
-```bash
-pi install ~/Projects/pi-feature-dev
+## Recommended flow
+
+Steps in brackets are optional:
+
+```text
+[elevate] → grill → [deepen] → feature-dev → [final-check] → deslop → [retro]
 ```
 
-Or for one run only:
+- `elevate` decides what to do; `grill` settles it.
+- `deepen` needs a settled deliverable, and its external check becomes the
+  validation criterion for `feature-dev`.
+- `deslop` runs after `final-check`, so it also cleans up its fixes.
+- `retro` reviews how the run went; skip it after a smooth run.
 
-```bash
-pi -e ~/Projects/pi-feature-dev
-```
-
-If installing for a project, run from that project and use Pi's local install flag if desired:
-
-```bash
-pi install -l ~/Projects/pi-feature-dev
-```
-
-## Optional companion packages
-
-No companion package is required. Optional Pi packages can improve specific parts of the workflow, such as progress tracking, structured choices, delegation, large-output handling, web/code research, or session coordination.
+`ship` runs this flow and selects the optional stages by the rules in
+`skills/ship/SKILL.md`.
 
 ## Credits
-
-The original skills and workflows that informed these portable versions came
-from:
 
 - [umputun/cc-thingz](https://github.com/umputun/cc-thingz)
 - [anthropics/claude-code feature-dev plugin](https://github.com/anthropics/claude-plugins-official/tree/main/plugins/feature-dev)
@@ -206,293 +76,14 @@ from:
 - [Felix Rieseberg, How to Be More Ambitious](https://felixrieseberg.com/how-to-be-more-ambitious-a-tutorial-for-humans-with-models/)
 - [kentcdodds/kcd-skills visual-recap](https://github.com/kentcdodds/kcd-skills/tree/main/skills/visual-recap)
 
-## Usage
-
-Skill command in Pi:
-
-```text
-/skill:feature-dev Add OAuth login with Google and GitHub
-```
-
-Natural language also works when Pi's skill matcher triggers:
-
-```text
-Use feature-dev to implement API rate limiting.
-```
-
-Audit accumulated complexity without editing files:
-
-```text
-/skill:deslop audit the current branch for test, verification, and fallback bloat.
-```
-
-Carry an incomplete creative brief into the work itself:
-
-```text
-/skill:creator-vibe Make this onboarding feel calm, capable, and unmistakably ours.
-```
-
-Create a visual review aid for a plan or completed change:
-
-```text
-/skill:visual-recap Show the architecture impact of the current change.
-```
-
-The files under `skills/*/SKILL.md` are portable Markdown and can be adapted for
-other agent environments.
-
-Run a final completeness check on the current work:
-
-```text
-/skill:final-check
-```
-
-Raise the depth of a task before starting it:
-
-```text
-/skill:deepen Analyze why churn grew last quarter.
-```
-
-Run the whole pipeline for one feature:
-
-```text
-/skill:ship Add usage-based billing to the invoices service.
-```
-
-Run only implementation, cleanup, and the final check:
-
-```text
-/skill:ship quick Add a CSV export to the reports page.
-```
-
-Start the pipeline from a deferred idea:
-
-```text
-/skill:ship docs/backlog/export-ignores-time-zone.md
-```
-
-Learn from a hard session:
-
-```text
-/skill:retro
-```
-
-Review the deferred ideas, or defer a new one:
-
-```text
-/skill:backlog
-/skill:backlog Add: the CSV export ignores the account time zone.
-```
-
-Aim a task at the outcome it should produce:
-
-```text
-/skill:elevate Prepare the quarterly business review.
-```
-
-Stress-test an idea before implementation:
-
-```text
-/skill:grill Challenge the design for usage-based billing.
-```
-
-Rewrite technical or operational English:
-
-```text
-/skill:ste Rewrite this maintenance instruction as an STE-aligned draft.
-```
-
-Use STE principles for general agent communication:
-
-```text
-/skill:ste Rewrite this error message so another agent can parse it reliably.
-```
-
-This package is intentionally skill-only. It does not provide prompt template shortcuts; use `/skill:<name>` for explicit Pi invocation.
-
-## Recommended flow
-
-The skills chain from choosing the target to cleaning up the result. Steps in
-brackets are optional:
-
-```text
-[elevate] → grill → [deepen] → feature-dev → [final-check] → deslop → [retro]
-```
-
-- `elevate` comes first because it decides what to do. `grill` then settles
-  that target; changing the goal after `grill` reopens its decisions.
-- `deepen` comes after `grill` because it keeps the goal and deliverable fixed
-  and only changes how the work is done. It needs a settled deliverable.
-- `deepen` comes before `feature-dev` so that its external check, such as a
-  test, a reproduction, or a reconciliation against source data, becomes the
-  validation criterion for the implementation.
-- `deslop` comes after `final-check` so that it runs once and also cleans
-  up the fixes of `final-check`.
-- `retro` comes last because it reviews how the run went, not the result.
-  Skip it when the run was smooth.
-
-Use `elevate` when:
-
-- the task names an artifact or a one-off action and does not say what it is
-  for, such as "fix this crash", "prepare the report", or "write an export
-  script";
-- the repository history, the tickets, or the conversation show the same kind
-  of task before, which makes it a candidate for a process;
-- the work feeds a meeting or a decision, such as a review, planning, or an
-  incident analysis;
-- `deepen` suggests changing the deliverable.
-
-Skip `elevate` when the request already states the outcome and the
-acceptance criteria, when a fixed deadline or scope must not grow, or when the
-change is mechanical.
-
-Use `deepen` when:
-
-- the result depends on a claim that raw data can confirm or refute, such as
-  the cause of a bug, a performance bottleneck, a metric, or the behavior of
-  data in a migration;
-- for some acceptance criterion, no concrete check that can decide it is
-  named yet, such as a test to write, a reproduction, or a command;
-- an acceptance criterion depends on data outside the repository.
-
-Skip `deepen` when each acceptance criterion has a named concrete check and the
-change follows an existing pattern in the repository.
-
-To run the whole flow in one step, use `ship`. It applies these rules to choose
-the optional stages and states each skipped stage with a reason. Ideas that
-fall outside the scope go to `backlog` instead of growing the task, and a
-later `ship` run can start from one of them.
-
-## Feature-dev workflow
-
-The `feature-dev` skill uses checkpoints that scale to the requested change:
-
-1. Discovery — understand the feature and establish lightweight progress tracking
-2. Codebase exploration — inspect relevant code and patterns, optionally with read-only helper passes
-3. Clarifying questions — resolve material unknowns that discovery cannot answer
-4. Architecture design — present two or three approaches with a recommendation when the change touches a public contract, data model, several modules, or a new abstraction; when delegation is available, independent workers in fresh contexts propose the approaches
-5. Implementation — complete the authorized scope with a single writer
-6. Quality review — inspect the diff from correctness, validation, and maintainability perspectives
-7. Validation and summary — run focused checks and summarize changes and key decisions
-
-An implementation request includes the fixes and validation needed to finish
-that scope. When the design step presents alternatives, the skill waits for the
-user's choice unless the user asked to proceed without design approval. A
-requested approval checkpoint still applies; design-only and review-only
-requests do not authorize implementation.
-
-## STE modes
-
-The `ste` skill selects one of two modes:
-
-- **Strict STE** applies Issue 9 rules to English regulated, operational,
-  maintenance, and safety-critical documentation. Exact verification requires
-  the official dictionary and the applicable project glossary.
-- **Clarity mode** (also called **STE clarity**) transfers the clarity discipline
-  to technical text in any language without claiming formal ASD-STE100
-  compliance. It preserves the source language and meaning, uses natural local
-  grammar, and does not impose English vocabulary or word limits on other
-  languages. Russian guidance covers modality, aspect, bureaucratic wording,
-  UI text, and УТР techniques. It distinguishes selected ГОСТ Р 58049—2017
-  requirements from general clarity advice and rejects lossy source examples.
-  Non-English results are clarity edits, not STE-aligned drafts.
-
-The skill loads its detailed writing rules, review checklist, text-type
-patterns, and before/after examples only when they are relevant to the request.
-Standard provenance, design references, and source links stay in
-`skills/ste/README.md`, outside the agent's writing context.
-
-## Package contents
-
-```text
-pi-feature-dev/
-├── package.json
-└── skills/
-    ├── backlog/
-    │   ├── agents/openai.yaml
-    │   └── SKILL.md
-    ├── creator-vibe/
-    │   ├── agents/openai.yaml
-    │   └── SKILL.md
-    ├── deepen/
-    │   ├── agents/openai.yaml
-    │   └── SKILL.md
-    ├── deslop/
-    │   ├── agents/openai.yaml
-    │   ├── references/
-    │   ├── LICENSE.txt
-    │   └── SKILL.md
-    ├── elevate/
-    │   ├── agents/openai.yaml
-    │   └── SKILL.md
-    ├── feature-dev/
-    │   ├── agents/openai.yaml
-    │   └── SKILL.md
-    ├── final-check/
-    │   ├── agents/openai.yaml
-    │   └── SKILL.md
-    ├── grill/
-    │   ├── agents/openai.yaml
-    │   ├── SKILL.md
-    │   ├── CONTEXT-FORMAT.md
-    │   └── ADR-FORMAT.md
-    ├── retro/
-    │   ├── agents/openai.yaml
-    │   └── SKILL.md
-    ├── ship/
-    │   ├── agents/openai.yaml
-    │   └── SKILL.md
-    ├── ste/
-    │   ├── agents/openai.yaml
-    │   ├── references/
-    │   │   ├── before-after.md
-    │   │   ├── checklist.md
-    │   │   ├── use-cases.md
-    │   │   └── writing-rules.md
-    │   ├── README.md
-    │   └── SKILL.md
-    └── visual-recap/
-        ├── agents/openai.yaml
-        └── SKILL.md
-```
-
-## Release
-
-Releases are automated with GitHub Actions and semantic-release.
-
-- Push conventional commits to `main`.
-- With no existing `v*` tags, the first release will be `v1.0.0`.
-- After that, semantic-release calculates the next version from commit messages.
-- The workflow publishes to npm using `NPM_TOKEN`.
-- GitHub release notes and git tags are created automatically.
-
-Examples:
-
-```text
-fix: clarify approval rules
-feat: add review synthesis guidance
-feat!: redesign workflow phases
-```
-
 ## Development
 
-Validate the package shape, and check that no line in the skill files is
-longer than 80 characters. The check skips the frontmatter, code blocks,
-tables, and headings. CI runs the same command on each pull request:
-
 ```bash
-npm test
+npm test   # package shape and 80-character lines in skill files; CI runs it
 ```
 
-Compare the packaged skills with their upstream originals. This project-local
-skill lives in `.agents/skills/` and is not published:
+`/skill:upstream-check` compares the skills with their upstream originals
+(project-local, in `.agents/skills/`, not published).
 
-```text
-/skill:upstream-check
-```
-
-Then test in Pi without installing globally:
-
-```bash
-pi -e ~/Projects/pi-feature-dev
-```
+Releases: conventional commits on `main` → semantic-release publishes to npm
+and creates the tag and release notes.
