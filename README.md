@@ -15,7 +15,9 @@ feature work:
 Design comparisons distinguish structural guarantees from caller discipline
 and name what the next typical extension would change. For a lifecycle,
 protocol, or concurrent change, the design lists the invariants and plans a test
-that replays the shortest event sequence that could break each one. Validation
+that replays the shortest event sequence that could break each one. The
+`model-check` skill finds these sequences when they are too many to trace by
+hand. Validation
 checks that
 critical guard and regression tests fail without the protection, verifies the
 causes behind shared failure signals, and uses the check's exit status rather
@@ -162,6 +164,13 @@ host agent, uses Mermaid for portable diagrams, and keeps an inline fallback.
 State and flow diagrams use the reviewer's words for states and events, stay
 near 20 arrows, and name the steps they leave out.
 
+The `model-check` skill checks each reachable state of a small model of a
+lifecycle, protocol, or concurrent flow. The model is a plain JavaScript
+module; the checker runs on plain Node, with no packages to install and no
+Java. It gives the shortest event path that breaks each rule, draws the states
+as a Mermaid chart in the reader's words, and asks for a test that replays each
+path against the real code.
+
 ## Install
 
 ```
@@ -210,6 +219,7 @@ from:
 - [bish-x/creator-vibe](https://github.com/bish-x/creator-vibe)
 - [Felix Rieseberg, How to Be More Ambitious](https://felixrieseberg.com/how-to-be-more-ambitious-a-tutorial-for-humans-with-models/)
 - [kentcdodds/kcd-skills visual-recap](https://github.com/kentcdodds/kcd-skills/tree/main/skills/visual-recap)
+- [backnotprop/pstack statechart](https://github.com/backnotprop/pstack/tree/main/skills/statechart)
 
 ## Usage
 
@@ -435,6 +445,11 @@ pi-feature-dev/
     │   └── SKILL.md
     ├── final-check/
     │   ├── agents/openai.yaml
+    │   └── SKILL.md
+    ├── model-check/
+    │   ├── agents/openai.yaml
+    │   ├── references/example-model.mjs
+    │   ├── scripts/check.mjs
     │   └── SKILL.md
     ├── grill/
     │   ├── agents/openai.yaml
