@@ -1,0 +1,4 @@
+interface:
+  display_name: "Model Check"
+  short_description: "Find the shortest event path that breaks a state rule"
+  default_prompt: "Use $model-check to model this flow, check each reachable state against its rules, and show the result as a Mermaid chart."
