@@ -1,5 +1,6 @@
 // Check every reachable state of a model, report the shortest path to each
-// broken rule and each stuck state, and draw the states as a Mermaid chart.
+// broken rule, each stuck state, and, when the model exports `done`, each state
+// from which no end state can be reached. Draw the states as a Mermaid chart.
 // Usage: node check.mjs MODEL.mjs [OUT_DIR] [--limit N]
 // Exit status: 0 when each rule holds and no state is stuck, 1 otherwise,
 // 2 on a usage or model error.
@@ -65,12 +66,31 @@ function shortestPath(isBad) {
 
 const exits = new Map(states.map((n) => [key(n.state), n.next.length]));
 const stuck = (s) => !done(s) && exits.get(key(s)) === 0;
+
+// Search backward from the end states to find each state that can reach one.
+const before = new Map();
+for (const { state, next } of states) {
+  for (const { to } of next) {
+    const toKey = key(to);
+    if (!before.has(toKey)) before.set(toKey, []);
+    before.get(toKey).push(key(state));
+  }
+}
+const canEnd = new Set(states.filter((n) => done(n.state))
+  .map((n) => key(n.state)));
+for (const k of canEnd) {
+  for (const prev of before.get(k) ?? []) canEnd.add(prev);
+}
 const problems = [
   ...Object.entries(m.rules).map(([rule, holds]) => ({
     name: rule,
     isBad: (s) => !holds(s),
   })),
   { name: "Each state that is not an end state has a step out", isBad: stuck },
+  ...(m.done ? [{
+    name: "An end state can be reached from each state",
+    isBad: (s) => !stuck(s) && !canEnd.has(key(s)),
+  }] : []),
 ].map((p) => ({ ...p, path: shortestPath(p.isBad) }));
 
 // The chart: one node per label, one arrow per pair of labels and arrow text.

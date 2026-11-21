@@ -1,6 +1,6 @@
-# `CONTEXT.md` Format
+# `GLOSSARY.md` Format
 
-Use `CONTEXT.md` as an opinionated domain glossary and nothing else.
+Use `GLOSSARY.md` as an opinionated domain glossary and nothing else.
 
 ## Structure
 
@@ -41,9 +41,9 @@ general technical concept. Include only the former.
 
 ## Single- and multi-context repositories
 
-Use one root `CONTEXT.md` for a single context.
+Use one root `GLOSSARY.md` for a single context.
 
-For multiple contexts, use a root `CONTEXT-MAP.md` to list the contexts,
+For multiple contexts, use a root `GLOSSARY-MAP.md` to list the contexts,
 locations, and relationships:
 
 ```md
@@ -51,9 +51,9 @@ locations, and relationships:
 
 ## Contexts
 
-- [Ordering](./src/ordering/CONTEXT.md): receives and tracks customer orders
-- [Billing](./src/billing/CONTEXT.md): generates invoices and processes payments
-- [Fulfillment](./src/fulfillment/CONTEXT.md): manages warehouse picking and shipping
+- [Ordering](./src/ordering/GLOSSARY.md): receives and tracks customer orders
+- [Billing](./src/billing/GLOSSARY.md): generates invoices and processes payments
+- [Fulfillment](./src/fulfillment/GLOSSARY.md): manages warehouse picking and shipping
 
 ## Relationships
 
@@ -64,9 +64,9 @@ locations, and relationships:
 
 Infer the structure from existing files:
 
-- If `CONTEXT-MAP.md` exists, read it and update the relevant context.
-- If only a root `CONTEXT.md` exists, use the single context.
-- If neither exists, create a root `CONTEXT.md` lazily after the first term is
+- If `GLOSSARY-MAP.md` exists, read it and update the relevant context.
+- If only a root `GLOSSARY.md` exists, use the single context.
+- If neither exists, create a root `GLOSSARY.md` lazily after the first term is
   resolved.
 - If several contexts exist and the correct owner is unclear, ask before
   writing.

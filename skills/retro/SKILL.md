@@ -43,11 +43,13 @@ Read these sources:
 Sort each candidate into one category. The category tells where the fix goes.
 
 - **Navigation.** The agent searched long for a file or a fact. Add a pointer
-  to it from a file that the agent already reads.
+  to it from a file that the agent already reads. If the fact is in no file,
+  look for an existing doc before you propose a new one.
 - **Automated checks.** The agent made a mistake that a tool could catch. Add
   a lint rule, a type, a test, a pre-commit hook, or a CI job. First read the
   check commands and the CI workflows of the repository. If a check exists but
-  does not run, the fix is to connect it. If the repository has no guardrail,
+  does not run, or runs but cannot fail, the fix is to connect it or to repair
+  it. If the repository has no guardrail,
   that is no pre-commit hook and no CI job that runs its checks, report this
   as a candidate.
 - **Review rules.** The diff review missed a mistake, or found the same kind
@@ -61,7 +63,11 @@ Sort each candidate into one category. The category tells where the fix goes.
     repository, such as `CONTRIBUTING.md`. If the repository has no such
     document, propose to create `CODING_STANDARDS.md`. The reviewer reads this
     document. Do not put the rule in `AGENTS.md` or `CLAUDE.md`.
-- **Steering files.** `AGENTS.md`, `CLAUDE.md`, or a similar file is large.
+
+  If the reviewer applied a rule wrongly, or the user rejected a finding that
+  a rule caused, propose to clarify the rule or to remove it.
+- **Steering files.** `AGENTS.md`, `CLAUDE.md`, or a similar file, in the
+  repository or in the global scope of the user, is large.
   Move its rules to the standards document or to a check, and keep pointers.
 - **Tool economy.** A tool call cost much for what it returned. Make the call
   narrower, or replace the tool.

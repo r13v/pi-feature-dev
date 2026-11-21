@@ -208,10 +208,6 @@ stage, do what the user says.
 - **`final-check`:** Run it after implementation by default.
 - **`retro`:** Run it when the `Friction` section has at least one entry.
   Skip it with the reason `smooth run` when the section is empty.
-- **`creator-vibe`:** This is a lens, not a separate stage. Apply it when the
-  request carries an intended feeling, voice, or human experience, such as a
-  UI, onboarding, copy, error messages, or developer experience. Skip it for
-  backend, migration, and mechanical work.
 
 If a run condition and a skip condition both hold, skip elevate, because it
 grows the scope, and run deepen, because it keeps the goal.
@@ -426,32 +422,10 @@ you fixed it, do not try again. Restore the saved state with `git
 restore --source=<id> --worktree -- .`, delete the files that the fixes
 added, and run the checks again. Record a friction entry and ask the user.
 
-## Creator-vibe lens
-
-When the lens applies, read the `creator-vibe` skill. Use it in three stages.
-Do not add a stage or an approval point for it.
-
-- **Grill.** Turn the intended feeling into observable qualities, such as
-  "a first-time user finds the next action without help". Add them to the
-  success criteria of the Grill Result. If the feeling is too vague to guide
-  a choice, ask one question about it in a grill round. For a decision about
-  how something looks or moves, show a quick render or a sketch of the
-  options. If you cannot, mark the decision provisional until the user tries
-  the result.
-- **Feature-dev design.** Compare the approaches also by how well each one
-  carries the intended experience: defaults, the path to a first result, and
-  behavior on failure. Include this comparison in the recommendation.
-- **Final-check.** Try the result against the observable qualities, for
-  example as a first-time user or after a failure. Fix the confirmed gaps in
-  scope. If the user skipped final-check, do this check during the
-  feature-dev validation.
-
-The lens does not change the goal, the scope, or the deliverable.
-
 ## Documentation
 
 If the task adds or changes documentation, such as a README, a guide,
-`CONTEXT.md`, or an ADR, write and review that text with the `ste` skill in
+`GLOSSARY.md`, or an ADR, write and review that text with the `ste` skill in
 clarity mode.
 
 ## Output

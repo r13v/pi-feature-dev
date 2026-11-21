@@ -11,7 +11,7 @@ uses it.
 |---|---|
 | `feature-dev` | Develops a non-trivial feature: clarify, explore, design, implement with one writer, review, validate. |
 | `ship` | Runs the whole flow below for one feature, with progress kept under `.git/`. `ship quick` runs only `feature-dev`, `final-check`, and `deslop`. Does not commit or push. |
-| `grill` | Interviews the user round by round to settle decisions. Records terms in `CONTEXT.md` and decisions as ADRs. |
+| `grill` | Interviews the user round by round to settle decisions. Records terms in `GLOSSARY.md` and decisions as ADRs. |
 | `elevate` | Rewrites a task around the outcome it serves, not the artifact it names. |
 | `deepen` | Rewrites a task into the version a top professional would do, with the same goal and deliverable. |
 | `final-check` | Asks what we missed, and what to check or fix. |
@@ -20,7 +20,6 @@ uses it.
 | `dream` | Reviews the agent's memory against past sessions, code, and git. |
 | `backlog` | Keeps deferred ideas and debt as tickets or as files under `docs/backlog/`. |
 | `ste` | Writes clear technical text: strict ASD-STE100 for English, clarity mode for any language. |
-| `creator-vibe` | Keeps the intended feeling and voice of an incomplete creative brief. |
 | `model-check` | Checks each reachable state of a small model of a flow and gives the shortest event path that breaks each rule. Plain Node, no Java. |
 | `visual-recap` | Makes an evidence-backed visual review aid for a plan or a change. |
 
@@ -73,10 +72,11 @@ Steps in brackets are optional:
 - [MrZoyo/deslop-GPT](https://github.com/MrZoyo/deslop-GPT/tree/main/skills/deslop)
 - [danyuchn/asd-ste100-skill](https://github.com/danyuchn/asd-ste100-skill)
 - [AminBlg/SimpleEnglish](https://github.com/AminBlg/SimpleEnglish/tree/main/skills/simple-english)
-- [bish-x/creator-vibe](https://github.com/bish-x/creator-vibe)
 - [Felix Rieseberg, How to Be More Ambitious](https://felixrieseberg.com/how-to-be-more-ambitious-a-tutorial-for-humans-with-models/)
-- [kentcdodds/kcd-skills visual-recap](https://github.com/kentcdodds/kcd-skills/tree/main/skills/visual-recap)
-- [backnotprop/pstack statechart](https://github.com/backnotprop/pstack/tree/main/skills/statechart)
+- [kentcdodds/kcd-skills visual-recap](https://github.com/kentcdodds/kcd-skills/tree/main/skills/visual-recap),
+  MIT License, Copyright (c) 2026 Kent C. Dodds
+- [backnotprop/pstack statechart](https://github.com/backnotprop/pstack/tree/main/skills/statechart),
+  MIT License, Copyright (c) 2026 Lauren Tan
 
 ## Development
 

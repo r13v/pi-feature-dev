@@ -1,5 +1,5 @@
 docs/naming.md says a renamed term changes everywhere in one change, with no
-alias. So the rename covers the UI, code, files, tests, and CONTEXT.md.
+alias. So the rename covers the UI, code, files, tests, and GLOSSARY.md.
 
 ❓ **Q1** - **Glossary entry**: Does "recipe" keep the definition?
 

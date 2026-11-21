@@ -35,8 +35,9 @@ impact; a full repository map or fixed file count is unnecessary.
 Use lightweight progress tracking for work spanning several steps. Optional
 read-only workers can investigate independent questions when delegation is
 available and permitted; ask them for file:line entry points, the execution
-flow,
-risks, and the essential files, then read those files yourself before designing.
+flow and data flow, side effects, cross-cutting concerns such as auth, logging,
+and caching, risks, and the essential files, then read those files yourself
+before designing.
 For a large feature, run two or three such passes in parallel, each with a
 different focus: similar existing features, the architecture and abstractions of
 the affected area, or user-facing and testing patterns. Otherwise work locally.
@@ -75,10 +76,11 @@ Present alternatives when the change does any of these:
 Then give two or three approaches that differ in structure, not in naming. Use
 these lenses as prompts, not a quota: minimal change with maximum reuse, clean
 boundaries for maintainability, and a pragmatic balance. For each approach, give
-the files and components it touches, its trade-offs and risks, and how it would
-be validated. When invariants or extensibility distinguish the approaches,
-explain what types or a shared boundary enforce, what depends on caller
-discipline, and which components the next typical extension would change.
+the files and components it touches, its data flow, its trade-offs and risks,
+and how it would be validated. When invariants or extensibility distinguish the
+approaches, explain what types or a shared boundary enforce, what depends on
+caller discipline, and which components the next typical extension would
+change.
 Do not estimate future line counts or add abstractions without a concrete gain.
 
 When delegation is available and permitted, and the user has not chosen an
@@ -118,11 +120,10 @@ revision needs a material user decision or authority not already granted.
 
 ## Review and validation
 
-Inspect the actual diff for correctness, requirement coverage, meaningful tests,
-convention fit, and unnecessary complexity or duplication. Use independent
-review
-only when its benefit justifies it and the host permits it; there is no
-review-worker quota.
+Inspect the actual diff for correctness, security, requirement coverage,
+meaningful tests, convention fit, and unnecessary complexity or duplication. Use
+independent review only when its benefit justifies it and the host permits it;
+there is no review-worker quota.
 
 Verify findings against the code. Keep only findings caused by the change that
 break behavior or a stated project rule, each with file:line, impact, and a fix;
