@@ -15,7 +15,9 @@ feature work:
 Design comparisons distinguish structural guarantees from caller discipline
 and name what the next typical extension would change. For a lifecycle,
 protocol, or concurrent change, the design lists the invariants and plans a test
-that replays the shortest event sequence that could break each one. Validation
+that replays the shortest event sequence that could break each one. The
+`model-check` skill finds these sequences when they are too many to trace by
+hand. Validation
 checks that
 critical guard and regression tests fail without the protection, verifies the
 causes behind shared failure signals, and uses the check's exit status rather

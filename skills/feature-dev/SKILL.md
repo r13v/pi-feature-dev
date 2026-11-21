@@ -62,7 +62,8 @@ When the change adds or changes a lifecycle, a protocol, or concurrent access
 to shared state, list its states and the invariants that must hold, in the
 user's words. For each invariant, find the shortest sequence of events that
 could break it, such as a retry during a cancel. Plan a test that replays that
-sequence step by step against the real code.
+sequence step by step against the real code. When the orders of events are
+too many to trace by hand, find these sequences with the `model-check` skill.
 
 Present alternatives when the change does any of these:
 
