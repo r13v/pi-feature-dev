@@ -141,7 +141,7 @@ export function featureDevSharedSignal(output, { metadata }) {
   });
 }
 
-export function shipDelegatedSpec(output, { metadata }) {
+export function driveDelegatedSpec(output, { metadata }) {
   const progress = progressFile(metadata.workdir);
   return result({
     "grill skipped with reason": /(?:^|\n)\s*[-*]?\s*grill:\s*skipped\b/i.test(progress),
@@ -155,7 +155,7 @@ export function shipDelegatedSpec(output, { metadata }) {
   });
 }
 
-export function shipSpecNeedsAuthority(output, { metadata }) {
+export function driveSpecNeedsAuthority(output, { metadata }) {
   return result({
     "confirmation requested": /\?|❓|next action[^\n]*approv|until you approve|waiting on you/i.test(output)
       && /confirm|approv|choose|decision/i.test(output),
@@ -435,9 +435,9 @@ function recommendedOptions(output) {
 // The newest progress file: the agent may start a new run instead of
 // continuing the one in the fixture.
 function progressFile(dir) {
-  const ship = join(dir, ".git", "ship");
-  const files = existsSync(ship) ? readdirSync(ship).sort() : [];
-  return files.length ? readFileSync(join(ship, files.at(-1)), "utf8") : "";
+  const drive = join(dir, ".git", "drive");
+  const files = existsSync(drive) ? readdirSync(drive).sort() : [];
+  return files.length ? readFileSync(join(drive, files.at(-1)), "utf8") : "";
 }
 
 export function grillReadsRepoRules(output, { metadata }) {
@@ -455,7 +455,7 @@ export function grillReadsRepoRules(output, { metadata }) {
   });
 }
 
-export function shipSkillFeedback(output, { metadata }) {
+export function driveSkillFeedback(output, { metadata }) {
   const feedback = join(metadata.workdir, ".git", "skill-feedback.md");
   const text = existsSync(feedback) ? readFileSync(feedback, "utf8") : "";
   const progress = progressFile(metadata.workdir);
@@ -467,7 +467,7 @@ export function shipSkillFeedback(output, { metadata }) {
   });
 }
 
-export function shipDelegatedIdeas(output, { metadata }) {
+export function driveDelegatedIdeas(output, { metadata }) {
   const dir = join(metadata.workdir, "docs", "backlog");
   const items = existsSync(dir) ? readdirSync(dir)
     .map((f) => readFileSync(join(dir, f), "utf8")) : [];
@@ -480,7 +480,7 @@ export function shipDelegatedIdeas(output, { metadata }) {
   });
 }
 
-export function shipReviewBeforeDeslop(output, { metadata }) {
+export function driveReviewBeforeDeslop(output, { metadata }) {
   const r = spawnSync("node", ["--input-type=module", "-e",
     "import { parseDuration } from './src/duration.js';"
     + "try { parseDuration('5x'); process.exit(1); } catch { process.exit(0) }",
@@ -493,7 +493,7 @@ export function shipReviewBeforeDeslop(output, { metadata }) {
   });
 }
 
-export function shipQuickMode(output, { metadata }) {
+export function driveQuickMode(output, { metadata }) {
   const progress = progressFile(metadata.workdir);
   const stage = (name, value) => new RegExp(
     `(?:^|\\n)\\s*[-*]?\\s*${name}:\\s*${value}(?!\\w)`, "i").test(progress);
@@ -526,7 +526,7 @@ export function finalCheckRenamedDocs(output, { metadata }) {
   });
 }
 
-export function shipBacklogMovedLine(output, { metadata }) {
+export function driveBacklogMovedLine(output, { metadata }) {
   return result({
     "item kept": existsSync(join(metadata.workdir,
       "docs/backlog/export-ignores-time-zone.md")),
@@ -542,7 +542,7 @@ export function shipBacklogMovedLine(output, { metadata }) {
 export function backlogCurrentTaskTopic(output, { metadata }) {
   const items = readdirSync(join(metadata.workdir, "docs/backlog"));
   const defers = output.split("\n").some((line) =>
-    /backlog|бэклог|\bdefer|\bfile (it|this)\b|separate (ship|run|task|change)|follow-up/i
+    /backlog|бэклог|\bdefer|\bfile (it|this)\b|separate (drive|run|task|change)|follow-up/i
       .test(line)
     && !/\b(not|no|never|instead|without)\b|n't\b|не /i.test(line));
   return result({
@@ -565,7 +565,7 @@ export function deslopCommentNoise(output, { metadata }) {
   });
 }
 
-export function shipWrongCounterexample(output, { metadata }) {
+export function driveWrongCounterexample(output, { metadata }) {
   const r = spawnSync("node", ["--input-type=module", "-e",
     "import { median } from './src/stats.js';"
     + "process.exit(median([4, 1, 3, 2]) === 2.5 ? 0 : 1)",

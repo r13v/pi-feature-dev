@@ -19,7 +19,7 @@ it is `debt`. If it adds what nobody can do today, it is an `idea`.
 
 Reading the backlog does not give permission to work an item. Do not
 commit, push, or post items to a pull request unless the user asks. When the
-user asks to commit items outside a `ship` run, commit only the item files.
+user asks to commit items outside a `drive` run, commit only the item files.
 If other changes are already staged, report them and do not commit.
 
 ## Storage
@@ -54,7 +54,7 @@ kind: idea
 worth: later
 where: src/export/csv.ts:42
 added: 2026-10-23
-source: ship 20261023-1500-add-export, f/export @ 01c9a47
+source: drive 20261023-1500-add-export, f/export @ 01c9a47
 ---
 
 # Export ignores the time zone of the account
@@ -115,7 +115,7 @@ does not name the work does not exclude it.
 
 File an `idea` only when both of these are true:
 
-- it is worth its own `ship` run or a separate change;
+- it is worth its own `drive` run or a separate change;
 - it has concrete evidence: a place in the code, a command, or an observation.
 
 File a `debt` only when all of these are true:
@@ -173,7 +173,7 @@ current code. Give four lines, each with a word and the fact behind it:
 - blast radius;
 - why now, or why not now.
 
-If the item is stale, say so. Then ask the user to choose: start `ship` from
+If the item is stale, say so. Then ask the user to choose: start `drive` from
 the item, change `worth`, drop the item, or keep it as it is.
 
 ### Walk
@@ -201,12 +201,12 @@ Use this mode for one or more ideas from the user or from another skill.
    interest for `debt`. For a repeat, name the existing item. Ask the user
    to choose for each idea: file it, or add the evidence to the existing
    item, or drop it. The user can also change `kind` or `worth`. A calling
-   skill can add its own option, such as "do now" in `ship`. Give the ideas
+   skill can add its own option, such as "do now" in `drive`. Give the ideas
    with that option back to the calling skill. Write only what the user
    approved. When the calling skill passes decisions that
    the user delegated to it, apply them without asking.
 4. For files, choose where to write:
-   - When another skill, such as `ship`, calls this mode, write in the
+   - When another skill, such as `drive`, calls this mode, write in the
      current working tree. The items become changes of that task.
    - Otherwise, find the default branch from `git symbolic-ref
      refs/remotes/origin/HEAD`, or use `origin/main` or `origin/master`

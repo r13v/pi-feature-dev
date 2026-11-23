@@ -1,6 +1,6 @@
 ---
 name: retro
-description: Look back on a session or a `ship` run and propose changes to the environment of the agent, such as checks, pointers, and review rules, so that the next run does not struggle in the same place. Use when the user asks for a retro or a retrospective, or when `ship` calls it after a run with friction entries; skip smooth sessions.
+description: Look back on a session or a `drive` run and propose changes to the environment of the agent, such as checks, pointers, and review rules, so that the next run does not struggle in the same place. Use when the user asks for a retro or a retrospective, or when `drive` calls it after a run with friction entries; skip smooth sessions.
 ---
 
 # Retro
@@ -26,12 +26,12 @@ invent candidates to fill the categories.
 Read these sources:
 
 - the current session;
-- the progress file of the `ship` run, if there is one. Its `Friction`
+- the progress file of the `drive` run, if there is one. Its `Friction`
   section has one friction entry for each moment where the run struggled. The
-  `ship` skill describes the format of the entries;
+  `drive` skill describes the format of the entries;
 - the last 10 progress files that have `status: finished` and a `Friction`
   section, sorted by `started`, from all branches and worktrees. They are in
-  the `ship` directory inside the directory that `git rev-parse
+  the `drive` directory inside the directory that `git rev-parse
   --path-format=absolute --git-common-dir` prints. If the directory does not
   exist or this is not a git repository, skip this source. Use these files to
   find friction that repeats across runs.
@@ -91,10 +91,10 @@ the cause behind it is gone, propose to remove the check.
 ## Candidates about skills
 
 If the friction came from the instructions of a skill, such as a step of
-`ship` or `feature-dev`, put the candidate in a separate list. Give the path
+`drive` or `feature-dev`, put the candidate in a separate list. Give the path
 of the skill file and the moment. Do not add these candidates to the backlog
 of the current repository, because the skill lives in another repository.
-`ship` sends them to the skill feedback file, so that they reach the source
+`drive` sends them to the skill feedback file, so that they reach the source
 repository of the skill. If the current repository is the source of the
 skill, treat the candidate as any other candidate.
 
@@ -107,9 +107,9 @@ same friction: a repeat is more severe.
 
 ## Modes
 
-### Under `ship`
+### Under `drive`
 
-`ship` calls retro when its progress file has friction entries. Do not
+`drive` calls retro when its progress file has friction entries. Do not
 change files in the working tree. Write only to the progress file. Add each
 candidate as one line to the `Deferred ideas` section. Start the line with
 `retro:`, then give the category, the fix, and the moment. Add each candidate

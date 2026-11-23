@@ -10,13 +10,13 @@ uses it.
 | Skill | What it does |
 |---|---|
 | `feature-dev` | Develops a non-trivial feature: clarify, explore, design, implement with one writer, review, validate. |
-| `ship` | Runs the whole flow below for one feature, with progress kept under `.git/`. `ship quick` runs only `feature-dev`, `final-check`, and `deslop`. Does not commit or push. |
+| `drive` | Runs the whole flow below for one feature, with progress kept under `.git/`. `drive quick` runs only `feature-dev`, `final-check`, and `deslop`. Does not commit or push. |
 | `grill` | Interviews the user round by round to settle decisions. Records terms in `GLOSSARY.md` and decisions as ADRs. |
 | `elevate` | Rewrites a task around the outcome it serves, not the artifact it names. |
 | `deepen` | Rewrites a task into the version a top professional would do, with the same goal and deliverable. |
 | `final-check` | Asks what we missed, and what to check or fix. |
 | `deslop` | Audits or removes test, verification, fallback, and comment bloat. |
-| `retro` | Proposes changes to the agent's environment from the friction of a session or a `ship` run. |
+| `retro` | Proposes changes to the agent's environment from the friction of a session or a `drive` run. |
 | `dream` | Reviews the agent's memory against past sessions, code, and git. |
 | `backlog` | Keeps deferred ideas and debt as tickets or as files under `docs/backlog/`. |
 | `ste` | Writes clear technical text: strict ASD-STE100 for English, clarity mode for any language. |
@@ -37,9 +37,9 @@ pi -e ~/Projects/pi-feature-dev        # for one run only
 
 ```text
 /skill:feature-dev Add OAuth login with Google and GitHub
-/skill:ship Add usage-based billing to the invoices service.
-/skill:ship quick Add a CSV export to the reports page.
-/skill:ship docs/backlog/export-ignores-time-zone.md
+/skill:drive Add usage-based billing to the invoices service.
+/skill:drive quick Add a CSV export to the reports page.
+/skill:drive docs/backlog/export-ignores-time-zone.md
 /skill:deslop audit the current branch for test, verification, and fallback bloat.
 /skill:backlog Add: the CSV export ignores the account time zone.
 /skill:ste Rewrite this error message so another agent can parse it reliably.
@@ -61,8 +61,8 @@ Steps in brackets are optional:
 - `deslop` runs after `final-check`, so it also cleans up its fixes.
 - `retro` reviews how the run went; skip it after a smooth run.
 
-`ship` runs this flow and selects the optional stages by the rules in
-`skills/ship/SKILL.md`.
+`drive` runs this flow and selects the optional stages by the rules in
+`skills/drive/SKILL.md`.
 
 ## Credits
 

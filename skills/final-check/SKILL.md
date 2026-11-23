@@ -21,5 +21,5 @@ Finish when acceptance criteria are supported and no known in-scope blocker
 remains. Report material findings, fixes, checks actually run, and unverified
 requirements. When the repository already keeps `docs/backlog/` items or the
 user asks, give real gaps outside the scope to the `add` mode of the `backlog`
-skill. When `ship` runs this check, list those gaps separately for `ship`
+skill. When `drive` runs this check, list those gaps separately for `drive`
 instead. If nothing further is needed, say so without inventing work.

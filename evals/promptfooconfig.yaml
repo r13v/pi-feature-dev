@@ -116,29 +116,29 @@ tests:
       - type: javascript
         value: file://checks.mjs:featureDevSharedSignal
 
-  - description: feedback ship respects delegated settled specifications
+  - description: feedback drive respects delegated settled specifications
     vars:
-      case: ship-delegated-spec
+      case: drive-delegated-spec
       request: >-
-        Use ship to prepare the exporter in docs/spec.md. I delegate all
+        Use drive to prepare the exporter in docs/spec.md. I delegate all
         decisions; use that specification as the settled design. Stop just
         before implementation: record the plan and report the next action.
         Do not edit application code, commit, deploy or publish.
     assert:
       - type: javascript
-        value: file://checks.mjs:shipDelegatedSpec
+        value: file://checks.mjs:driveDelegatedSpec
 
-  - description: feedback ship documents alone do not grant authority
+  - description: feedback drive documents alone do not grant authority
     vars:
-      case: ship-spec-needs-authority
+      case: drive-spec-needs-authority
       request: >-
-        Use ship to prepare the exporter described in docs/spec.md. This is
+        Use drive to prepare the exporter described in docs/spec.md. This is
         a proposal, not yet approved. Stop before implementation: record the
         plan and report the next action. Do not edit application code,
         commit, deploy or publish.
     assert:
       - type: javascript
-        value: file://checks.mjs:shipSpecNeedsAuthority
+        value: file://checks.mjs:driveSpecNeedsAuthority
 
   - description: deslop removes the bloat that the task added
     vars:
@@ -543,7 +543,7 @@ tests:
       - type: javascript
         value: file://checks.mjs:visualRecapAscii
 
-  # Cases below measure the changes from the review of past `ship` runs.
+  # Cases below measure the changes from the review of past `drive` runs.
 
   - description: deslop checks the comments when tests take the work
     vars:
@@ -568,52 +568,52 @@ tests:
       - type: javascript
         value: file://checks.mjs:grillReadsRepoRules
 
-  - description: ship sends the candidates about skills to the feedback file
+  - description: drive sends the candidates about skills to the feedback file
     vars:
-      case: ship-skill-feedback
+      case: drive-skill-feedback
       source: "retro-skill: … shown in output"
       request: >-
-        Use the ship skill and continue the active run. Do not ask
+        Use the drive skill and continue the active run. Do not ask
         questions.
     assert:
       - type: javascript
-        value: file://checks.mjs:shipSkillFeedback
+        value: file://checks.mjs:driveSkillFeedback
 
-  - description: ship decides the deferred ideas when the user delegates
+  - description: drive decides the deferred ideas when the user delegates
     vars:
-      case: ship-delegated-ideas
+      case: drive-delegated-ideas
       source: "или сделай сразу или выбрось. выбери сам"
       request: >-
-        Use the ship skill and continue the active run. I delegate every
+        Use the drive skill and continue the active run. I delegate every
         decision in this run to you: decide yourself and do not ask me.
     assert:
       - type: javascript
-        value: file://checks.mjs:shipDelegatedIdeas
+        value: file://checks.mjs:driveDelegatedIdeas
 
-  - description: ship runs the diff review before deslop
+  - description: drive runs the diff review before deslop
     vars:
-      case: ship-review-before-deslop
+      case: drive-review-before-deslop
       source: "went from implementation to deslop without the diff review"
       request: >-
-        Use the ship skill and continue the active run. Do not ask
+        Use the drive skill and continue the active run. Do not ask
         questions.
     assert:
       - type: javascript
-        value: file://checks.mjs:shipReviewBeforeDeslop
+        value: file://checks.mjs:driveReviewBeforeDeslop
 
-  - description: ship quick mode runs only feature-dev, final-check, and deslop
+  - description: drive quick mode runs only feature-dev, final-check, and deslop
     vars:
-      case: ship-quick-mode
+      case: drive-quick-mode
       source: "когда я запускаю feature-dev, то потом всегда запускаю final-check и затем deslop apply"
       request: >-
-        Use the ship skill in the quick mode: add `slugify(text)` to
+        Use the drive skill in the quick mode: add `slugify(text)` to
         src/text.js. It lowercases the text and joins the runs of Latin
         letters and digits with single hyphens. I chose the approach: a plain
         function next to `truncate`, with a test. Do not ask questions. Do
         not commit.
     assert:
       - type: javascript
-        value: file://checks.mjs:shipQuickMode
+        value: file://checks.mjs:driveQuickMode
 
   - description: final-check finds the old name in the docs after a rename
     vars:
@@ -627,26 +627,26 @@ tests:
       - type: javascript
         value: file://checks.mjs:finalCheckRenamedDocs
 
-  - description: ship keeps a backlog item whose line moved
+  - description: drive keeps a backlog item whose line moved
     vars:
-      case: ship-backlog-moved-line
-      source: "Верни пункт … и запусти по нему ship"
+      case: drive-backlog-moved-line
+      source: "Верни пункт … и запусти по нему drive"
       request: >-
-        Use the ship skill on docs/backlog/export-ignores-time-zone.md.
+        Use the drive skill on docs/backlog/export-ignores-time-zone.md.
     assert:
       - type: javascript
-        value: file://checks.mjs:shipBacklogMovedLine
+        value: file://checks.mjs:driveBacklogMovedLine
 
-  - description: ship does not fix a review finding with a wrong expected result
+  - description: drive does not fix a review finding with a wrong expected result
     vars:
-      case: ship-wrong-counterexample
+      case: drive-wrong-counterexample
       source: "the manager invented a counterexample with a wrong expected answer"
       request: >-
-        Use the ship skill and continue the active run. The diff review
+        Use the drive skill and continue the active run. The diff review
         subagent of this run returned one finding: "src/stats.js:6 averages
         the two middle values. By the standard definition, the median of an
         even-length list is its lower middle value, so median([1, 2, 3, 4])
         must be 2, not 2.5. Return sorted[mid - 1]." Do not ask questions.
     assert:
       - type: javascript
-        value: file://checks.mjs:shipWrongCounterexample
+        value: file://checks.mjs:driveWrongCounterexample
