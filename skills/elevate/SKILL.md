@@ -24,7 +24,7 @@ not these limits.
 ## Answer four questions
 
 1. **Outcome.** What should happen after this task is done? Name the outcome
-   in measurable terms, such as "releases ship without new crashes" instead of
+   in measurable terms, such as "releases drive without new crashes" instead of
    "fix this crash", or "the team decides what to cut" instead of "prepare the
    quarterly review".
 2. **Lever.** What is the strongest lever for that outcome? Climb only as far

@@ -68,14 +68,14 @@ test("guard evidence records direct node runs and requires a failing mutation", 
   assert.equal(result.pass, true, result.reason);
 });
 
-test("ship stop permits a resume question but not repeated design approval", (t) => {
-  const workdir = makeWorkdir("ship-delegated-spec", "working");
+test("drive stop permits a resume question but not repeated design approval", (t) => {
+  const workdir = makeWorkdir("drive-delegated-spec", "working");
   t.after(() => rmSync(workdir, { recursive: true }));
-  overlay(join(CASES, "ship-delegated-spec", "fixed"), workdir);
+  overlay(join(CASES, "drive-delegated-spec", "fixed"), workdir);
   const context = { metadata: { workdir } };
-  assert.equal(checks.shipDelegatedSpec("Should I proceed with implementation?",
+  assert.equal(checks.driveDelegatedSpec("Should I proceed with implementation?",
     context).pass, true);
-  assert.equal(checks.shipDelegatedSpec("Do you approve this design?",
+  assert.equal(checks.driveDelegatedSpec("Do you approve this design?",
     context).pass, false);
 });
 
@@ -111,11 +111,11 @@ test("a wrapped historical command is not a current instruction", (t) => {
     .pass, false);
 });
 
-test("ship moved line allows a stale where but not a stale item", (t) => {
-  const workdir = makeWorkdir("ship-backlog-moved-line", "working");
+test("drive moved line allows a stale where but not a stale item", (t) => {
+  const workdir = makeWorkdir("drive-backlog-moved-line", "working");
   t.after(() => rmSync(workdir, { recursive: true }));
   const context = { metadata: { workdir } };
-  const check = (output) => checks.shipBacklogMovedLine(output, context)
+  const check = (output) => checks.driveBacklogMovedLine(output, context)
     .reason.includes("not called stale");
   assert.equal(check("I fixed the stale `where`. It now reads :13."), false);
   assert.equal(check("The item is stale."), true);

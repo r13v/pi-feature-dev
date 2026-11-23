@@ -1,2 +1,2 @@
-The design changes the architecture of the agent, so it needs its own ship
+The design changes the architecture of the agent, so it needs its own drive
 run after this task. I propose to file it as a backlog item for now.

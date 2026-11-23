@@ -31,7 +31,7 @@ function copySkills(ref, dest) {
 }
 
 // Copies `from` over the run directory. Its `gitdir/` goes into `.git/`,
-// such as a `ship` progress file, with `{{BASE}}` and `{{BRANCH}}` replaced
+// such as a `drive` progress file, with `{{BASE}}` and `{{BRANCH}}` replaced
 // by the base commit and the current branch.
 export function overlay(from, dir) {
   cpSync(from, dir, { recursive: true,
@@ -88,7 +88,7 @@ export function makeProbeWorkdir(name, memoryDir) {
   return dir;
 }
 
-// `ship` appends the candidates about skills here instead of the user's
+// `drive` appends the candidates about skills here instead of the user's
 // global feedback file.
 function env(dir) {
   return { ...process.env,
@@ -116,7 +116,7 @@ function runCodex(dir, prompt, config) {
   symlinkSync(join(process.env.CODEX_HOME ?? join(homedir(), ".codex"),
     "auth.json"), join(home, "auth.json"));
   const last = join(dir, ".git", "codex-last.txt");
-  // The sandbox keeps `.git/` and `.codex/` read-only, but `ship` writes its
+  // The sandbox keeps `.git/` and `.codex/` read-only, but `drive` writes its
   // progress file and the skill feedback file to `.git/`, and `dream` writes
   // its reminder hook to `.codex/`.
   mkdirSync(join(dir, ".codex"), { recursive: true });

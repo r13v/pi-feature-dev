@@ -33,7 +33,7 @@ Deferred work with its reason and evidence, kept as a ticket in the issue tracke
 _Avoid_: ticket, task, TODO
 
 **Friction Entry**:
-A line in a `ship` progress file that records a moment where the run struggled, with its evidence. The `retro` skill uses these lines to find improvements to the environment of the agent.
+A line in a `drive` progress file that records a moment where the run struggled, with its evidence. The `retro` skill uses these lines to find improvements to the environment of the agent.
 _Avoid_: issue, struggle, problem
 
 **Skill Feedback File**:

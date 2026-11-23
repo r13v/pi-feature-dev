@@ -4,14 +4,14 @@ The diff review reads these rules. Each rule is a judgement call that no
 automated check can make. A rule that a tool can check belongs in
 `npm test`, not here.
 
-## The `ship` progress file
+## The `drive` progress file
 
 When a change adds a stage, an entry value, a section, or a tag to the
-progress file of `ship`, walk each path of a run to `status: finished`:
+progress file of `drive`, walk each path of a run to `status: finished`:
 
 - a stage that the user or a rule skips;
 - a run that continues from an active progress file, including a file that
-  an older version of `ship` wrote;
+  an older version of `drive` wrote;
 - the second pass for the "do now" ideas;
 - an empty input, such as an empty section or a stage with no result.
 
