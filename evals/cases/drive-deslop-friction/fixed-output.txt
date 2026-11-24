@@ -1,0 +1,1 @@
+Deslop removed the LEGACY fallback, catch-rethrow wrapper, and duplicate test. Recorded friction and ran retro (1 candidate for automated lint/CI guardrails). Run finished.

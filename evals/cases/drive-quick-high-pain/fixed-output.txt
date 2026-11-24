@@ -1,0 +1,1 @@
+Warning: changing the persisted schema in db/schema.sql and the public /v1/users contract makes rework costly. I recommend running grill first to settle the schema migration and API compatibility decisions before implementing.

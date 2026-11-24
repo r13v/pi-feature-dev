@@ -1,0 +1,7 @@
+{
+  "name": "billing-demo",
+  "type": "module",
+  "scripts": {
+    "test": "node --test"
+  }
+}

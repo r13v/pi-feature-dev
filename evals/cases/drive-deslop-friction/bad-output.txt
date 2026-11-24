@@ -1,0 +1,1 @@
+Deslop cleaned up src/parser.js. No friction recorded; retro skipped: smooth run.

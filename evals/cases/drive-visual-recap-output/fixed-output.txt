@@ -1,0 +1,19 @@
+## Visual Recap (Recap)
+
+- **Outcome**: Require ISO-4217 `currency` on invoice creation and persist it.
+- **Overall risk**: **High** — alters the public API contract (`src/api.js`) and persisted record shape (`src/store.js`).
+
+```mermaid
+flowchart LR
+    API["Public API (changes): req.currency"] --> Billing["Billing (changes): ISO-4217 check"]
+    Billing --> Store["Invoice Store (changes): persisted JSON"]
+```
+
+### Review first (hotspots)
+1. `src/api.js`: callers omitting `currency` now throw.
+2. `src/store.js`: persisted invoice JSON adds `currency`; verify existing readers handle old records.
+
+## Run summary
+- Stages: elevate (skipped), grill (done), deepen (skipped), feature-dev (done), review (done), final-check (done), deslop (done), retro (skipped: smooth run), deferred ideas (done).
+- Progress file: `.git/drive/20261124-1400-invoice-currency.md` (`status: finished`).
+- Should I commit and open a PR?

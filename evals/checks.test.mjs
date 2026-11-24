@@ -120,3 +120,19 @@ test("drive moved line allows a stale where but not a stale item", (t) => {
   assert.equal(check("I fixed the stale `where`. It now reads :13."), false);
   assert.equal(check("The item is stale."), true);
 });
+
+test("drive runtime self-test requires both happy-path and edge-case CLI runs", (t) => {
+  const workdir = makeWorkdir("drive-runtime-self-test", "working");
+  t.after(() => rmSync(workdir, { recursive: true }));
+  overlay(join(CASES, "drive-runtime-self-test", "fixed"), workdir);
+  const log = join(workdir, ".git/cli-runs.jsonl");
+  rmSync(log);
+  const runCli = (...args) => spawnSync("node", ["src/cli.js", ...args],
+    { cwd: workdir, encoding: "utf8" });
+  assert.equal(runCli("Hello, World!").status, 0);
+  const context = { metadata: { workdir } };
+  assert.equal(checks.driveRuntimeSelfTest("", context).pass, false);
+  assert.equal(runCli("!!!").status, 1);
+  const r = checks.driveRuntimeSelfTest("", context);
+  assert.equal(r.pass, true, r.reason);
+});

@@ -132,6 +132,9 @@ of these happens:
 - a check fails when the agent expected it to pass;
 - the diff review or final-check finds a problem in the scope, and you
   confirm it;
+- deslop removes bloat that this task added (test bloat, verification
+  theater, defensive or fallback bloat, or repeated comment noise), not a
+  one-line comment edit;
 - the user corrects a statement or an action of the agent. An answer to a
   question is not a correction;
 - the user rejects a recommendation, rejects or reshapes a round or a
@@ -168,7 +171,11 @@ progress file. Read the current changes from git when a stage needs them.
 
 ## Choose the stages
 
-Run `grill`, `feature-dev`, and `deslop` by default. If the user delegated
+Run `grill`, `feature-dev`, and `deslop` by default. Calibrate planning to
+the cost of rework: when the user asks for `drive` without `quick`, the
+objective is already clear, and the change is local and cheap to reverse
+(no public contract, persisted schema, or cross-module boundary), offer the
+quick mode in one line before starting `grill`. If the user delegated
 the decisions and current specifications settle the material questions, skip
 the grill interview and design approval. First verify those specifications
 against the task and code. Record the delegated authority, specification paths,
@@ -230,6 +237,10 @@ full pipeline.
 feature-dev → final-check → deslop
 ```
 
+- When a quick request changes a public contract, persisted schema, or
+  security boundary, and the design is not already settled or delegated,
+  warn before starting feature-dev that rework will be costly and offer
+  `grill` first.
 - Set elevate, grill, deepen, and retro to `skipped: quick mode`, and set
   the `deferred ideas` entry to `skipped: quick mode`. If the user includes
   one of these stages, run it as in the full pipeline.
@@ -275,13 +286,20 @@ points of each stage stay in effect. A drive request does not approve them.
    the new deliverable changes.
 4. **Feature-dev.** Implement the confirmed scope. When a design trigger of
    feature-dev applies, present the architecture approaches with a
-   recommendation, as feature-dev describes. If the Grill Result already
+   recommendation, as feature-dev describes. When the approaches change a
+   public contract, persisted data, or several modules, include a
+   `visual-recap` in `Plan` mode so the user can review the impact visually.
+   If the Grill Result already
    selected an approach, use it without asking the same decision again.
    Otherwise wait for the user's choice, unless that choice was delegated or
    the user explicitly waived design approval. A drive request alone does not
    delegate design decisions.
    Validate against the success criteria in the Grill Result and against the
-   deepen validation, if there is one. Feature-dev ends when each acceptance
+   deepen validation, if there is one. When the changed code has a runnable
+   interface (CLI, HTTP endpoint, UI, or worker) that works in this
+   environment, exercise the main path and one key edge case against the
+   real runtime yourself before finishing feature-dev, and record the
+   observed result in the progress file. Feature-dev ends when each acceptance
    criterion is met, or is not met with evidence and a blocker that
    feature-dev allows. Add a new direction that the work shows to the
    deferred ideas. Ask whether to extend the scope only when the accepted
@@ -299,8 +317,10 @@ points of each stage stay in effect. A drive request does not approve them.
    only. Give deslop that scope explicitly: the hunks in `git diff
    <start_commit>` and the untracked files that are not ignored, including
    the fixes of final-check. After cleanup, run the affected checks again.
-   When the changes of the task are large, such as more than about 500
-   changed lines, offer the `deep` mode of deslop for those files.
+   Offer the `deep` mode of deslop for the touched files when the task
+   changes more than about 500 lines, when the diff review flags overgrown
+   abstractions in those files, or when past runs recorded friction in the
+   same file.
 
    When the result has a user interface or behavior that the user can try,
    start it in a clean state before the output: no test stubs, patches, or
@@ -387,7 +407,11 @@ standards document for review, such as `CODING_STANDARDS.md` or
 `CONTRIBUTING.md`, give its path too. Do not give it the conversation. Tell
 it to report findings and not to edit files, and to list the findings outside
 the scope separately. For a finding about wrong behavior, tell it to give the
-input, the expected result, and the actual result.
+input, the expected result, and the actual result. For the feature-dev diff
+review, also ask it to flag structural slop: new branches, wrappers, or
+workarounds layered onto an abstraction or file that is already overgrown and
+should be simplified instead. Put out-of-scope simplification candidates into
+`Deferred ideas`.
 
 If the host cannot run subagents, run the checks yourself, and read the
 standards document first. When the host can run subagents, a diff review or
@@ -430,6 +454,9 @@ clarity mode.
 
 ## Output
 
+- A `visual-recap` in `Recap` mode when the task changes a public contract,
+  persisted data, several modules, or more than about 200 lines, so the
+  reviewer sees the blast radius, risk, and top review hotspots first.
 - Each stage that ran or was skipped, with the reason.
 - The accepted objective from the Grill Result, or, in the quick mode,
   the acceptance criteria from feature-dev.

@@ -1,0 +1,1 @@
+Implemented slugify and ran npm test. Did not run src/cli.js directly.
