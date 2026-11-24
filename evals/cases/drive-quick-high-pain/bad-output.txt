@@ -1,0 +1,1 @@
+Starting drive in quick mode (skipping grill). I will migrate db/schema.sql and update GET /v1/users directly.

@@ -49,9 +49,11 @@ Sort each candidate into one category. The category tells where the fix goes.
   a lint rule, a type, a test, a pre-commit hook, or a CI job. First read the
   check commands and the CI workflows of the repository. If a check exists but
   does not run, or runs but cannot fail, the fix is to connect it or to repair
-  it. If the repository has no guardrail,
-  that is no pre-commit hook and no CI job that runs its checks, report this
-  as a candidate.
+  it. When `deslop` removes the same mechanical pattern across runs, such as
+  broad catches, unused fallbacks, or oversized functions, propose a lint rule
+  or static check instead of relying on `deslop` each time. If the repository
+  has no guardrail, that is no pre-commit hook and no CI job that runs its
+  checks, report this as a candidate.
 - **Review rules.** The diff review missed a mistake, or found the same kind
   of mistake again. A confirmed final-check finding means that the diff
   review missed it. A failed check that caught a mistake needs no candidate,

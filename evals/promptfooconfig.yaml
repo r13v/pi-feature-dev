@@ -650,3 +650,52 @@ tests:
     assert:
       - type: javascript
         value: file://checks.mjs:driveWrongCounterexample
+
+  - description: drive records deslop bloat in friction and runs retro
+    vars:
+      case: drive-deslop-friction
+      source: "synthetic: deslop removals did not trigger retro"
+      request: >-
+        Use the drive skill and continue the active run. I delegate deferred
+        idea decisions to you: decide yourself and do not ask questions.
+    assert:
+      - type: javascript
+        value: file://checks.mjs:driveDeslopFriction
+
+  - description: drive warns and offers grill on high-rework quick requests
+    vars:
+      case: drive-quick-high-pain
+      source: "synthetic: quick mode should warn on schema and contract changes"
+      request: >-
+        Use the drive skill in the quick mode to migrate db/schema.sql from a
+        single user email column to a multi-email table and change the public
+        GET /v1/users response contract. Do not edit files yet.
+    assert:
+      - type: javascript
+        value: file://checks.mjs:driveQuickHighPain
+
+  - description: drive includes a visual recap for contract and multi-module output
+    vars:
+      case: drive-visual-recap-output
+      source: "synthetic: drive output should include visual-recap for contract changes"
+      request: >-
+        Use the drive skill and finish the active run. Do not ask questions.
+        Do not commit.
+    assert:
+      - type: javascript
+        value: file://checks.mjs:driveVisualRecapOutput
+
+  - description: drive exercises a runnable CLI runtime during feature-dev
+    vars:
+      case: drive-runtime-self-test
+      source: "synthetic: agent should self-test the real CLI before handoff"
+      request: >-
+        Use the drive skill in the quick mode: implement `slugify(text)` in
+        src/slug.js so it lowercases text, joins Latin letter and digit runs
+        with single hyphens, and returns empty string for punctuation-only
+        input. I chose the approach: keep the function in src/slug.js and
+        keep src/cli.js and record-cli.mjs unchanged. Do not ask questions.
+        Do not commit.
+    assert:
+      - type: javascript
+        value: file://checks.mjs:driveRuntimeSelfTest

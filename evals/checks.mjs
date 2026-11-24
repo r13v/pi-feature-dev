@@ -859,3 +859,73 @@ export function dreamAddsReminder(output, { metadata }) {
       spawnSync("git", ["check-ignore", "-q", f], { cwd: dir }).status === 0),
   });
 }
+
+function section(text, heading) {
+  const match = text.match(
+    new RegExp(`^##\\s+${heading}\\s*\\n([\\s\\S]*?)(?=^##\\s+|$)`, "mi"));
+  return match ? match[1] : "";
+}
+
+export function driveDeslopFriction(output, { metadata }) {
+  const dir = metadata.workdir;
+  const src = read(dir, "src/parser.js");
+  const test = read(dir, "test/parser.test.js");
+  const progress = progressFile(dir);
+  const friction = section(progress, "Friction");
+  return result({
+    "bloat removed from parser": !/verifyParsedPort/.test(src)
+      && !/\bcatch\b/.test(src),
+    "duplicate happy-path tests removed": !/typeof parsePort/.test(test)
+      && !/parsePort\("8080"\) > 0/.test(test),
+    "deslop friction recorded": /deslop/i.test(friction)
+      && /verify|wrapper|catch|bloat|duplicate|test|rethrow/i.test(friction),
+    "retro ran": /(?:^|\n)\s*[-*]?\s*retro:\s*done\b/i.test(progress),
+    "run finished": /status:\s*finished/.test(progress),
+    "tests pass": testsPass(dir),
+  });
+}
+
+export function driveQuickHighPain(output, { metadata }) {
+  const offersGrill = output.split("\n").some((line) =>
+    /\bgrill\b/i.test(line)
+    && !/\bskip(?:ping|ped)?\b|\bwithout\b|\bno\b|\bnot\b/i.test(line));
+  return result({
+    "rework risk warned": /rework|costly|expensive|high[- ]risk|irreversible|hard to reverse/i
+      .test(output)
+      && /schema|contract|persisted/i.test(output),
+    "offers grill": offersGrill,
+    "no files changed": unchanged(metadata.workdir),
+  });
+}
+
+export function driveVisualRecapOutput(output, { metadata }) {
+  const progress = progressFile(metadata.workdir);
+  return result({
+    "run finished": /status:\s*finished/.test(progress),
+    "visual diagram included":
+      /```mermaid|flowchart (TD|LR)|sequenceDiagram|graph (TD|LR)|-->|->|──|│|\+--/
+        .test(output),
+    "risk stated": /\b(high|medium|low)\b/i.test(output) && /risk/i.test(output),
+    "review hotspots named": /hotspot|review first|inspect first/i.test(output),
+    "affected modules named": /api/i.test(output) && /billing/i.test(output)
+      && /store/i.test(output),
+  });
+}
+
+export function driveRuntimeSelfTest(output, { metadata }) {
+  const dir = metadata.workdir;
+  const log = join(dir, ".git/cli-runs.jsonl");
+  const runs = existsSync(log) ? readFileSync(log, "utf8").trim().split("\n")
+    .filter(Boolean).map((line) => JSON.parse(line)) : [];
+  const progress = progressFile(dir);
+  return result({
+    "happy path CLI run recorded": runs.some((r) => r.status === 0),
+    "edge case CLI run recorded": runs.some((r) => r.status !== 0),
+    "runtime result in progress": /cli\.js|runtime/i.test(progress),
+    "quick run finished": /mode:\s*quick/.test(progress)
+      && /status:\s*finished/.test(progress),
+    "recorder unchanged": fileUnchanged(dir, "record-cli.mjs")
+      && fileUnchanged(dir, "src/cli.js"),
+    "tests pass": testsPass(dir),
+  });
+}

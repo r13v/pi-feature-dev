@@ -10,7 +10,7 @@ uses it.
 | Skill | What it does |
 |---|---|
 | `feature-dev` | Develops a non-trivial feature: clarify, explore, design, implement with one writer, review, validate. |
-| `drive` | Runs the whole flow below for one feature, with progress kept under `.git/`. `drive quick` runs only `feature-dev`, `final-check`, and `deslop`. Does not commit or push. |
+| `drive` | Runs the whole flow below for one feature, with progress kept under `.git/` and a `visual-recap` for large or contract changes. `drive quick` runs only `feature-dev`, `final-check`, and `deslop` (warning on high-rework changes). Does not commit or push. |
 | `grill` | Interviews the user round by round to settle decisions. Records terms in `GLOSSARY.md` and decisions as ADRs. |
 | `elevate` | Rewrites a task around the outcome it serves, not the artifact it names. |
 | `deepen` | Rewrites a task into the version a top professional would do, with the same goal and deliverable. |
