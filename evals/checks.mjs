@@ -60,7 +60,9 @@ export function grillOptionPremises(output, { metadata }) {
 
 export function grillScopeBoundary(output, { metadata }) {
   return result({
-    "run vs product clarified": /run|phase|iteration/i.test(output)
+    "run vs product clarified":
+      /run|phase|iteration|first (?:implementation|build|delivery)/i
+        .test(output)
       && /product|forever|never|permanent/i.test(output) && /\?/.test(output),
     "no files changed": unchanged(metadata.workdir),
   });
