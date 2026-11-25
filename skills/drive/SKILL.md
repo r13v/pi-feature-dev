@@ -11,13 +11,13 @@ Take one non-trivial implementation request through the full pipeline:
 [elevate] → grill → [deepen] → feature-dev → [final-check] → deslop → [retro]
 ```
 
-When the user asks for the quick mode, run the shorter pipeline that the
-section "Quick mode" describes.
-
 This skill only orchestrates. Each stage follows its own skill. This skill
 selects the stages, passes each result to the next stage, and keeps the
 approval points of each stage. Drive ends with validated changes in the working
-tree. Do not commit, push, publish, or deploy unless the user asks.
+tree. Do not commit, push, publish, or deploy unless the user asks. When the
+user asks to commit, push, open a pull or merge request, merge, check the
+deploy, or update the ticket, run the `land` skill with these steps after you
+set `status: finished`.
 
 When a stage starts, load the skill of that stage and follow it, even when
 an earlier run in the same session loaded it. A stage that ran from memory
@@ -67,11 +67,14 @@ file. Do not continue without a progress file.
 
 Before the first stage, look for a progress file with `status: active` on the
 current branch. If it matches this task, read it and continue from the first
-stage that has no result. If the file has no `Friction` section or no retro
-entry, add an empty section and `retro: selection pending after deslop`. If
-you cannot tell whether it matches, ask the user. When the
-branch is `detached`, a file of another worktree can also match, so ask the
-user before you resume. Do not resume a file with `status: finished`.
+stage that has no result. A file that an older version of drive wrote can
+miss an entry or a section that this version writes. Add each missing one
+with the value that this version gives at that point of the run: a missing
+`mode` is `full`, and an `elevate` entry with no result is `skipped: not
+requested`, unless the user asked for elevate. If you cannot tell whether it
+matches, ask the user. When the branch is `detached`, a file of another worktree
+can also match, so ask the user before you resume. Do not resume a file with
+`status: finished`.
 
 Otherwise, start a new run. Fetch the remote first. If the branch is behind
 its upstream or the default branch, tell the user and ask whether to update
@@ -90,11 +93,10 @@ started: 2026-10-22T15:30
 ---
 ```
 
-Use `quick` for `mode` in the quick mode, and `full` otherwise. A file
-with no `mode` is a `full` run. Use `git branch --show-current` for
-`branch`, or `detached` if it prints nothing. Use `git rev-parse --short
-HEAD` for `start_commit`, or `none` on a branch with no commits.
-In the body, write:
+Use `quick` for `mode` in the quick mode, and `full` otherwise. Use `git branch
+--show-current` for `branch`, or `detached` if it prints nothing. Use `git
+rev-parse --short HEAD` for `start_commit`, or `none` on a branch with no
+commits. In the body, write:
 
 - the original request;
 - one entry for each stage: `selected`, `skipped: <reason>`, or, for deepen,
@@ -108,17 +110,17 @@ In the body, write:
 Before a stage starts, read the file. Do not start a stage until each earlier
 stage has an entry with `done` or `skipped: <reason>`. An entry with
 `selection pending` does not count. The `feature-dev review` entry counts as
-an earlier stage of final-check. If a file has no `feature-dev review` entry
-and neither final-check nor deslop has a result, add `feature-dev review:
-pending`. If the entry is missing and one of them has a result, the review
-counts as done. A file of an older run can have a result for deslop and
-none for final-check: then run final-check, and run deslop on the files that
-its fixes changed. If feature-dev is
-skipped, set it to `skipped: feature-dev skipped`. When a stage ends,
-write its
-status and its result: the approved elevated request, the Grill Result, the
+an earlier stage of final-check. A missing `feature-dev review` entry counts
+as done when final-check or deslop has a result. If deslop has a result and
+final-check has none, run final-check, and then run deslop on the files that
+its fixes changed. If feature-dev is skipped, set the review entry to
+`skipped: feature-dev skipped`. When a stage ends, write its status and its
+result: the approved elevated request, the Grill Result, the
 acceptance criteria, the selected design, and the checks that ran. Write each
-user decision when the user makes it.
+user decision when the user makes it. A subagent can report a wrong claim
+about real data, such as a count or the effect of a deploy. Before such a
+claim goes into the progress file, query the data again yourself. If you
+cannot query it, write the claim as unverified.
 
 When drive ends, set `status: finished`, and give the path of the file in the
 output. Do not set `status: finished` while the `deferred ideas` entry is
@@ -185,22 +187,12 @@ and delegated decisions`. Use that result in later stages. Documentation alone
 does not grant authority. If material questions remain, resolve only those
 within the delegated scope, asking about decisions outside it.
 
-Select `elevate` and
-`final-check` before the first stage starts. Select `deepen` after grill,
-when the acceptance criteria are known. Select `retro` after deslop. If the
-user includes or skips a
-stage, do what the user says.
+Select `final-check` before the first stage starts. Select `deepen` after
+grill, when the acceptance criteria are known. Select `retro` after deslop.
+If the user includes or skips a stage, do what the user says.
 
-- **`elevate`:** Run it when one of these is true:
-  - the request names an artifact or a one-off action and does not say what
-    it is for, such as "fix this crash" or "write an export script";
-  - the repository history, the tickets, or the conversation show the same
-    kind of request before;
-  - the result feeds a meeting or a decision that the request names.
-
-  Skip it when the request already states the outcome and the acceptance
-  criteria, when the user set a fixed deadline or scope, or when the change
-  is mechanical.
+- **`elevate`:** Run it only when the user asks for it. Otherwise, skip it
+  with the reason `not requested`.
 - **`deepen`:** Run it when one of these is true:
   - the result depends on a claim that raw data can confirm or refute, such
     as the cause of a bug, a performance bottleneck, a metric, or the
@@ -212,12 +204,10 @@ stage, do what the user says.
 
   Skip it when the Grill Result names a concrete check for each acceptance
   criterion and the change follows an existing pattern in the repository.
+  When a run condition and a skip condition both hold, run it.
 - **`final-check`:** Run it after implementation by default.
 - **`retro`:** Run it when the `Friction` section has at least one entry.
   Skip it with the reason `smooth run` when the section is empty.
-
-If a run condition and a skip condition both hold, skip elevate, because it
-grows the scope, and run deepen, because it keeps the goal.
 
 A cost inside a budget that the user stated is approved. Do not drop an
 acceptance check against the real system or a real model to save cost. If the
@@ -250,11 +240,9 @@ feature-dev → final-check → deslop
   in the later stages.
 - Run feature-dev, its diff review, final-check, and deslop in this order,
   as the section "Run the stages" describes. Do not combine the diff review
-  with final-check. When the host can
-  run subagents, run each check in its own subagent, as the section "Run
-  checks in a fresh context" describes, and write the runner in each
-  entry. These checks are the reason for the quick mode: do not skip one
-  because the change is small.
+  with final-check. Run each check in a fresh context, as the section "Run
+  checks in a fresh context" describes. These checks are the reason for the
+  quick mode: do not skip one because the change is small.
 - Record friction as usual. A later retro reads it.
 - Add the ideas outside the scope to the `Deferred ideas` section, and list
   them in the output. Do not call the `backlog` skill unless the user asks.
@@ -271,7 +259,7 @@ points of each stage stay in effect. A drive request does not approve them.
    Use the confirmed `Grill Result` as the input for all
    later stages. Glossary and ADR updates from grill are changes of this
    task. If grill changes the goal, tell the user and ask whether to continue
-   with the new goal. Do not run elevate again without telling the user. If
+   with the new goal. Run elevate again only when the user asks. If
    the user accepted every recommendation and feature-dev needs a design
    choice, explore first, and then ask for the final confirmation of grill
    and the design choice in one message.
@@ -286,29 +274,27 @@ points of each stage stay in effect. A drive request does not approve them.
    the new deliverable changes.
 4. **Feature-dev.** Implement the confirmed scope. When a design trigger of
    feature-dev applies, present the architecture approaches with a
-   recommendation, as feature-dev describes. When the approaches change a
-   public contract, persisted data, or several modules, include a
-   `visual-recap` in `Plan` mode so the user can review the impact visually.
-   If the Grill Result already
-   selected an approach, use it without asking the same decision again.
-   Otherwise wait for the user's choice, unless that choice was delegated or
-   the user explicitly waived design approval. A drive request alone does not
-   delegate design decisions.
+   recommendation, as feature-dev describes. When the approaches change a public
+   contract, persisted data, or several modules, include a `visual-recap` in
+   `Plan` mode. If the Grill Result already selected an approach, use it.
+   Otherwise wait for the user's choice, unless the user delegated it or waived
+   design approval. A drive request alone does not delegate design decisions.
    Validate against the success criteria in the Grill Result and against the
    deepen validation, if there is one. When the changed code has a runnable
-   interface (CLI, HTTP endpoint, UI, or worker) that works in this
-   environment, exercise the main path and one key edge case against the
-   real runtime yourself before finishing feature-dev, and record the
-   observed result in the progress file. Feature-dev ends when each acceptance
-   criterion is met, or is not met with evidence and a blocker that
-   feature-dev allows. Add a new direction that the work shows to the
-   deferred ideas. Ask whether to extend the scope only when the accepted
-   objective cannot be met without it. Then run
-   the diff review in a fresh context, as described below, and set the
-   `feature-dev review` entry to `done (<runner>): <N> findings` or
-   `skipped: <reason>`.
-   When the user asks for a commit after each group of changes, review the
-   whole range once before final-check.
+   interface (CLI, HTTP endpoint, UI, or worker) that works in this environment,
+   exercise the main path and one key edge case against the real runtime
+   yourself before finishing feature-dev, and record the observed result in the
+   progress file. Feature-dev ends when each acceptance criterion is met, or is
+   not met with evidence and a blocker that feature-dev allows. Before you set
+   feature-dev to `done`, write each criterion in the progress file with its
+   evidence: the test, the command and its output, or the file and line. A
+   criterion with no evidence is not met. Add a new direction that the work
+   shows to the deferred ideas. Ask whether to extend the scope only when the
+   accepted objective cannot be met without it. Then run the diff review in a
+   fresh context, as described below, and set the `feature-dev review` entry to
+   `done (<runner>): <N> findings` or `skipped: <reason>`. When the user asks
+   for a commit after each group of changes, commit each group as step 1 of the
+   `land` skill describes, and review the whole range once before final-check.
 5. **Final-check.** Compare the result with the original request, the Grill
    Result, and the acceptance criteria. Report each deepen target as met, not
    met, or not measured. Fix the confirmed gaps in scope, and run the
@@ -384,8 +370,7 @@ output, and write `shown in output` as the decision.
 Implement each "do now" idea in this run. Then run final-check again for
 the new hunks, or the feature-dev validation if the user skipped
 final-check, and then run deslop on them. Run a slow check, such as an
-end-to-end suite, once
-after this pass, not before it and again after it. Mark each step next to the
+end-to-end suite, only once, after this pass. Mark each step next to the
 idea when it ends. Give the ideas that this second pass finds to the `add`
 mode without the "do now" option. Record the friction of the second pass, but
 do not run retro again. A later retro reads it from the past runs.
@@ -404,7 +389,11 @@ can run subagents, run these checks in a subagent with a fresh context:
 Give the subagent the path of the progress file, the acceptance criteria, and
 the commands that show the changes of this task. If the repository has a
 standards document for review, such as `CODING_STANDARDS.md` or
-`CONTRIBUTING.md`, give its path too. Do not give it the conversation. Tell
+`CONTRIBUTING.md`, give its path too, and tell the subagent to check the
+changes against each rule of the document in turn. Tell it to search the
+whole repository, including the documentation, the glossary, and the pages
+that explain the process to users, for the old wording of each contract,
+term, or behavior that the task changes. Do not give it the conversation. Tell
 it to report findings and not to edit files, and to list the findings outside
 the scope separately. For a finding about wrong behavior, tell it to give the
 input, the expected result, and the actual result. For the feature-dev diff
@@ -419,8 +408,7 @@ a final-check that the writing agent ran itself is not done. If the subagent
 fails, set the entry to `skipped: <reason>`.
 
 In the `done` entry of each of these checks, write who ran it as
-`<runner>`: `subagent`, or `self` when the host cannot run subagents. An
-entry `done` with no runner, from an older run, counts as done.
+`<runner>`: `subagent`, or `self` when the host cannot run subagents.
 
 Before you fix a finding, open the code that it cites and confirm it. Confirm
 a finding about wrong behavior with a test or a command that fails before the
@@ -467,5 +455,6 @@ clarity mode.
 - The `retro-skill:` ideas, if any, and where they went.
 - Blockers and follow-ups, if any.
 - One next step toward the accepted objective, with its evidence.
-- One question: whether to commit the changes and open a pull request or a
-  merge request, unless the user already said what to do with them.
+- One question: whether to run the `land` skill to commit the changes and
+  open a pull request or a merge request, unless the user already said what
+  to do with them.

@@ -10,13 +10,14 @@ uses it.
 | Skill | What it does |
 |---|---|
 | `feature-dev` | Develops a non-trivial feature: clarify, explore, design, implement with one writer, review, validate. |
-| `drive` | Runs the whole flow below for one feature, with progress kept under `.git/` and a `visual-recap` for large or contract changes. `drive quick` runs only `feature-dev`, `final-check`, and `deslop` (warning on high-rework changes). Does not commit or push. |
+| `drive` | Runs the whole flow below for one feature, with progress kept under `.git/` and a `visual-recap` for large or contract changes. `drive quick` runs only `feature-dev`, `final-check`, and `deslop` (warning on high-rework changes). Commits, pushes, and merges only through `land`, when the user asks. Runs `elevate` only on request. |
 | `grill` | Interviews the user round by round to settle decisions. Records terms in `GLOSSARY.md` and decisions as ADRs. |
 | `elevate` | Rewrites a task around the outcome it serves, not the artifact it names. |
 | `deepen` | Rewrites a task into the version a top professional would do, with the same goal and deliverable. |
 | `final-check` | Asks what we missed, and what to check or fix. |
 | `deslop` | Audits or removes test, verification, fallback, and comment bloat. |
-| `retro` | Proposes changes to the agent's environment from the friction of a session or a `drive` run. |
+| `retro` | Proposes changes to the agent's environment from the friction of a session or a `drive` run, including host guardrails such as deny rules and hooks. |
+| `land` | Commits validated changes, opens a pull or merge request, and gets CI green; merges, checks the deploy, and updates the ticket when asked. |
 | `dream` | Reviews the agent's memory against past sessions, code, and git. |
 | `backlog` | Keeps deferred ideas and debt as tickets or as files under `docs/backlog/`. |
 | `ste` | Writes clear technical text: strict ASD-STE100 for English, clarity mode for any language. |
@@ -52,7 +53,7 @@ The package has only skills, no prompt templates.
 Steps in brackets are optional:
 
 ```text
-[elevate] → grill → [deepen] → feature-dev → [final-check] → deslop → [retro]
+[elevate] → grill → [deepen] → feature-dev → [final-check] → deslop → [retro] → [land]
 ```
 
 - `elevate` decides what to do; `grill` settles it.
@@ -60,9 +61,10 @@ Steps in brackets are optional:
   validation criterion for `feature-dev`.
 - `deslop` runs after `final-check`, so it also cleans up its fixes.
 - `retro` reviews how the run went; skip it after a smooth run.
+- `land` commits and merges the result, only when you ask.
 
-`drive` runs this flow and selects the optional stages by the rules in
-`skills/drive/SKILL.md`.
+`drive` runs this flow, and runs `land` after it when you ask. It selects the
+optional stages by the rules in `skills/drive/SKILL.md`.
 
 ## Credits
 
