@@ -74,6 +74,10 @@ the frontier. If delegation is unavailable, research directly.
 
 Before recommending an option, verify the premises that make it viable,
 such as API support or whether people use the workflow step it relies on.
+When a recommendation depends on a measurable claim, such as "an index is
+not needed" or "the table is small", measure it on real data before the
+round. If you cannot measure it, mark the claim as not measured in the
+option.
 If an ambiguous scope boundary would change the recommendation, ask whether
 it excludes work from this run or from the product; do not infer one from
 the other.
@@ -138,6 +142,18 @@ rules or feedback that the user gave in earlier sessions, when the host keeps
 them. If an option breaks such a rule, say so in the option. Recommend the
 option that best serves the outcome. Give cost as a trade-off, not as the
 reason, unless the user set a budget.
+
+Fit the recommendation to the scope that the outcome needs, in both
+directions:
+
+- When a ticket or a specification lists an item in its completion
+  criteria, such as "Done when", recommend to include the item. Recommend a
+  narrower option only for a reason that you state from the ticket or the
+  code.
+- Recommend the simplest option that meets the outcome. An added mechanism,
+  such as a security layer, a snapshot, a state, or a check, needs evidence
+  that its case occurs for the users and the scale of this product. For
+  example, an internal tool does not need protection against outside users.
 
 Write the questions in the language of the user's request. The format below
 fixes the structure, not the words.
@@ -260,7 +276,9 @@ rounds.
 
 After the user confirms, show a final `Grill Result` that records the accepted
 objective, decisions, canonical language, constraints, non-goals, unresolved
-items, and documentation changes. End an interview-only request there.
+items, and documentation changes. Include each default that the user
+accepted in a round: later stages read only the `Grill Result`. End an
+interview-only request there.
 Confirmation settles the shared understanding; it does not grant additional
 execution authority. Continue a previously requested follow-on phase only within
 its established scope.

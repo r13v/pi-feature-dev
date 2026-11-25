@@ -1,0 +1,7 @@
+interface:
+  display_name: "Land"
+  short_description: "Commit, open a PR or MR, get CI green, and merge on request"
+  default_prompt: "Use $land to commit the validated changes, open a pull request, and get the CI checks green."
+
+policy:
+  allow_implicit_invocation: false

@@ -17,7 +17,10 @@ section "Quick mode" describes.
 This skill only orchestrates. Each stage follows its own skill. This skill
 selects the stages, passes each result to the next stage, and keeps the
 approval points of each stage. Drive ends with validated changes in the working
-tree. Do not commit, push, publish, or deploy unless the user asks.
+tree. Do not commit, push, publish, or deploy unless the user asks. When the
+user asks to commit, push, open a pull or merge request, merge, check the
+deploy, or update the ticket, run the `land` skill with these steps after you
+set `status: finished`.
 
 When a stage starts, load the skill of that stage and follow it, even when
 an earlier run in the same session loaded it. A stage that ran from memory
@@ -68,10 +71,12 @@ file. Do not continue without a progress file.
 Before the first stage, look for a progress file with `status: active` on the
 current branch. If it matches this task, read it and continue from the first
 stage that has no result. If the file has no `Friction` section or no retro
-entry, add an empty section and `retro: selection pending after deslop`. If
-you cannot tell whether it matches, ask the user. When the
-branch is `detached`, a file of another worktree can also match, so ask the
-user before you resume. Do not resume a file with `status: finished`.
+entry, add an empty section and `retro: selection pending after deslop`. An
+`elevate` entry with no result, from an older run, becomes `skipped: not
+requested`, unless the user asked for elevate. If you cannot tell whether it
+matches, ask the user. When the branch is `detached`, a file of another worktree
+can also match, so ask the user before you resume. Do not resume a file with
+`status: finished`.
 
 Otherwise, start a new run. Fetch the remote first. If the branch is behind
 its upstream or the default branch, tell the user and ask whether to update
@@ -118,7 +123,10 @@ skipped, set it to `skipped: feature-dev skipped`. When a stage ends,
 write its
 status and its result: the approved elevated request, the Grill Result, the
 acceptance criteria, the selected design, and the checks that ran. Write each
-user decision when the user makes it.
+user decision when the user makes it. A subagent can report a wrong claim
+about real data, such as a count or the effect of a deploy. Before such a
+claim goes into the progress file, query the data again yourself. If you
+cannot query it, write the claim as unverified.
 
 When drive ends, set `status: finished`, and give the path of the file in the
 output. Do not set `status: finished` while the `deferred ideas` entry is
@@ -185,22 +193,12 @@ and delegated decisions`. Use that result in later stages. Documentation alone
 does not grant authority. If material questions remain, resolve only those
 within the delegated scope, asking about decisions outside it.
 
-Select `elevate` and
-`final-check` before the first stage starts. Select `deepen` after grill,
-when the acceptance criteria are known. Select `retro` after deslop. If the
-user includes or skips a
-stage, do what the user says.
+Select `final-check` before the first stage starts. Select `deepen` after
+grill, when the acceptance criteria are known. Select `retro` after deslop.
+If the user includes or skips a stage, do what the user says.
 
-- **`elevate`:** Run it when one of these is true:
-  - the request names an artifact or a one-off action and does not say what
-    it is for, such as "fix this crash" or "write an export script";
-  - the repository history, the tickets, or the conversation show the same
-    kind of request before;
-  - the result feeds a meeting or a decision that the request names.
-
-  Skip it when the request already states the outcome and the acceptance
-  criteria, when the user set a fixed deadline or scope, or when the change
-  is mechanical.
+- **`elevate`:** Run it only when the user asks for it. Otherwise, skip it
+  with the reason `not requested`.
 - **`deepen`:** Run it when one of these is true:
   - the result depends on a claim that raw data can confirm or refute, such
     as the cause of a bug, a performance bottleneck, a metric, or the
@@ -216,8 +214,8 @@ stage, do what the user says.
 - **`retro`:** Run it when the `Friction` section has at least one entry.
   Skip it with the reason `smooth run` when the section is empty.
 
-If a run condition and a skip condition both hold, skip elevate, because it
-grows the scope, and run deepen, because it keeps the goal.
+If a run condition and a skip condition of deepen both hold, run deepen,
+because it keeps the goal.
 
 A cost inside a budget that the user stated is approved. Do not drop an
 acceptance check against the real system or a real model to save cost. If the
@@ -271,7 +269,7 @@ points of each stage stay in effect. A drive request does not approve them.
    Use the confirmed `Grill Result` as the input for all
    later stages. Glossary and ADR updates from grill are changes of this
    task. If grill changes the goal, tell the user and ask whether to continue
-   with the new goal. Do not run elevate again without telling the user. If
+   with the new goal. Run elevate again only when the user asks. If
    the user accepted every recommendation and feature-dev needs a design
    choice, explore first, and then ask for the final confirmation of grill
    and the design choice in one message.
@@ -301,14 +299,18 @@ points of each stage stay in effect. A drive request does not approve them.
    real runtime yourself before finishing feature-dev, and record the
    observed result in the progress file. Feature-dev ends when each acceptance
    criterion is met, or is not met with evidence and a blocker that
-   feature-dev allows. Add a new direction that the work shows to the
+   feature-dev allows. Before you set feature-dev to `done`, write each
+   criterion in the progress file with its evidence: the test, the command
+   and its output, or the file and line. A criterion with no evidence is not
+   met. Add a new direction that the work shows to the
    deferred ideas. Ask whether to extend the scope only when the accepted
    objective cannot be met without it. Then run
    the diff review in a fresh context, as described below, and set the
    `feature-dev review` entry to `done (<runner>): <N> findings` or
    `skipped: <reason>`.
-   When the user asks for a commit after each group of changes, review the
-   whole range once before final-check.
+   When the user asks for a commit after each group of changes, commit each
+   group as step 1 of the `land` skill describes, and review the whole range
+   once before final-check.
 5. **Final-check.** Compare the result with the original request, the Grill
    Result, and the acceptance criteria. Report each deepen target as met, not
    met, or not measured. Fix the confirmed gaps in scope, and run the
@@ -404,7 +406,11 @@ can run subagents, run these checks in a subagent with a fresh context:
 Give the subagent the path of the progress file, the acceptance criteria, and
 the commands that show the changes of this task. If the repository has a
 standards document for review, such as `CODING_STANDARDS.md` or
-`CONTRIBUTING.md`, give its path too. Do not give it the conversation. Tell
+`CONTRIBUTING.md`, give its path too, and tell the subagent to check the
+changes against each rule of the document in turn. Tell it to search the
+whole repository, including the documentation, the glossary, and the pages
+that explain the process to users, for the old wording of each contract,
+term, or behavior that the task changes. Do not give it the conversation. Tell
 it to report findings and not to edit files, and to list the findings outside
 the scope separately. For a finding about wrong behavior, tell it to give the
 input, the expected result, and the actual result. For the feature-dev diff
@@ -467,5 +473,6 @@ clarity mode.
 - The `retro-skill:` ideas, if any, and where they went.
 - Blockers and follow-ups, if any.
 - One next step toward the accepted objective, with its evidence.
-- One question: whether to commit the changes and open a pull request or a
-  merge request, unless the user already said what to do with them.
+- One question: whether to run the `land` skill to commit the changes and
+  open a pull request or a merge request, unless the user already said what
+  to do with them.

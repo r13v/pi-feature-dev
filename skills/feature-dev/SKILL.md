@@ -103,10 +103,17 @@ When none of these triggers applies, state the single approach and proceed.
 
 Implement the authorized scope with one writer. If handing off to an isolated
 worker, supply the request, relevant files, decisions, constraints, acceptance
-criteria, validation commands, and authority boundaries.
+criteria, validation commands, and authority boundaries. Also supply the
+options that the user rejected, with the reason: a worker that sees only the
+chosen option can bring a rejected one back.
 
-After an edit by a script or a search-and-replace, confirm that the change is
-in the file: a replace that matched nothing reports no error.
+An edit by a script or a search-and-replace can match nothing, or match more
+than you intended, and report no error. Before the edit, write down the
+files that you intend to change and a count that the edit must keep or
+change, such as the tests in a file or the occurrences of a word. After the
+edit, compare the list of changed files and the count with your note. Match
+whole words, so that a new name does not match inside a longer name, unless
+the edit targets part of a word.
 
 Reuse existing code and match project conventions. Add or update tests when they
 protect a changed requirement or regression risk. Reuse adequate existing checks

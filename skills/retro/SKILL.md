@@ -17,8 +17,8 @@ choose.
 Each candidate must point to one moment of this session or of a past run: a
 friction entry, a failed command, a finding, or a correction from the user.
 Drop a candidate that you cannot trace to such a moment, even when it is good
-general advice. Two candidates are exceptions: a repository with no guardrail,
-and a check to remove. The sections below describe them.
+general advice. Two candidates are exceptions: a repository with no
+automated gate, and a check to remove. The sections below describe them.
 
 If no moment is left to learn from, say so and give no candidates. Do not
 invent candidates to fill the categories.
@@ -52,8 +52,23 @@ Sort each candidate into one category. The category tells where the fix goes.
   it. When `deslop` removes the same mechanical pattern across runs, such as
   broad catches, unused fallbacks, or oversized functions, propose a lint rule
   or static check instead of relying on `deslop` each time. If the repository
-  has no guardrail, that is no pre-commit hook and no CI job that runs its
+  has no automated gate, that is no pre-commit hook and no CI job that runs its
   checks, report this as a candidate.
+- **Guardrails.** The agent did an action that you cannot undo, or an action
+  that failed with no sign, during the session: it overwrote uncommitted
+  work, printed a secret, or ran a command that silently processed no
+  files. A rule in text does not stop such an action, and a check at commit
+  time comes too late. Add a guardrail in the host settings of the
+  repository: a deny rule, a hook that runs before or after the tool call, or
+  a sandbox limit on files and network. First read the host settings that
+  exist. Put the guardrail in the settings file that the repository shares,
+  unless it applies only to one user. A hook that must send the agent back
+  must exit with the status that the host treats as blocking. In Claude
+  Code, this status is 2; exit status 1 only shows a warning. Test each
+  guardrail with a harmless instance of the action, such as a scratch file or
+a fake secret, or give the hook a sample input. Show that the host blocks
+it. An action that
+  you can undo, such as wrong code, needs no guardrail.
 - **Review rules.** The diff review missed a mistake, or found the same kind
   of mistake again. A confirmed final-check finding means that the diff
   review missed it. A failed check that caught a mistake needs no candidate,
